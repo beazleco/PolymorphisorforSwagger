@@ -1,0 +1,2 @@
+name,swagger,mapping,out,report,html_report,sor_swagger,require_sor_field,on_unmatched,discriminator,auto_poly,auto_dedupe,dedupe_strictness,disc_prop,protected,poly,dedupe,min_match_rate,max_total_loss,guards,assertions,auto_layout,level_first_col,level_last_col,dtype_col,sor_col,not_used_text
+CurrentAndSavingsAccount,swaggers/casa.yaml,mappings/casa_mapping.xlsx,out/casa_polymorphic.yaml,out/casa_report.md,out/casa_changes.html,,false,keep,true,true,true,deep,resultContext,ErrorResponse,,,0.25,0.75,true,true,true,3,7,9,10,Not Used In SOR

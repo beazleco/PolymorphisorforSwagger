@@ -1,0 +1,801 @@
+openapi: 3.0.3
+info:
+  title: Cheque Processing
+  version: 1.0.0
+  description: |-
+    **<u>API Lifecycle Status - Design</u>**
+
+    API specification for Cheque Processing
+servers:
+- url: https://localhost/
+paths:
+  /ChequeProcessing/Initiate:
+    post:
+      summary: Cheque Submission
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        Submit a cheque for processing and clearing
+      tags:
+      - BQ - ChequeProcessingOperatingSession
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChequeSubmissionRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferrable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace represents a single
+                request or transaction as it flows through multiple services in a distributed system. (e.g. 5b8aa5a2d2c872e8321cf37308d69df2)
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: Uniquely identifies a single span within a trace. A span represents one unit of work (e.g., an
+                HTTP request, a database query). (e.g. 5fb397be34d26b51)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChequeSubmissionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /ChequeProcessing/{chequeprocessingid}/Retrieve:
+    get:
+      summary: Cheque Enquiry
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        Initiate Cheque Processing
+      tags:
+      - BQ - ChequeProcessingOperatingSession
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChequeEnquiryRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferrable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace represents a single
+                request or transaction as it flows through multiple services in a distributed system. (e.g. 5b8aa5a2d2c872e8321cf37308d69df2)
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: Uniquely identifies a single span within a trace. A span represents one unit of work (e.g., an
+                HTTP request, a database query). (e.g. 5fb397be34d26b51)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChequeEnquiryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+components:
+  schemas:
+    ChequeSubmissionRequest:
+      type: object
+      properties:
+        chequeProcessingOperatingSession:
+          $ref: '#/components/schemas/chequeProcessingOperatingSession'
+    AccountIdentifier:
+      type: object
+      description: Payment Transaction account identifier
+      properties:
+        accountIdentification:
+          type: string
+          maxLength: 12
+          description: Credit account number
+          example: '"123456789012"'
+        accountIdentificationType:
+          type: string
+          description: Type of Account identification. Default Value - AccountNumber
+      required:
+      - accountIdentification
+    MICR:
+      type: object
+      properties:
+        micrString:
+          type: string
+          maxLength: 39
+          description: This is the data of MICR codeline of the check.
+        chequeNumber:
+          type: string
+          maxLength: 12
+          example: '"001135361"'
+        regionCode:
+          type: string
+          maxLength: 2
+          example: '"01"'
+        bankCode:
+          type: string
+          maxLength: 3
+          example: '"004"'
+        branchCode:
+          type: string
+          maxLength: 3
+          example: '"189"'
+        accountIdentification:
+          type: string
+          maxLength: 12
+          example: '"003760011826"'
+      required:
+      - accountIdentification
+      - bankCode
+      - branchCode
+      - chequeNumber
+      - micrString
+      - regionCode
+    ChequeImage:
+      type: object
+      properties:
+        Image:
+          type: string
+          description: view1=Base64 String for front tiff image, view2=Base64 String for dorsal tiff image, view3=Base64 String
+            for front jpeg image, view4=Base64 String for front UV tiff image.
+          example: view1
+        Image Description:
+          type: string
+          description: "view1=Front 200 dpi Black & White, \nview2=Rear 200 dpi Black & White, \nview3=100 dpi Gray scale,\
+            \ \nview4=200 dpi Black & White (Inverted)"
+          example: Front 200 dpi Black & White
+      required:
+      - Image
+    Amount:
+      type: object
+      description: it specifies the cheque amount details
+      properties:
+        amount:
+          type: string
+          description: Transaction amount provided by the source channel.
+          example: '"200.01" or "0.00"(default)'
+        currencyCode:
+          type: string
+          maxLength: 3
+          description: Currency of transaction provided by the source channel.
+          example: '"PHP"(default) / "USD"'
+        amountType:
+          type: string
+          description: Type of amount. Values - Transaction Amount
+      required:
+      - amount
+      - currencyCode
+    ChequeItem:
+      type: object
+      description: cheque details array
+      properties:
+        channelReferenceNumber:
+          type: string
+          maxLength: 28
+          description: This is the reference number provided by the respective channel, when this API is being called. Channel
+            Reference no can be duplicate across different machine. Combination is channel Reference no and user id should
+            be unique
+          example: '"UM00000110000000000000000001"'
+        chequeReferenceNumber:
+          type: string
+          description: ICCS generated unique transaction reference.
+          example: string
+        presentmentAttemptNumber:
+          type: string
+          maxLength: 1
+          description: First or second presentment indicator.
+          example: F"(default) | "S"
+        itemSequenceNumber:
+          type: string
+          maxLength: 15
+          description: Item Sequence Number value (As printed on the dorsal image (ECE))
+          example: '"000112345600001"'
+        MICR:
+          $ref: '#/components/schemas/MICR'
+        ChequeImage:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChequeImage'
+        Amount:
+          $ref: '#/components/schemas/Amount'
+      required:
+      - channelReferenceNumber
+      - chequeReferenceNumber
+      - itemSequenceNumber
+      - presentmentAttemptNumber
+    Account:
+      type: object
+      properties:
+        accountName:
+          type: string
+          maxLength: 100
+          description: Credit account name
+          example: '"ABC"'
+        accountNickName:
+          type: string
+          description: Credit Account nick name
+        accountOpenDate:
+          type: string
+          format: date-time
+        accountStatus:
+          type: string
+          maxLength: 10
+          description: Credit Account number status.
+          example: '"Open" / "Closed"'
+        accountType:
+          type: string
+          maxLength: 2
+          description: |-
+            Type of destination credit account
+            Possible Values as per SOR:
+            - DD - for Current Account
+            - SV - for Savings Account
+          example: '"SV" / "DD"'
+        AccountIdentifier:
+          $ref: '#/components/schemas/AccountIdentifier'
+        ChequeItem:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChequeItem'
+          description: cheque details array
+      required:
+      - ChequeItem
+      - accountType
+    chequeProcessingOperatingSession:
+      type: object
+      properties:
+        originatingChannel:
+          type: string
+          maxLength: 6
+          description: This is the channel identifier to identify and tag the source from where the transaction has been initiated
+            and route the transaction to the requisite data flow in ExpressClearPostfix.
+          example: '"OCLGMS" / "OCLGUS"(default)'
+        placeholder1:
+          type: string
+          maxLength: 150
+          description: Extra field added as per bank request
+        placeholder2:
+          type: string
+          maxLength: 150
+          description: Extra field added as per bank request
+        userIdentifier:
+          type: string
+          maxLength: 8
+          description: This is the unique user / device identification number (UserID / UM_ID) maintained in ExpressPostfix
+          example: '"00000001"'
+        sessionDateandTime:
+          type: string
+          format: date-time
+          description: Date and time stamp of transaction initiated by the respective channel in ExpressClearPostfix
+        Account:
+          $ref: '#/components/schemas/Account'
+      required:
+      - originatingChannel
+      - userIdentifier
+      - sessionDateandTime
+    ChequeSubmissionResponse:
+      type: object
+      properties:
+        ChequeItem:
+          type: array
+          items:
+            type: object
+            properties:
+              channelReferenceNumber:
+                type: string
+              chequeReferenceNumber:
+                type: string
+                description: ICCS generated unique transaction reference.
+              presentmentAttemptNumber:
+                type: string
+                description: First or second presentment indicator.
+              itemSequenceNumber:
+                type: string
+                description: Item Sequence Number value (As printed on the dorsal image (ECE))
+              MICR:
+                $ref: '#/components/schemas/MICR'
+              ChequeImage:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChequeImage'
+              Amount:
+                $ref: '#/components/schemas/Amount'
+            required:
+            - channelReferenceNumber
+            - chequeReferenceNumber
+    ChequeEnquiryRequest:
+      type: object
+      properties:
+        imageRequired:
+          type: boolean
+          description: Check image required flag
+          example: '"TRUE" OR "FALSE"'
+        chequeProcessingOperatingSession:
+          type: object
+          properties:
+            originatingChannel:
+              type: string
+              maxLength: 6
+              description: This is the channel identifier to identify and tag the source from where the transaction has been
+                initiated and route the transaction to the requisite data flow in ExpressClearPostfix.
+              example: '"OCLGMS" / "OCLGUS"(default)'
+            placeholder1:
+              type: string
+              maxLength: 150
+              description: Extra field added as per bank request
+            placeholder2:
+              type: string
+              maxLength: 150
+              description: Extra field added as per bank request
+            userIdentifier:
+              type: string
+              maxLength: 8
+              description: This is the unique user / device identification number (UserID / UM_ID) maintained in ExpressPostfix
+              example: '"00000001"'
+            sessionDateandTime:
+              type: string
+              format: date-time
+              description: Date and time stamp of transaction initiated by the respective channel in ExpressClearPostfix
+            Account:
+              $ref: '#/components/schemas/Account'
+          required:
+          - originatingChannel
+          - userIdentifier
+          - sessionDateandTime
+    ChequeEnquiryResponse:
+      type: object
+      properties:
+        ChequeItem:
+          type: array
+          items:
+            type: object
+            properties:
+              channelReferenceNumber:
+                type: string
+              chequeReferenceNumber:
+                type: string
+                description: ICCS generated unique transaction reference.
+              presentmentAttemptNumber:
+                type: string
+                description: First or second presentment indicator.
+              itemSequenceNumber:
+                type: string
+                description: Item Sequence Number value (As printed on the dorsal image (ECE))
+              MICR:
+                $ref: '#/components/schemas/MICR'
+              ChequeImage:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChequeImage'
+              Amount:
+                $ref: '#/components/schemas/Amount'
+            required:
+            - channelReferenceNumber
+            - chequeReferenceNumber
+        ChequeLifestyleStatus:
+          $ref: '#/components/schemas/ChequeLifestyleStatus'
+    ChequeLifestyleStatus:
+      type: object
+      properties:
+        chequeLifecycleStatusReason:
+          type: string
+          description: Check status available in ICCS at that point of time
+          example: '"Pending" OR "Negotiated" OR "Returned"'
+        chequeLifecycleStatusCode:
+          type: string
+          description: Check actual return code / reject reason
+          example: '"F"'
+      required:
+      - chequeLifecycleStatusReason
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        title: The request was successful, but there is no content in the response
+        timestamp: '2026-07-14T08:16:49.876Z'
+        error:
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      description: |-
+        Standard header. Types can be Basic, Bearer, ApiKey or OAuthV2
+        Consumer will set the authorization type and credentials.
+        Apigee will handle validation against an identity service for basic authorization, OAuthV2 for bearer token authorization and apikeys policy validation.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-Client-Request-Id:
+      name: x-BDO-Client-Request-Id
+      in: header
+      description: |-
+        The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+        Channel Reference Number. This should be unique value within the channel.
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-Client-Request-Trace-Id:
+      name: x-BDO-Client-Request-Trace-Id
+      in: header
+      description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single request\
+        \ or transaction as it flows through multiple services in a distributed system. (e.g. 5b8aa5a2d2c872e8321cf37308d69df2)\n\
+        Only Mandatory if Request Id is not provided"
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-Client-Request-Span-Id:
+      name: x-BDO-Client-Request-Span-Id
+      in: header
+      description: |-
+        Uniquely identifies a single span within a trace. A span represents one unit of work (e.g. HTTP Request, DB Query)
+        Only Mandatory if Request Id is not provided
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-API-Version:
+      name: x-BDO-API-Version
+      in: header
+      description: "Denotes the (major) API Version. \nConsumer will set the version to invoke for their request."
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-End-Consumer-IP:
+      name: x-BDO-End-Consumer-IP
+      in: header
+      description: Consuming application to pass the end-consumer (like bank operations terminal) IP Address.
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferrable uuidv4) provided by the client for a specific HTTP request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace represents a single request
+        or transaction as it flows through multiple services in a distributed system. (e.g. 5b8aa5a2d2c872e8321cf37308d69df2)
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: Uniquely identifies a single span within a trace. A span represents one unit of work (e.g., an HTTP request,
+        a database query). (e.g. 5fb397be34d26b51)
+  responses:
+    BadRequest:
+      description: |-
+        Bad Request
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: |-
+        Unauthorized
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: |-
+        Forbidden
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: |-
+        Not Found
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: |-
+        Method Not Allowed
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: |-
+        Conflict
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: |-
+        Unprocessable Entity
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: |-
+        Too Many Requests
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: |-
+        Internal Server Error
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: |-
+        Bad Gateway
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: |-
+        Service Unavailable
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: |-
+        Gateway Timeout
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+security:
+- BasicAuth: []
+- BearerAuth: []
+- ApiKeyAuth: []
+- OAuth2:
+  - read
+  - write

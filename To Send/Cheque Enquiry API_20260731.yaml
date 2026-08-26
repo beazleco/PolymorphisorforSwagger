@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: My Collection Copy
+  description: "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)"
+  contact: {}
+  version: 1.0.0
+servers:
+- url: https://expressclearbdo-dev.com
+paths:
+  /expressClear_CCA/scan_enquiry:
+    get:
+      summary: Cheque Enquiry API
+      description: |-
+        This is a GET request and it is used to "get" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).
+
+        A successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data.
+      operationId: chequeEnquiryApi
+      parameters:
+      - name: userId
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "12345678"
+      - name: channelReferenceNumber
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "1000000000000000000000000002"
+      - name: transactionFlowType
+        in: query
+        required: false
+        schema:
+          type: string
+          example: INQGMS
+      - name: instrumentId
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "090010887123792427342"
+      - name: imageRequired
+        in: query
+        required: false
+        schema:
+          type: string
+          example: "true"
+      - name: clientid
+        in: header
+        required: false
+        schema:
+          type: string
+          example: XXXXXXXXXXXX
+      - name: clientsecret
+        in: header
+        required: false
+        schema:
+          type: string
+          example: YYYYYYYYYYYY
+      responses:
+        "200":
+          description: ""
+components: {}
