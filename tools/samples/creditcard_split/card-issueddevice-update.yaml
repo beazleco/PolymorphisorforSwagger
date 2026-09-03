@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Card issuedDevice_Update
+  version: 2.0.0
+  description: This API will be used to update details for an issued device
+  x-generated-by: SOR Polymorphizer 6.3
+  x-generated-at: '2026-09-02T20:53:50+00:00'
+  x-source-sheet: Card issuedDevice_Update
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: Credit Card
+paths:
+  /CreditCard/IssuedDevice/Update:
+    put:
+      operationId: cardIssuedDeviceUpdate
+      summary: This API will be used to update details for an issued device
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedDeviceInstanceUpdateResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssuedDeviceInstanceUpdateRequest'
+      description: This API will be used to update details for an issued device
+      x-bian-behaviour-qualifier: Issued Device
+      x-bian-equivalent-endpoint: /CreditCard/IssuedDevice/Update
+      x-sor-endpoints: 'DELETE: /v1/card/cancel'
+components:
+  schemas:
+    IssuedDeviceInstanceUpdateRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issueddeviceIdentification:
+              type: string
+              maxLength: 19
+              x-sor-field: cardNumber
+          required:
+          - issueddeviceIdentification
+    IssuedDeviceInstanceUpdateResponse:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issueddeviceIdentification:
+              type: string
+              x-sor-field: cardToken
+            issueddeviceIdentificationMasked:
+              type: string
+              x-sor-field: cardNumberMasked
+        Status:
+          type: object
+          properties:
+            statusEffectiveDate:
+              type: string
+              format: date-time
+              x-sor-field: statusDate, statusTime

@@ -1,0 +1,62 @@
+openapi: 3.0.3
+info:
+  title: BIAN service domain Operation_Template
+  version: 1.0.0
+  description: What this endpoint is for, in one sentence.
+  x-generated-by: SOR Polymorphizer 6.0
+  x-generated-at: '2026-09-02T13:10:38+00:00'
+  x-source-sheet: Operation_Template
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: BIAN service domain
+paths:
+  /service-domain/resource/action:
+    post:
+      operationId: operationTemplate
+      summary: What this endpoint is for, in one sentence.
+      tags:
+      - BIAN service domain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MyOperationRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MyOperationResponse'
+      description: What this endpoint is for, in one sentence.
+      x-bian-behaviour-qualifier: Behaviour Qualifier
+      x-bian-equivalent-endpoint: /ServiceDomain/BehaviourQualifier/Action
+      x-sor-endpoints: /v1/replace/me
+components:
+  schemas:
+    MyOperationRequest:
+      type: object
+      properties:
+        MyIdentifier:
+          type: object
+          properties:
+            myIdentification:
+              type: string
+              maxLength: 20
+              description: One mapped attribute is the minimum for a valid endpoint.
+              example: '12345'
+              x-sor-field: sorFieldName
+          required:
+          - myIdentification
+          description: Delete or rename. Groups are objects.
+      description: Rename this to your request schema.
+    MyOperationResponse:
+      type: object
+      properties:
+        myReturnedValue:
+          type: string
+          maxLength: 35
+          description: One mapped attribute is the minimum for a valid endpoint.
+          example: example
+          x-sor-field: sorFieldName
+      description: Rename this to your response schema.

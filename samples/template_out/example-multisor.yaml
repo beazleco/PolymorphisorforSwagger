@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: BIAN service domain Example_MultiSor
+  version: 1.0.0
+  description: What this endpoint is for, in one sentence.
+  x-generated-by: SOR Polymorphizer 6.0
+  x-generated-at: '2026-09-02T13:10:38+00:00'
+  x-source-sheet: Example_MultiSor
+  x-polymorphism-pattern: P2
+  x-bian-service-domain: BIAN service domain
+paths:
+  /service-domain/resource/action:
+    post:
+      operationId: exampleMultiSor
+      summary: What this endpoint is for, in one sentence.
+      tags:
+      - BIAN service domain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRetrieveRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountRetrieveResponse'
+      description: What this endpoint is for, in one sentence.
+      x-bian-behaviour-qualifier: Behaviour Qualifier
+      x-bian-equivalent-endpoint: /ServiceDomain/BehaviourQualifier/Action
+      x-sor-endpoints: /v1/account/contact, /v1/account/info, /v1/card/account/list
+components:
+  schemas:
+    AccountRetrieveRequestBase:
+      type: object
+      properties:
+        requestVariant:
+          type: string
+          maxLength: 2
+          enum:
+          - '01'
+          - '02'
+          - '03'
+          description: "01. Account Contact Details\n02. Account Information\n03. Account Card List"
+          example: '01'
+        AccountIdentifier:
+          type: object
+          properties:
+            accountIdentification:
+              type: string
+              maxLength: 11
+              description: The account number.
+              example: '00143085930'
+              x-sor-fields:
+                /v1/account/contact: account
+                /v1/account/info: account
+                /v1/card/account/list: account
+          required:
+          - accountIdentification
+          description: Identifies the account.
+        accountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: ISO currency code.
+          example: PHP
+          x-sor-fields:
+            /v1/account/contact: currencyCode
+            /v1/account/info: currencyCode
+            /v1/card/account/list: currencyCode
+      required:
+      - requestVariant
+      description: Request wrapper. Attributes common to every variant of AccountRetrieveRequest.
+    AccountRetrieveRequestForAccountContactDetails:
+      allOf:
+      - $ref: '#/components/schemas/AccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            maxLength: 2
+            enum:
+            - '01'
+            description: 01. Account Contact Details
+            example: '01'
+          includePhoneNumbers:
+            type: boolean
+            description: Only the contact endpoint honours this.
+            example: 'true'
+            x-conditional: true
+            x-sor-field: includePhone
+        required:
+        - requestVariant
+      description: AccountRetrieveRequest as served by /v1/account/contact.
+      x-sor-endpoint: /v1/account/contact
+      x-variant: '01'
+      x-variant-name: Account Contact Details
+    AccountRetrieveRequestForAccountInformation:
+      allOf:
+      - $ref: '#/components/schemas/AccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            maxLength: 2
+            enum:
+            - '02'
+            description: 02. Account Information
+            example: '01'
+        required:
+        - requestVariant
+      description: AccountRetrieveRequest as served by /v1/account/info.
+      x-sor-endpoint: /v1/account/info
+      x-variant: '02'
+      x-variant-name: Account Information
+    AccountRetrieveRequestForAccountCardList:
+      allOf:
+      - $ref: '#/components/schemas/AccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            maxLength: 2
+            enum:
+            - '03'
+            description: 03. Account Card List
+            example: '01'
+          includeCardList:
+            type: boolean
+            description: Only the card list endpoint honours this.
+            example: 'true'
+            x-conditional: true
+            x-sor-field: includeCards
+        required:
+        - requestVariant
+      description: AccountRetrieveRequest as served by /v1/card/account/list.
+      x-sor-endpoint: /v1/card/account/list
+      x-variant: '03'
+      x-variant-name: Account Card List
+    AccountRetrieveRequest:
+      oneOf:
+      - $ref: '#/components/schemas/AccountRetrieveRequestForAccountContactDetails'
+      - $ref: '#/components/schemas/AccountRetrieveRequestForAccountInformation'
+      - $ref: '#/components/schemas/AccountRetrieveRequestForAccountCardList'
+      discriminator:
+        propertyName: requestVariant
+        mapping:
+          '01': '#/components/schemas/AccountRetrieveRequestForAccountContactDetails'
+          '02': '#/components/schemas/AccountRetrieveRequestForAccountInformation'
+          '03': '#/components/schemas/AccountRetrieveRequestForAccountCardList'
+    AccountRetrieveResponseBase:
+      type: object
+      properties:
+        accountIdentification:
+          type: string
+          maxLength: 11
+          description: Echoed account number. Common to every variant.
+          example: '00143085930'
+          x-sor-fields:
+            /v1/account/contact: account
+            /v1/account/info: account
+            /v1/card/account/list: accountNumber
+      required:
+      - accountIdentification
+      description: Response wrapper. Attributes common to every variant of AccountRetrieveResponse.
+    AccountRetrieveResponseForAccountContactDetails:
+      allOf:
+      - $ref: '#/components/schemas/AccountRetrieveResponseBase'
+      - type: object
+        properties:
+          PhoneNumber:
+            type: object
+            properties:
+              phoneNumberType:
+                type: string
+                maxLength: 12
+                description: Kind of number.
+                example: Mobile
+                x-sor-field: phoneType
+              phoneNumber:
+                type: string
+                maxLength: 20
+                description: The number itself.
+                example: '+639171234567'
+                x-sor-field: phoneNo
+            description: Only the contact endpoint.
+      description: AccountRetrieveResponse as served by /v1/account/contact.
+      x-sor-endpoint: /v1/account/contact
+      x-variant: '01'
+      x-variant-name: Account Contact Details
+    AccountRetrieveResponseForAccountInformation:
+      allOf:
+      - $ref: '#/components/schemas/AccountRetrieveResponseBase'
+      - type: object
+        properties:
+          accountName:
+            type: string
+            maxLength: 70
+            description: Only the info endpoint.
+            example: J DOE
+            x-sor-field: accountName
+      description: AccountRetrieveResponse as served by /v1/account/info.
+      x-sor-endpoint: /v1/account/info
+      x-variant: '02'
+      x-variant-name: Account Information
+    AccountRetrieveResponseForAccountCardList:
+      allOf:
+      - $ref: '#/components/schemas/AccountRetrieveResponseBase'
+      - type: object
+        properties:
+          CardList:
+            type: array
+            items:
+              type: object
+              properties:
+                cardTokenNumber:
+                  type: string
+                  maxLength: 19
+                  description: Tokenised card identifier.
+                  example: '15555000000002588'
+                  x-sor-field: cards.cardToken
+                cardExpiryDate:
+                  type: string
+                  maxLength: 4
+                  description: Expiry, YYMM.
+                  example: '2311'
+                  x-sor-field: cards.expiryDate
+            description: Only the card list endpoint.
+            x-sor-fields:
+              /v1/card/account/list: cards
+      description: AccountRetrieveResponse as served by /v1/card/account/list.
+      x-sor-endpoint: /v1/card/account/list
+      x-variant: '03'
+      x-variant-name: Account Card List
+    AccountRetrieveResponse:
+      oneOf:
+      - $ref: '#/components/schemas/AccountRetrieveResponseForAccountContactDetails'
+      - $ref: '#/components/schemas/AccountRetrieveResponseForAccountInformation'
+      - $ref: '#/components/schemas/AccountRetrieveResponseForAccountCardList'
+      x-selected-by: requestVariant
+      description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
+        cannot express a response discriminator that depends on a request property, so the 
+        dependency is recorded here.

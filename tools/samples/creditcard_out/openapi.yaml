@@ -1,0 +1,2087 @@
+openapi: 3.0.3
+info:
+  title: Credit Card API
+  version: 2.0.0
+  description: Generated from the SOR mapping workbook. 11 operations across Credit Card. Only 
+    attributes mapped to a System of Record field are published; shared groups that differ between 
+    operations are specialised with allOf, and operations served by several SOR endpoints carry a 
+    requestVariant discriminator.
+  x-generated-by: SOR Polymorphizer 6.3
+  x-generated-at: '2026-09-02T20:53:49+00:00'
+  x-source-sheets:
+  - Available Funds_Retrieve
+  - Transaction Adjustment_Initiate
+  - Recency Check_Retrieve
+  - Account Statement_Retrieve
+  - Card Transaction_Retrieve
+  - Card Details_Retrieve
+  - Card issuedDevice_Initiate
+  - Card issuedDevice_Update
+  - Card Cancel
+  - Customer Addl Data
+  - Card RSAEncrypted
+  x-bian-service-domains:
+  - Credit Card
+tags:
+- name: Credit Card
+paths:
+  /credit-card/financial-status-tracking/retrieve:
+    post:
+      operationId: availableFundsRetrieve
+      summary: Use this API to retrieve card available funds details
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatusTrackingResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinancialStatusTrackingRequest'
+      description: Use this API to retrieve card available funds details
+      x-bian-behaviour-qualifier: Financial Status Tracking
+      x-sor-endpoints: /v1/card/availableFunds
+  /credit-card/card-transaction/adjustment/initiate:
+    post:
+      operationId: transactionAdjustmentInitiate
+      summary: Use this API to post cardholder account adjustment
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardTransactionAdjustmentResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardTransactionAdjustmentRequest'
+      description: Use this API to post cardholder account adjustment
+      x-bian-behaviour-qualifier: Card Transaction
+      x-sor-endpoints: /v1/account/transaction/adjustment
+  /credit-card/mobile-recency/retrieve:
+    post:
+      operationId: recencyCheckRetrieve
+      summary: Use this API to perform recency check
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileRecencyResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileRecencyRequest'
+      description: Use this API to perform recency check
+      x-bian-behaviour-qualifier: Mobile Recency
+      x-sor-endpoints: /v1/card/recencyCheck
+  /credit-card/billing/retrieve:
+    post:
+      operationId: accountStatementRetrieve
+      summary: Use this API to retrieve card statement details
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingRequest'
+      description: Use this API to retrieve card statement details
+      x-bian-behaviour-qualifier: Billing
+      x-sor-endpoints: /v1/account/statement
+  /CreditCard/CardTransaction/Retrieve:
+    post:
+      operationId: cardTransactionRetrieve
+      summary: This API will be used to retrieve details about a card account transaction
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardTransactionResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardTransactionRequest'
+      description: This API will be used to retrieve details about a card account transaction
+      x-bian-behaviour-qualifier: Card Transaction
+      x-bian-equivalent-endpoint: /CreditCard/CardTransaction/Retrieve
+      x-sor-endpoints: 'GET: v1/account/search/trans, GET: v1/account/search/auth, GET: /v1/account/search/mps'
+  /CreditCard/Account/Retrieve:
+    post:
+      operationId: cardDetailsRetrieve
+      summary: This API will be used to retrieve details about a card account
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditCardAccountRetrieveResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditCardAccountRetrieveRequest'
+      description: This API will be used to retrieve details about a card account
+      x-bian-behaviour-qualifier: Account
+      x-bian-equivalent-endpoint: /CreditCard/Account/Retrieve
+      x-sor-endpoints: /v1/account/contact /v1/account/delinquency /v1/account/info 
+        /v1/account/historyIndicators /v1/card/account/list
+  /CreditCard/IssuedDevice/Initiate:
+    post:
+      operationId: cardIssuedDeviceInitiate
+      summary: This API will be used to initiate/enable a type of device for the card account
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedDeviceInstanceInitiateResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssuedDeviceInstanceInitiateRequest'
+      description: This API will be used to initiate/enable a type of device for the card account
+      x-bian-behaviour-qualifier: Issued Device
+      x-bian-equivalent-endpoint: /CreditCard/IssuedDevice/Initiate
+      x-sor-endpoints: 'PUT: /v1/card/activate'
+  /CreditCard/IssuedDevice/Update:
+    put:
+      operationId: cardIssuedDeviceUpdate
+      summary: This API will be used to update details for an issued device
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedDeviceInstanceUpdateResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssuedDeviceInstanceUpdateRequest'
+      description: This API will be used to update details for an issued device
+      x-bian-behaviour-qualifier: Issued Device
+      x-bian-equivalent-endpoint: /CreditCard/IssuedDevice/Update
+      x-sor-endpoints: 'DELETE: /v1/card/cancel'
+  /credit-card/issued-device/control:
+    put:
+      operationId: cardCancel
+      summary: This API will be used to cancel a card with specified reason or cancellation code
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditCardCancelResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditCardCancelRequest'
+      description: This API will be used to cancel a card with specified reason or cancellation code
+      x-bian-behaviour-qualifier: Issued Device
+      x-bian-equivalent-endpoint: /credit-card/issued-device/control
+      x-sor-endpoints: PUT /v1/card/cancel
+  /credit-card/customer/additional-data/retrieve:
+    post:
+      operationId: customerAddlData
+      summary: This API will be used to get the customer additional data for specified customer 
+        number or card number
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardCustomerAdditionalDataResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardCustomerAdditionalDataRequest'
+      description: This API will be used to get the customer additional data for specified customer 
+        number or card number
+      x-bian-behaviour-qualifier: '- Additional Data'
+      x-bian-equivalent-endpoint: /credit-card/customer/additional-data/retrieve
+      x-sor-endpoints: GET /v1/customer/additionalData
+  /credit-card/issued-device/card-rsa-encrypted/retrieve:
+    post:
+      operationId: cardRSAEncrypted
+      summary: This API will be used to get the card number encrypted, the expiry date, and 
+        optionally the CVV2. Encryption is made via
+      tags:
+      - Credit Card
+      responses:
+        '204':
+          description: 'Successful. This operation returns no content: the Response Body section of the
+            mapping workbook carries no attribute mapped to an SOR field.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssuedDeviceCardEncryptedRequest'
+      description: This API will be used to get the card number encrypted, the expiry date, and 
+        optionally the CVV2. Encryption is made via a Public RSA key base64 encoded in format X.509.
+      x-bian-behaviour-qualifier: Issued Device
+      x-bian-equivalent-endpoint: /credit-card/issued-device/card-rsa-encrypted/retrieve
+      x-sor-endpoints: GET /v1/card/{cardNumber}/cardRSAEncrypted
+components:
+  schemas:
+    Account:
+      type: object
+      properties:
+        AccountIdentifier:
+          $ref: '#/components/schemas/AccountIdentifierProfile1'
+        accountCurrencyCode:
+          type: string
+          description: Currency Code
+          x-sor-field-by-operation:
+            cardDetailsRetrieve[02]: accountDeliquency.currencyCode
+            cardDetailsRetrieve[04]: accountHistoryInd.currencyCode
+            (unattributed): accountContact.currencyCode
+      description: Attributes of Account common to every operation that uses it.
+    AccountForCardDetailsRetrieve3:
+      allOf:
+      - $ref: '#/components/schemas/Account'
+      - type: object
+        properties:
+          ContactPoint:
+            $ref: '#/components/schemas/ContactPoint'
+      x-used-by:
+      - cardDetailsRetrieve
+    AccountForCardDetailsRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/Account'
+      - type: object
+        properties:
+          accountCloseCode:
+            type: string
+            description: Account Close Code
+            x-sor-field-by-operation:
+              cardDetailsRetrieve[02]: accountDeliquency.accountCloseCode
+              cardDetailsRetrieve[04]: accountHistoryInd.accountCloseCode
+      x-used-by:
+      - cardDetailsRetrieve
+    AccountForCardDetailsRetrieve2:
+      allOf:
+      - $ref: '#/components/schemas/Account'
+      - type: object
+        properties:
+          accountOpenDate:
+            type: string
+            format: date-time
+            x-sor-field: accounts.accountOpenDate
+          accountCloseCode:
+            type: string
+            description: Account Close Code
+            x-sor-field: accounts.accountCloseCode
+          accountStatus:
+            type: string
+            description: It specifies the status of the account
+            x-sor-field: accounts.accountStatus
+          accountType:
+            type: string
+            description: "C-Credit, H- Charge, D-Debit\nThe account type\nPossible Values:\n1.Credit Card\n\
+              2.Savings Account\n3.Current Account\n3.Charge Account"
+            x-sor-field: accounts.accountStyle
+          sourceCode:
+            type: string
+            description: Account application source code as defined on PRMSR
+            x-sor-field: accounts.sourceCode
+          AssociationReference:
+            type: array
+            items:
+              $ref: '#/components/schemas/AssociationReferenceItem'
+            description: Unique reference representing a defined relationship involving the party.
+      x-used-by:
+      - cardDetailsRetrieve
+    AccountForCardDetailsRetrieve4:
+      allOf:
+      - $ref: '#/components/schemas/Account'
+      - type: object
+        properties:
+          accountCloseCode:
+            type: string
+            description: Account Close Code
+            x-sor-field: cardAccounts.accountCloseCode
+          accountStatus:
+            type: string
+            description: It specifies the status of the account
+            x-sor-field: cardAccounts.accountStatus
+          accountType:
+            type: string
+            description: "C-Credit, H- Charge, D-Debit\nThe account type\nPossible Values:\n1.Credit Card\n\
+              2.Savings Account\n3.Current Account\n3.Charge Account"
+            x-sor-field: cardAccounts.accountStyle
+      x-used-by:
+      - cardDetailsRetrieve
+    AccountBalanceItem:
+      type: object
+      properties:
+        balanceAmount:
+          type: string
+          description: "Value of amount.\nNote:\nWhen BalanceType = Purchase, BalanceAmount = Available
+            Amount for purchases\nWhen BalanceType = CashAdvance, BalanceAmount = Available Amount for
+            cash advances\nWhen BalanceType = MajorPurchase, BalanceAmount = Available Amount for major
+            purchases"
+          example: '15000.00'
+          x-sor-field: accountInfo.cardAvailable.purchase accountInfo.cardAvailable.cashAdvance 
+            accountInfo.cardAvailable.majorPurchase
+    AccountDetialsItemForCardDetailsRetrieve2:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve3'
+        DeliveryOptions:
+          $ref: '#/components/schemas/DeliveryOptions'
+    AccountDetialsItemForCardDetailsRetrieve4:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve'
+        DelinquentAccountDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelinquentAccountDetailsItemForCardDetailsRetrieve'
+          description: It specifies account delinquency information
+          x-sor-field: accountDelinquency.accountDelinquencyProfile
+    AccountDetialsItemForCardDetailsRetrieve:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve2'
+        ProductInstanceReference:
+          $ref: '#/components/schemas/ProductInstanceReference'
+        AccountReclassification:
+          $ref: '#/components/schemas/AccountReclassification'
+        Repayment:
+          $ref: '#/components/schemas/Repayment'
+        AutoDebitArrangment:
+          $ref: '#/components/schemas/AutoDebitArrangment'
+    AccountDetialsItemForCardDetailsRetrieve5:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve'
+        DelinquentAccountDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelinquentAccountDetailsItemForCardDetailsRetrieve2'
+          description: It specifies account delinquency information
+        HistoryIndicators:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryIndicatorsItem'
+          description: Account history indicators
+          x-sor-field: accountHistoryInd.historyInd
+    AccountDetialsItemForCardDetailsRetrieve3:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve4'
+        ProductInstanceReference:
+          $ref: '#/components/schemas/ProductInstanceReference'
+    AccountIdentifierProfile1:
+      type: object
+      properties:
+        accountIdentification:
+          type: string
+          description: The Vertexon CMS account id
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: accountTransactions.account
+            cardTransactionRetrieve[02]: acccountAuthorizations.account
+            cardTransactionRetrieve[03]: accountMps.account
+            cardDetailsRetrieve[01]: accountContact.account
+            cardDetailsRetrieve[02]: accountDeliquency.account
+            cardDetailsRetrieve[03]: accounts.account
+            cardDetailsRetrieve[04]: accountHistoryInd.account
+            cardDetailsRetrieve[05]: cardAccounts.accountNumber
+      description: It specifies the account number details
+      x-used-by:
+      - cardDetailsRetrieve
+      - cardTransactionRetrieve
+    AccountIdentifierForCardDetailsRetrieve:
+      type: object
+      properties:
+        accountIdentification:
+          type: string
+          maxLength: 11
+          description: Uniquely identifies the account within the servicing institution.
+          x-sor-field: account
+      required:
+      - accountIdentification
+      description: It specifies the account details
+    AccountInformationItem:
+      type: object
+      properties:
+        accountCurrencyCode:
+          type: string
+          description: Currency code for the account.
+          example: PHP
+          x-sor-field: accountInfo.currency
+        accountCloseCode:
+          type: string
+          description: Account Close code
+          example: C
+          x-sor-field: accountInfo.closeCode
+        CardLimit:
+          $ref: '#/components/schemas/CardLimit'
+        AccountLimitUtilized:
+          $ref: '#/components/schemas/AccountLimitUtilized'
+        AccountBalance:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountBalanceItem'
+          description: Object used to identify type of amount, value of amount and currency.
+        LastPayment:
+          $ref: '#/components/schemas/LastPayment'
+    AccountLimitUtilized:
+      type: object
+      properties:
+        amountValue:
+          type: string
+          description: Amount Spent on the account for current month. The field is provided when 
+            monthly spending limit is set for the card (not 0).
+          example: '15000.00'
+          x-sor-field: accountInfo.cardSpending.spentThisMonth
+      description: Amount and currency of limit utilized for the month.
+    AccountReclassification:
+      type: object
+      properties:
+        accountReclassificationValue:
+          type: string
+          description: Account reclassification code as per CODES type "RECLS"
+          x-sor-field: accounts.reclassification.value
+        accountReclassificationDescription:
+          type: string
+          description: The system description of the code
+          x-sor-field: accounts.reclassification.description
+      description: Reclassification
+    AccountStatus:
+      type: object
+      properties:
+        accountStatusTypeValues:
+          type: string
+          description: The account status
+          example: open
+          x-sor-field: accountStatus
+    AccountTransactionItem:
+      type: object
+      properties:
+        AccountIdentifier:
+          $ref: '#/components/schemas/AccountIdentifierProfile1'
+        accountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code
+          x-sor-fields:
+          - acccountAuthorizations.currencyCode
+          - accountMps.currencyCode
+          - accountTransactions.currencyCode
+      description: Attributes of AccountTransactionItem common to every operation that uses it.
+    AccountTransactionItemForCardTransactionRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/AccountTransactionItem'
+      - type: object
+        properties:
+          CardPaymentTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve'
+            description: Array for transaction details
+      x-used-by:
+      - cardTransactionRetrieve
+    AccountTransactionItemForCardTransactionRetrieve2:
+      allOf:
+      - $ref: '#/components/schemas/AccountTransactionItem'
+      - type: object
+        properties:
+          CardPaymentTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve2'
+            description: Array for transaction details
+            x-sor-field: acccountAuthorizations.authorizations
+      x-used-by:
+      - cardTransactionRetrieve
+    AccountTransactionItemForCardTransactionRetrieve3:
+      allOf:
+      - $ref: '#/components/schemas/AccountTransactionItem'
+      - type: object
+        properties:
+          CardPaymentTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve3'
+            description: Array for transaction details
+            x-sor-field: accountMps.mps
+      x-used-by:
+      - cardTransactionRetrieve
+    Accountidentifier:
+      type: object
+      properties:
+        accountIdentification:
+          type: string
+          description: Vertexon CMS Account ID
+          example: '00000000001'
+          x-sor-field: account
+    AssociationReferenceItem:
+      type: object
+      properties:
+        partyName:
+          type: string
+          description: It specifies the party name
+          x-sor-field: accounts.introducer, accounts.recommendingOfficer, accounts.approvingOfficer
+    AutoDebitArrangment:
+      type: object
+      properties:
+        autoDebitArrangementCode:
+          type: string
+          description: Linked bank account with link codes either L or G (ADA)
+          x-sor-field: accounts.bankAccountADA
+      description: It specifies the auto debit arrangement facility
+    BillingStatementReference:
+      type: object
+      properties:
+        StatementCurrency:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatementCurrencyItem'
+          description: Statement Currency Details
+        statementCycle:
+          type: string
+          description: Statement Cycle Day
+          example: '1'
+          x-sor-field: accountStatementInfo.statementCycle
+        statementAccountBalance:
+          type: array
+          items:
+            $ref: '#/components/schemas/statementAccountBalanceItem'
+          description: Account Balance Details
+        accountOverdueDate:
+          type: string
+          format: date-time
+          description: Date when account became overdue
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: accountStatementInfo.accountOverdueDate
+        LastStatementDetails:
+          $ref: '#/components/schemas/LastStatementDetails'
+      description: Reference to an associated statement
+    CancelReportDetails:
+      type: object
+      properties:
+        reportDate:
+          type: string
+          format: date
+          maxLength: 10
+          description: The customer reported date, E.g. if the card has been lost, the date of loss.
+          x-sor-field: reportDetails.reportDate
+        reportTime:
+          type: string
+          maxLength: 5
+          description: The customer reported time in format HH:MM, E.g. if the card has been lost, 
+            the time of loss.
+          example: 14:00:00
+          x-sor-field: reportDetails.reportTime
+        reportMethod:
+          type: string
+          maxLength: 3
+          description: The method used to report the loss/stolen. To obtain the possible values in 
+            the system
+          example: PHN
+          x-sor-field: reportDetails.reportMethod
+        dateLastSeen:
+          type: string
+          format: date
+          maxLength: 10
+          description: The date reported by customer when card was last seen.
+          x-sor-field: reportDetails.reportDateLastSeen
+        placeLastSeen:
+          type: string
+          maxLength: 100
+          description: The place reported by customer where card was last seen.
+          example: N.Y Central Park
+          x-sor-field: reportDetails.reportDatePlaceLastSeen
+        reportedBy:
+          type: string
+          maxLength: 100
+          description: The person who reported the issue. Only required if the place the card was 
+            last seen is specified.
+          example: Mr.Anderson
+          x-sor-field: reportDetails.reportedBy
+      description: "\nCancellation report details should be sent if required by the specified cancel code,
+        e.g. if the card is lost or stolen"
+    CardLimit:
+      type: object
+      properties:
+        limitValue:
+          type: string
+          description: "Value of Limit.\nWhen LimitType = CreditLimit, LimitValue = Credit limit set for
+            the account\nWhen LimitType = LimitCash, LimitValue = Cash limit calculated as percentage
+            of Credit Limit.\nWhen LimitType = MonthlyLimit, LimitValue = The current monthly spend limit
+            for the combination of card and account."
+          example: '10000'
+          x-sor-field: accountInfo.limit accountInfo.limitCash accountInfo.cardSpending.monthlyLimit
+    CardPaymentTransaction:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+        cardTransactionDateTime:
+          type: string
+          format: date-time
+          description: The date of the transaction.
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: transactionDate
+        cardTransactionEffectiveDateTime:
+          type: string
+          format: date-time
+          description: The date when transaction is effective from in Vertexon
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: effectiveDate
+        cardTransactionType:
+          type: string
+          maxLength: 4
+          description: Vertexon transaction type.
+          example: '1000'
+          x-sor-field: transactionType
+        transactionDescriptionLine1:
+          type: string
+          maxLength: 42
+          description: Transaction description line 1.
+          example: Interest Adjustment
+          x-sor-field: narration1
+        transactionDescriptionLine2:
+          type: string
+          maxLength: 25
+          description: Transaction description line 2.
+          example: PH
+          x-sor-field: narration2
+        CardTransactionAmount:
+          $ref: '#/components/schemas/CardTransactionAmountForTransactionAdjustmentInitiate'
+        amountQualifier:
+          type: string
+          maxLength: 1
+          description: Transaction Role. O - original, R - reversal
+          example: O
+          x-sor-field: transactionRole
+        DebitCreditDirection:
+          $ref: '#/components/schemas/DebitCreditDirection'
+        cardTransactionReference:
+          type: string
+          maxLength: 12
+          description: Retrieval Reference Number
+          example: '123459878232'
+          x-sor-field: reference
+      required:
+      - cardTransactionType
+      - cardTransactionReference
+      description: Object specific to card payment transaction details
+    CardPaymentTransactionItem:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+        cardTransactionDateTime:
+          type: string
+          format: date-time
+          description: The date of the transaction.
+          x-sor-fields:
+          - acccountAuthorizations.authorizations.localDate
+          - accountMps.mps.startDate
+          - accountTransactions.transactions.transactionDate
+        CardTransactionAmount:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardTransactionAmountItem'
+          x-sor-field: accountMps.mps.transactionAmount
+      description: Attributes of CardPaymentTransactionItem common to every operation that uses it.
+    CardPaymentTransactionItemForCardTransactionRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/CardPaymentTransactionItem'
+      - type: object
+        properties:
+          cardTransactionEffectiveDateTime:
+            type: string
+            format: date-time
+            description: The date when transaction is effective from in Vertexon
+            x-sor-field: accountTransactions.transactions.effectiveDate
+          CardTransactionBillingStatementReference:
+            $ref: '#/components/schemas/CardTransactionBillingStatementReference'
+          cardTransactionType:
+            type: string
+            description: Vertexon transaction type.
+            x-sor-field: accountTransactions.transactions.transactionType
+          transactionDescriptionLine1:
+            type: string
+            description: Transaction description line 1.
+            x-sor-field: accountTransactions.transactions.descriptionLine1
+          transactionDescriptionLine2:
+            type: string
+            description: Transaction description line 2.
+            x-sor-field: accountTransactions.transactions.descriptionLine2
+          CardTransactionPurchaseDetails:
+            $ref: '#/components/schemas/CardTransactionPurchaseDetails'
+          CardTransactionAuthorizationRecord:
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve'
+          PointOfService:
+            $ref: '#/components/schemas/PointOfServiceForCardTransactionRetrieve2'
+          cardTransactionReference:
+            type: string
+            description: Retrieval Reference Number.
+            x-sor-field: accountTransactions.transactions.retrievalReference
+          ProductAndServiceReference:
+            $ref: '#/components/schemas/ProductAndServiceReference'
+          CardTransactionMerchantReference:
+            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve'
+          systemEffectiveDate:
+            type: string
+            format: date-time
+            description: The date when the transaction was received by Vertexon system.
+            x-sor-field: accountTransactions.transactions.inputDate
+      x-used-by:
+      - cardTransactionRetrieve
+    CardPaymentTransactionItemForCardTransactionRetrieve2:
+      allOf:
+      - $ref: '#/components/schemas/CardPaymentTransactionItem'
+      - type: object
+        properties:
+          cardTransactionCode:
+            type: string
+            x-sor-field: acccountAuthorizations.authorizations.transactionCode
+          CardTransactionAuthorizationRecord:
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve'
+          PointOfService:
+            $ref: '#/components/schemas/PointOfServiceForCardTransactionRetrieve'
+          cardTransactionReference:
+            type: string
+            description: Retrieval Reference Number.
+            x-sor-field: acccountAuthorizations.authorizations.retrievealReference
+          ProductAndServiceReference:
+            $ref: '#/components/schemas/ProductAndServiceReference'
+          CardTransactionMerchantReference:
+            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve3'
+      x-used-by:
+      - cardTransactionRetrieve
+    CardPaymentTransactionItemForCardTransactionRetrieve3:
+      allOf:
+      - $ref: '#/components/schemas/CardPaymentTransactionItem'
+      - type: object
+        properties:
+          cardTransactionEffectiveDateTime:
+            type: string
+            format: date-time
+            description: The date when transaction is effective from in Vertexon
+            x-sor-field: accountMps.mps.inputDate
+          cardTransactionType:
+            type: string
+            description: Vertexon transaction type.
+            x-sor-field: accountMps.mps.transactionType
+          MajorPurchaseDetails:
+            $ref: '#/components/schemas/MajorPurchaseDetails'
+          CardTransactionPurchaseDetails:
+            $ref: '#/components/schemas/CardTransactionPurchaseDetails'
+          CardTransactionAuthorizationRecord:
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve2'
+          CardTransactionMerchantReference:
+            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve2'
+      x-used-by:
+      - cardTransactionRetrieve
+    CardTransactionAmount:
+      type: object
+      properties:
+        amountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: ISO numeric 3 digit currency code.
+          example: PHP
+          x-sor-field: transactionCurrency
+      description: Attributes of CardTransactionAmount common to every operation that uses it.
+    CardTransactionAmountForTransactionAdjustmentInitiate:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionAmount'
+      - type: object
+        properties:
+          amountValue:
+            type: string
+            description: Absolute original Transaction Amount. Number of decimals must must not be 
+              greater than currency exponent.
+            example: '100.123'
+            x-sor-field: transactionAmount
+        required:
+        - amountValue
+      x-used-by:
+      - transactionAdjustmentInitiate
+    CardTransactionAmountForCardTransactionRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionAmount'
+      - type: object
+        properties:
+          amountValue:
+            type: number
+            description: Absolute original Transaction Amount. Number of decimals must must not be 
+              greater than currency exponent.
+            x-sor-field: transactionAmount
+      x-used-by:
+      - cardTransactionRetrieve
+    CardTransactionAmountItem:
+      type: object
+      properties:
+        amountValue:
+          type: string
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: accountTransactions.transactions.billingAmount, 
+              accountTransactions.transactions.transactionAmount.amount
+            cardTransactionRetrieve[02]: acccountAuthorizations.authorizations.billingAmount, 
+              acccountAuthorizations.authorizations.transactionAmount.amount
+            cardTransactionRetrieve[03]: accountMps.mps.originAmount, accountMps.mps.remPrincipal, 
+              accountMps.mps.transactionAmount.amount
+        amountCurrencyCode:
+          type: string
+          description: Currency Code for transaction amount.
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: 
+              accountTransactions.transactions.transactionAmount.currencyCode
+            cardTransactionRetrieve[02]: 
+              acccountAuthorizations.authorizations.transactionAmount.currencyCode
+            cardTransactionRetrieve[03]: accountMps.mps.transactionAmount.currencyCode
+    CardTransactionAuthorizationRecord:
+      type: object
+      properties:
+        cardTransactionAuthenticationCode:
+          type: string
+          description: Authorization Code for the transaction.
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: accountTransactions.transactions.authCode
+            cardTransactionRetrieve[02]: acccountAuthorizations.authorizations.authCode
+            (unattributed): accountMps.mps.authCode
+      description: Attributes of CardTransactionAuthorizationRecord common to every operation that 
+        uses it.
+    CardTransactionAuthorizationRecordForCardTransactionRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
+      - type: object
+        properties:
+          ElectronicCommerceAuthenticationResult:
+            type: array
+            items:
+              $ref: '#/components/schemas/ElectronicCommerceAuthenticationResultItem'
+            description: Array to store authetication results.
+      x-used-by:
+      - cardTransactionRetrieve
+    CardTransactionAuthorizationRecordForCardTransactionRetrieve2:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
+      - type: object
+      x-used-by:
+      - cardTransactionRetrieve
+    CardTransactionBillingStatementReference:
+      type: object
+      properties:
+        statementDate:
+          type: string
+          format: date-time
+          description: Statement close date of the statement where transaction was billed to the 
+            cardholder.
+          x-sor-field: accountTransactions.transactions.statementDate
+    CardTransactionMerchantReferenceForCardTransactionRetrieve:
+      type: object
+      properties:
+        cardTransactionMerchant:
+          type: string
+          description: Vertexon merchant number for transactions acquired by on-us merchant.
+          x-sor-field: accountTransactions.transactions.merchant
+        cardTransactionMerchantCode:
+          type: string
+          description: Merchant Category Code.
+          x-sor-field: accountTransactions.transactions.mcc
+      description: Object used for card transaction merchant details.
+    CardTransactionMerchantReferenceForCardTransactionRetrieve3:
+      type: object
+      properties:
+        cardTransactionMerchantCode:
+          type: string
+          description: Merchant Category Code.
+          x-sor-field: acccountAuthorizations.authorizations.mcc
+      description: Object used for card transaction merchant details.
+    CardTransactionMerchantReferenceForCardTransactionRetrieve2:
+      type: object
+      properties:
+        cardTransactionMerchant:
+          type: string
+          description: Vertexon merchant number for transactions acquired by on-us merchant.
+          x-sor-field: accountMps.mps.merchant
+      description: Object used for card transaction merchant details.
+    CardTransactionPurchaseDetails:
+      type: object
+      properties:
+        purchaseIdentifier:
+          type: string
+          description: Purchase Identifier
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: 
+              accountTransactions.transactions.purchaseId.purchaseIdentifier
+            cardTransactionRetrieve[03]: accountMps.mps.purchaseId.purchaseIdentifier
+        purchaseIdentifierDescription:
+          type: string
+          description: Purchase Identifier Description.
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: 
+              accountTransactions.transactions.purchaseId.purchaseIdentifierDesc
+            cardTransactionRetrieve[03]: accountMps.mps.purchaseId.purchaseIdentifierDesc
+        formatCode:
+          type: string
+          description: Purchase ID format code.
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: accountTransactions.transactions.purchaseId.formatCode
+            cardTransactionRetrieve[03]: accountMps.mps.purchaseId.formatCode
+        purchaseIdentifierValue:
+          type: string
+          description: Purchase Identifier Value.
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: 
+              accountTransactions.transactions.purchaseId.purchaseIdentifierValue
+            cardTransactionRetrieve[03]: accountMps.mps.purchaseId.purchaseIdentifierValue
+      description: Details of purchase
+    ContactPoint:
+      type: object
+      properties:
+        PhoneAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneAddressItem'
+          description: The phone number details
+          x-sor-field: accountContact.phoneDetails
+        PostalAddress:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostalAddressItem'
+          description: Physical and registered addresses of the party.
+          x-sor-field: accountContact.addressess
+      description: it specifies contact point details
+    CustomerAdditionalDataItem:
+      type: object
+      properties:
+        searchCode:
+          type: string
+          description: code type
+          example: ADCUS
+          x-sor-field: customerData.code
+        description:
+          type: string
+          description: The system description of the code
+          example: Additional Data1
+          x-sor-field: customerData.description
+        value:
+          type: string
+          description: code value
+          example: SYSTM
+          x-sor-field: customerData.value
+    CustomerLimit:
+      type: object
+      properties:
+        limitValue:
+          type: string
+          description: "Value of Limit.\nWhen LimitType = CustomerLimit,\nLimitValue = Overall limit of
+            customer"
+          example: '10000'
+          x-sor-field: customerLimit
+      description: Object used to identify type of limit on card, limit value and limit currency.
+    CustomerReference:
+      type: object
+      properties:
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+      description: Represents a person or organization that participates in a business relationship 
+        with the institution.
+    DebitCreditDirection:
+      type: object
+      properties:
+        debitCreditIndicatorValue:
+          type: string
+          maxLength: 1
+          description: "Transaction Sign.\n“+” – Debit to cardholder,\n“-“ – Credit to cardholder."
+          example: +
+          x-sor-field: transactionSign
+    DelinquentAccountDetailsItemForCardDetailsRetrieve:
+      type: object
+      properties:
+        deliquencyType:
+          type: string
+          description: Delinquency stage. Overlimit + Ageing labels match those shown on the bottom 
+            right section of the Account Balance (ACBAL) screen, for an account in arrears.
+          x-sor-field: accountDelinquency.accountDelinquencyProfile.delinquencyType
+        DeliquencyAmount:
+          $ref: '#/components/schemas/DeliquencyAmount'
+        deliquencyFrequency:
+          type: string
+          description: Number of times the account has been on that type of delinquency in the last 
+            24 months.
+          x-sor-field: accountDelinquency.accountDelinquencyProfile.frequency
+    DelinquentAccountDetailsItemForCardDetailsRetrieve2:
+      type: object
+      properties:
+        delinquencyIndicator:
+          type: string
+          description: The deliquency indicators
+          x-sor-field: accountHistoryInd.historyInd.delinquencyIndicator
+    DeliquencyAmount:
+      type: object
+      properties:
+        amountValue:
+          type: string
+          description: Amounts in Overlimit and/or ageing as at last statement.
+          x-sor-field: accountDelinquency.accountDelinquencyProfile.delinquencyAmount
+      description: It specifies the amount details
+    DeliveryOptions:
+      type: object
+      properties:
+        mailStatementLetter:
+          type: boolean
+          description: "Statement and Letter mail to address flag\nPossible Values:\n1,0"
+          x-sor-field: accountContact.addresses.mailstmtLettr
+        mailCardsPins:
+          type: boolean
+          description: "Cards/pins mail to address flag\nPossible Values:\n1,0"
+          x-sor-field: accountContact.addresses.mailCardsPins
+    ElectronicCommerceAuthenticationResultItem:
+      type: object
+      properties:
+        authenticationMethodValue:
+          type: string
+          description: "Value of authentication method.\nWhen AuthenticationMethodType = CapturePANMethod,
+            AuthenticationMethodValue = The method used to capture the card number\nWhen AuthenticationMethodType
+            = pinEntryCapability, AuthenticationMethodValue = If device has support for PIN entry. 0 -
+            Unknown 1 - Have Pin Capability 2 - Don't have Pin Capability"
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: 
+              accountTransactions.transactions.posEntryMode.capturePANMethod 
+              accountTransactions.transactions.posEntryMode.pinEntryCapability
+            cardTransactionRetrieve[02]: 
+              acccountAuthorizations.authorizations.posEntryMode.capturePANMethod, 
+              acccountAuthorizations.authorizations.posEntryMode.pinEntryCapability
+    HistoryIndicatorsItem:
+      type: object
+      properties:
+        statementDate:
+          type: string
+          format: date
+          description: Statement cycle month MMYY
+          x-sor-field: accountHistoryInd.historyInd.cycleDate
+        paymentIndicator:
+          type: string
+          description: payment state indicators
+          x-sor-field: accountHistoryInd.historyInd.paymentIndicator
+    IssuedDeviceIdentifierProfile2:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 19
+          description: The card number or card token number generated by Vertexon CMS
+          example: '5111222233334440'
+          x-sor-field: cardNumber
+      required:
+      - issuedDeviceIdentification
+      description: Credit card details
+      x-used-by:
+      - availableFundsRetrieve
+      - cardTransactionRetrieve
+      - recencyCheckRetrieve
+      - transactionAdjustmentInitiate
+    IssuedDeviceIdentifierProfile3:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 19
+          description: Identifier representing the issued device.
+          example: '5111222233334440'
+          x-sor-field-by-operation:
+            accountStatementRetrieve: cardNumber
+            cardTransactionRetrieve[01]: accountTransactions.transactions.cardNumber
+            cardTransactionRetrieve[02]: acccountAuthorizations.authorizations.cardNumber
+            cardTransactionRetrieve[03]: accountMps.mps.cardNumber
+      description: Object used to identify type of card and card details.
+      x-used-by:
+      - accountStatementRetrieve
+      - cardTransactionRetrieve
+    IssuedDeviceIdentifierProfile1:
+      type: object
+      properties:
+        issueddeviceIdentification:
+          type: string
+          maxLength: 19
+          description: Identifier representing the issued device.
+          x-sor-field: cardNumber
+      required:
+      - issueddeviceIdentification
+      description: It specifies issued device details
+      x-used-by:
+      - cardDetailsRetrieve
+      - cardIssuedDeviceInitiate
+      - cardIssuedDeviceUpdate
+    IssuedDeviceIdentifierProfile4:
+      type: object
+      properties:
+        issueddeviceIdentification:
+          type: string
+          description: The token generated by Vertexon CMS to represent the real card number. Must 
+            start with 1 and be 17 length.
+          example: '15555000000002500'
+          x-sor-field: cardToken
+        issueddeviceIdentificationMasked:
+          type: string
+          description: The masked card number. Middle characters are replaced with '*'.
+          example: 5555 55** **** 1234
+          x-sor-field: cardNumberMasked
+      x-used-by:
+      - cardCancel
+      - cardIssuedDeviceInitiate
+      - cardIssuedDeviceUpdate
+    IssuedDeviceIdentifierProfile5:
+      type: object
+      properties:
+        issueddeviceIdentification:
+          type: string
+          example: '5555000012348870'
+          description: The card number or card token number generated by Vertexon CMS
+          x-sor-field: cardNumber
+      x-used-by:
+      - cardCancel
+      - customerAddlData
+    IssuedDeviceIdentifierForCardRSAEncrypted:
+      type: object
+      properties:
+        issueddeviceIdentification:
+          type: string
+          description: The card number or card token number generated by Vertexon CMS
+          x-sor-field: cardNumber
+      required:
+      - issueddeviceIdentification
+    IssuedDeviceStatus:
+      type: object
+      properties:
+        deviceStatusCode:
+          type: string
+          description: Value of card cancellation code.
+          example: L
+          x-sor-field: cancelCode
+      description: Attributes of IssuedDeviceStatus common to every operation that uses it.
+    IssuedDeviceStatusForAvailableFundsRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/IssuedDeviceStatus'
+      - type: object
+        properties:
+          primaryCardTag:
+            type: string
+            description: "The primary card status of the card.\nPossible Values:\nFirst Primary,\nOther
+              Primary,\nFirst Supplementary,\nOther Supplementary,"
+            example: First Primary
+            x-sor-field: primary
+      x-used-by:
+      - availableFundsRetrieve
+    IssuedDeviceStatusForTransactionAdjustmentInitiate:
+      allOf:
+      - $ref: '#/components/schemas/IssuedDeviceStatus'
+      - type: object
+      x-used-by:
+      - transactionAdjustmentInitiate
+    LastPayment:
+      type: object
+      properties:
+        paymentAmount:
+          type: string
+          description: Last payment amount
+          example: '100.12'
+          x-sor-field: accountInfo.lastPaymentAmount
+        paymentDate:
+          type: string
+          format: date-time
+          description: Date of the last payment
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: accountInfo.lastPaymentDate
+    LastStatementDetails:
+      type: object
+      properties:
+        statementDate:
+          type: string
+          format: date-time
+          description: Statement closing date
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: accountStatementInfo.lastStatement.statementDate
+        StatementBalance:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatementBalanceItem'
+          description: Specifies type of balance, balance value and currency code.
+        statementDueDate:
+          type: string
+          format: date-time
+          description: Date when account payment is due
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: accountStatementInfo.lastStatement.statementDueDate
+      description: Object to identify last statement details
+    MajorPurchaseDetails:
+      type: object
+      properties:
+        multiPaymentIdentification:
+          type: string
+          x-sor-field: accountMps.mps.mpNumber
+        numberInstallments:
+          type: string
+          x-sor-field: accountMps.mps.numberInstalments
+        interestRate:
+          type: string
+          x-sor-field: accountMps.mps.interestRate
+        MultiPaymentStatus:
+          $ref: '#/components/schemas/MultiPaymentStatus'
+    MultiPaymentStatus:
+      type: object
+      properties:
+        value:
+          type: string
+          x-sor-field: accountMps.mps.mpStatus.value
+        description:
+          type: string
+          x-sor-field: accountMps.mps.mpStatus.description
+    PartyIdentifier:
+      type: object
+      properties:
+        partyIdentification:
+          type: string
+          description: Unique identifier value representing the customer.
+          example: '0014308593'
+          x-sor-field: customerNumber
+      description: Reference to the associated party.
+      x-used-by:
+      - availableFundsRetrieve
+      - customerAddlData
+    PhoneAddressItem:
+      type: object
+      properties:
+        phoneAddressType:
+          type: string
+          description: "Possible values are:\n1. Fax Number,\n2. Phone Number,\n3. Mobile Number,\n4.
+            Work Number"
+          x-sor-field: accountContact.phoneDetails.phoneType
+        phoneNumber:
+          type: string
+          description: it specifies the phone number details
+          x-sor-field: accountContact.addresses.fax accountContact.phoneDetails.number 
+            accountContact.addresses.phoneNbr accountContact.addresses.altphoneNbr
+    PointOfService:
+      type: object
+      properties:
+        pointOfServiceData:
+          type: string
+          description: POS Data.
+          x-sor-fields:
+          - acccountAuthorizations.authorizations.posData
+          - accountTransactions.transactions.posData
+        cardAcceptorIdentification:
+          type: string
+          description: Acceptor ID.
+          x-sor-fields:
+          - acccountAuthorizations.authorizations.acceptorId
+          - accountTransactions.transactions.acceptorId
+      description: Attributes of PointOfService common to every operation that uses it.
+    PointOfServiceForCardTransactionRetrieve2:
+      allOf:
+      - $ref: '#/components/schemas/PointOfService'
+      - type: object
+        properties:
+          terminalIdentification:
+            type: string
+            description: Terminal ID.
+            x-sor-field: accountTransactions.transactions.terminalId
+      x-used-by:
+      - cardTransactionRetrieve
+    PointOfServiceForCardTransactionRetrieve:
+      allOf:
+      - $ref: '#/components/schemas/PointOfService'
+      - type: object
+        properties:
+          cardAcceptorName:
+            type: string
+            description: Acceptor Name
+            x-sor-field: acccountAuthorizations.authorizations.acceptorName
+      x-used-by:
+      - cardTransactionRetrieve
+    PostalAddressItem:
+      type: object
+      properties:
+        addressType:
+          type: string
+          description: The type of address. To obtain the possible values in the system, refer to 
+            data in CODES/ADML
+          x-sor-field: accountContact.addresses.addressType
+        cityName:
+          type: string
+          description: The city name or suburb name
+          x-sor-field: accountContact.addresses.city
+        county:
+          type: string
+          description: County or state
+          x-sor-field: accountContact.addresses.state
+        zipCode:
+          type: string
+          description: Post code or Zip Code
+          x-sor-field: accountContact.addresses.postalCode
+    ProductAndServiceReference:
+      type: object
+      properties:
+        productIdentification:
+          type: string
+          description: Product ID.
+          x-sor-field-by-operation:
+            cardTransactionRetrieve[01]: accountTransactions.transactions.productId
+            cardTransactionRetrieve[02]: acccountAuthorizations.authorizations.productId
+      description: Object used for product related details.
+    ProductInstanceReference:
+      type: object
+      properties:
+        productIdentification:
+          type: string
+          description: Account product code as per PRMCN.
+          x-sor-field-by-operation:
+            cardDetailsRetrieve[03]: accounts.accountProduct.value
+            cardDetailsRetrieve[05]: cardAccounts.accountProduct.value
+        productDescription:
+          type: string
+          description: Product code description.
+          x-sor-field-by-operation:
+            cardDetailsRetrieve[03]: accounts.accountProduct.description
+            cardDetailsRetrieve[05]: cardAccounts.accountProduct.description
+      description: Account Product
+    Repayment:
+      type: object
+      properties:
+        repaymentValue:
+          type: string
+          description: Account repayment method code as per CODES type "REPAY"
+          x-sor-field: accounts.repayment.value
+        repaymentDescription:
+          type: string
+          description: The system description of the code
+          x-sor-field: accounts.repayment.description
+      description: Repayment
+    StatementBalanceItem:
+      type: object
+      properties:
+        balanceAmount:
+          type: string
+          description: "Value for Statement Balance\nWhen BalanceType = statementOpenBalance, BalanceAmount
+            = Statement opening balance\nWhen BalanceType = statementCloseBalance, BalanceAmount = Statement
+            closing balance\nWhen BalanceType = statementPenaltyAmount, BalanceAmount = Total amount of
+            penalties\nWhen BalanceType = statementTotalDue, BalanceAmount = Total amount due\nWhen BalanceType
+            = statementMinDue, BalanceAmount = Minimum amount due"
+          example: '158.25'
+          x-sor-field: accountStatementInfo.lastStatement.statementOpenBalance 
+            accountStatementInfo.lastStatement.statementCloseBalance 
+            accountStatementInfo.lastStatement.statementPenaltyAmount 
+            accountStatementInfo.lastStatement.statementTotalDue 
+            accountStatementInfo.lastStatement.statementMinDue
+    StatementCurrencyItem:
+      type: object
+      properties:
+        currencyCode:
+          type: string
+          description: Currency Code
+          example: PHP
+          x-sor-field: accountStatementInfo.currencyCode
+    StatusProfile1:
+      type: object
+      properties:
+        statusEffectiveDate:
+          type: string
+          format: date-time
+          x-sor-field: statusDate, statusTime
+      x-used-by:
+      - cardIssuedDeviceInitiate
+      - cardIssuedDeviceUpdate
+    StatusForCardCancel:
+      type: object
+      properties:
+        statusEffectiveDate:
+          type: string
+          format: date
+          description: The date on which the card status was changed,
+          example: 14:20:10
+          x-sor-field: statusDate
+        statusEffectiveTime:
+          type: string
+          description: The time when the card status was changed
+          x-sor-field: statusTime
+    statementAccountBalanceItem:
+      type: object
+      properties:
+        balanceAmount:
+          type: string
+          description: "Value of Balance\nWhen BalanceType = AccountCurrentBalance, BalanceAmount = Account
+            current balance\nWhen BalanceType = AccountCurrentMPBalance, BalanceAmount = Major Purchase
+            Account current balance\nWhen BalanceType = AccountOutstandingMinDue, BalanceAmount = Outstanding
+            minimum due\nWhen BalanceType = accountOverdueAmount, BalanceAmount = Current account overdue
+            amount sum"
+          example: '158.25'
+          x-sor-field: accountStatementInfo.accountCurrentBalance 
+            accountStatementInfo.accountCurrentMPBalance 
+            accountStatementInfo.accountOutstandingMinDue accountStatementInfo.accountOverdueAmount
+    FinancialStatusTrackingRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+        CurrencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code
+          example: PHP
+          x-sor-field: currencyCode
+    FinancialStatusTrackingResponse:
+      type: object
+      properties:
+        CustomerReference:
+          $ref: '#/components/schemas/CustomerReference'
+        CustomerLimit:
+          $ref: '#/components/schemas/CustomerLimit'
+        IssuedDeviceStatus:
+          $ref: '#/components/schemas/IssuedDeviceStatusForAvailableFundsRetrieve'
+        AccountInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountInformationItem'
+          description: Account details.
+    CardTransactionAdjustmentRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: External user ID captured for tracking purpose.
+          example: ABC123
+          x-sor-field: userID
+        accountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code.
+          example: PHP
+          x-sor-field: currencyCode
+        CardPaymentTransaction:
+          $ref: '#/components/schemas/CardPaymentTransaction'
+      required:
+      - userIdentification
+      - accountCurrencyCode
+      description: Request parent object
+    CardTransactionAdjustmentResponse:
+      type: object
+      properties:
+        cardTransactionReference:
+          type: string
+          description: Retrieval Reference Number
+          example: '123459878232'
+          x-sor-field: reference
+        IssuedDeviceStatus:
+          $ref: '#/components/schemas/IssuedDeviceStatusForTransactionAdjustmentInitiate'
+        AccountStatus:
+          $ref: '#/components/schemas/AccountStatus'
+        systemEffectiveDate:
+          type: string
+          format: date-time
+          description: "Calendar date and time when transaction was posted.\nSystemEffectiveDate will
+            be a combination of postingDate and postingTime in DateTime format."
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: postingDate postingTime
+    MobileRecencyRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+        currencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code
+          example: PHP
+          x-sor-field: currencyCode
+        auditType:
+          type: string
+          description: Vertexon audit type (CHGS/ACHG)
+          example: CHGS
+          x-sor-field: auditType
+        fieldType:
+          type: string
+          description: Vertexon audit code assigned to a specific field, defined in SCODE type 
+            'CHGS' or 'ACHG'.
+          example: CU54
+          x-sor-field: fieldAudit
+      required:
+      - auditType
+      - fieldType
+    MobileRecencyResponse:
+      type: object
+      properties:
+        changeDate:
+          type: string
+          format: date-time
+          description: The calendar date on which the field was changed
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: changeDate
+        result:
+          type: boolean
+          description: Checking result pass/fail
+          example: pass
+          x-sor-field: result
+        age:
+          type: string
+          description: Number of days from change date until current calendar day (inclusive of both
+            days).
+          example: '5'
+          x-sor-field: age
+    BillingRequest:
+      type: object
+      properties:
+        Accountidentifier:
+          $ref: '#/components/schemas/Accountidentifier'
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+        currencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code.
+          example: PHP
+          x-sor-field: currencyCode
+    BillingResponse:
+      type: object
+      properties:
+        BillingStatementReference:
+          $ref: '#/components/schemas/BillingStatementReference'
+    CardTransactionRequestForTransactionDetails:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            maxLength: 2
+            enum:
+            - '01'
+            description: 01. Transaction Details
+          cardTransactionType:
+            type: string
+            maxLength: 4
+            description: Vertexon transaction type.
+            x-sor-field: transactionType
+          cardTransactionBillingStatus:
+            type: boolean
+            description: Return only unbilled transactions flag
+            x-sor-field: unbilledOnly
+          statementMonth:
+            type: string
+            maxLength: 6
+            description: Billing month format MMYYYY.
+            x-sor-field: billingMonth
+        required:
+        - requestVariant
+      description: CardTransactionRequest as served by v1/account/search/trans.
+      x-sor-endpoint: v1/account/search/trans
+      x-variant: '01'
+      x-variant-name: Transaction Details
+    CardTransactionRequestForAuthorizationTransactions:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            maxLength: 2
+            enum:
+            - '02'
+            description: 02. Authorization Transactions
+          transactionCode:
+            type: string
+            x-sor-field: transactionCode
+        required:
+        - requestVariant
+      description: CardTransactionRequest as served by v1/account/search/auth.
+      x-sor-endpoint: v1/account/search/auth
+      x-variant: '02'
+      x-variant-name: Authorization Transactions
+    CardTransactionRequestForInstallmentTransactions:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            maxLength: 2
+            enum:
+            - '03'
+            description: 03. Installment Transactions
+          cardTransactionType:
+            type: string
+            maxLength: 4
+            description: Vertexon transaction type.
+            x-sor-field: transactionType
+        required:
+        - requestVariant
+      description: CardTransactionRequest as served by /v1/account/search/mps.
+      x-sor-endpoint: /v1/account/search/mps
+      x-variant: '03'
+      x-variant-name: Installment Transactions
+    CardTransactionRequestBase:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+        currencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code.
+          x-sor-field: currencyCode
+        CardTransactionAmount:
+          $ref: '#/components/schemas/CardTransactionAmountForCardTransactionRetrieve'
+        cardTransactionAuthenticationCode:
+          type: string
+          maxLength: 6
+          description: Authorization Code for transaction.
+          x-sor-field: authorizationCode
+        fromDate:
+          type: string
+          format: date-time
+          description: Date range search – date from, based on value date (inclusive).
+          x-sor-field: dateFrom
+        toDate:
+          type: string
+          format: date-time
+          description: Date range search – date to, based on value date (inclusive).
+          x-sor-field: dateTo
+        sequenceIndex:
+          type: string
+          description: A non-null value indicates that more information is present. This index can 
+            be used in the next request as the sequenceIndex parameter.
+          x-sor-field: sequenceIndex
+      description: Attributes common to every variant of CardTransactionRequest.
+    CardTransactionRequest:
+      oneOf:
+      - $ref: '#/components/schemas/CardTransactionRequestForTransactionDetails'
+      - $ref: '#/components/schemas/CardTransactionRequestForAuthorizationTransactions'
+      - $ref: '#/components/schemas/CardTransactionRequestForInstallmentTransactions'
+      discriminator:
+        propertyName: requestVariant
+        mapping:
+          '01': '#/components/schemas/CardTransactionRequestForTransactionDetails'
+          '02': '#/components/schemas/CardTransactionRequestForAuthorizationTransactions'
+          '03': '#/components/schemas/CardTransactionRequestForInstallmentTransactions'
+    CardTransactionResponseForTransactionDetails:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - type: object
+        properties:
+          AccountTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve'
+            description: Account Details
+      description: CardTransactionResponse as served by v1/account/search/trans.
+      x-sor-endpoint: v1/account/search/trans
+      x-variant: '01'
+      x-variant-name: Transaction Details
+    CardTransactionResponseForAuthorizationTransactions:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - type: object
+        properties:
+          AccountTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve2'
+            description: Account Details
+            x-sor-field: acccountAuthorizations
+      description: CardTransactionResponse as served by v1/account/search/auth.
+      x-sor-endpoint: v1/account/search/auth
+      x-variant: '02'
+      x-variant-name: Authorization Transactions
+    CardTransactionResponseForInstallmentTransactions:
+      allOf:
+      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - type: object
+        properties:
+          AccountTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve3'
+            description: Account Details
+            x-sor-field: accountMps
+      description: CardTransactionResponse as served by /v1/account/search/mps.
+      x-sor-endpoint: /v1/account/search/mps
+      x-variant: '03'
+      x-variant-name: Installment Transactions
+    CardTransactionResponseBase:
+      type: object
+      properties:
+        sequenceIndex:
+          type: string
+          description: A non-null value indicates that more information is present. This index can 
+            be used in the next request as the sequenceIndex parameter.
+          x-sor-field: sequenceIndex
+      description: Attributes common to every variant of CardTransactionResponse.
+    CardTransactionResponse:
+      oneOf:
+      - $ref: '#/components/schemas/CardTransactionResponseForTransactionDetails'
+      - $ref: '#/components/schemas/CardTransactionResponseForAuthorizationTransactions'
+      - $ref: '#/components/schemas/CardTransactionResponseForInstallmentTransactions'
+      x-selected-by: requestVariant
+      description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
+        cannot express a response discriminator that depends on a request property, so the 
+        dependency is recorded here.
+    CreditCardAccountRetrieveRequestForAccountContactDetails:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '01'
+            description: 01. Account Contact Details
+          AccountIdentifier:
+            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+          IncludePhoneAddress:
+            type: string
+            description: 'Indicator: True, If PhoneDetails required in the response'
+            x-conditional: true
+            x-sor-field: IncludePhoneDetails
+          IncludePostalAddress:
+            type: string
+            description: 'Indicator: True, If Addresses required in the response'
+            x-conditional: true
+            x-sor-field: IncludeAddresses
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/contact.
+      x-sor-endpoint: /v1/account/contact
+      x-variant: '01'
+      x-variant-name: Account Contact Details
+    CreditCardAccountRetrieveRequestForAccuntDeliquency:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '02'
+            description: 02. Accunt Deliquency
+          AccountIdentifier:
+            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/delinquency.
+      x-sor-endpoint: /v1/account/delinquency
+      x-variant: '02'
+      x-variant-name: Accunt Deliquency
+    CreditCardAccountRetrieveRequestForAccountInformation:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '03'
+            description: 03. Account Information
+          AccountIdentifier:
+            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/info.
+      x-sor-endpoint: /v1/account/info
+      x-variant: '03'
+      x-variant-name: Account Information
+    CreditCardAccountRetrieveRequestForAccountHistoryIndicators:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '04'
+            description: 04. Account History Indicators
+          AccountIdentifier:
+            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/historyIndicators.
+      x-sor-endpoint: /v1/account/historyIndicators
+      x-variant: '04'
+      x-variant-name: Account History Indicators
+    CreditCardAccountRetrieveRequestForAccountCardList:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '05'
+            description: 05. Account Card List
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/card/account/list.
+      x-sor-endpoint: /v1/card/account/list
+      x-variant: '05'
+      x-variant-name: Account Card List
+    CreditCardAccountRetrieveRequestBase:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+      description: Attributes common to every variant of CreditCardAccountRetrieveRequest.
+    CreditCardAccountRetrieveRequest:
+      oneOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
+      discriminator:
+        propertyName: requestVariant
+        mapping:
+          '01': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
+          '02': '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
+          '03': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
+          '04': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
+          '05': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
+    CreditCardAccountRetrieveResponseForAccountContactDetails:
+      type: object
+      properties:
+        AccountDetials:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve2'
+          x-sor-field: accountContact
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/contact.
+      x-sor-endpoint: /v1/account/contact
+      x-variant: '01'
+      x-variant-name: Account Contact Details
+    CreditCardAccountRetrieveResponseForAccuntDeliquency:
+      type: object
+      properties:
+        AccountDetials:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve4'
+          x-sor-field: accountDeliquency
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/delinquency.
+      x-sor-endpoint: /v1/account/delinquency
+      x-variant: '02'
+      x-variant-name: Accunt Deliquency
+    CreditCardAccountRetrieveResponseForAccountInformation:
+      type: object
+      properties:
+        AccountDetials:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve'
+          x-sor-field: accounts
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/info.
+      x-sor-endpoint: /v1/account/info
+      x-variant: '03'
+      x-variant-name: Account Information
+    CreditCardAccountRetrieveResponseForAccountHistoryIndicators:
+      type: object
+      properties:
+        AccountDetials:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve5'
+          x-sor-field: accountHistoryInd
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/historyIndicators.
+      x-sor-endpoint: /v1/account/historyIndicators
+      x-variant: '04'
+      x-variant-name: Account History Indicators
+    CreditCardAccountRetrieveResponseForAccountCardList:
+      type: object
+      properties:
+        AccountDetials:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve3'
+          x-sor-field: cardAccounts
+      description: CreditCardAccountRetrieveResponse as served by /v1/card/account/list.
+      x-sor-endpoint: /v1/card/account/list
+      x-variant: '05'
+      x-variant-name: Account Card List
+    CreditCardAccountRetrieveResponse:
+      oneOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountCardList'
+      x-selected-by: requestVariant
+      description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
+        cannot express a response discriminator that depends on a request property, so the 
+        dependency is recorded here.
+    IssuedDeviceInstanceInitiateRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+    IssuedDeviceInstanceInitiateResponse:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+        Status:
+          $ref: '#/components/schemas/StatusProfile1'
+    IssuedDeviceInstanceUpdateRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+    IssuedDeviceInstanceUpdateResponse:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+        Status:
+          $ref: '#/components/schemas/StatusProfile1'
+    CreditCardCancelRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile5'
+        cancelCode:
+          type: string
+          maxLength: 1
+          description: Reason why the card is to be cancelled
+          example: L
+          x-sor-field: cancelCode
+        cancelNotes:
+          type: string
+          maxLength: 350
+          description: "Customer report that card was lost in a travel,\nFree-flow entry field, used to
+            enter notes related to card cancellation"
+          x-sor-field: cancelNotes
+        CancelReportDetails:
+          $ref: '#/components/schemas/CancelReportDetails'
+      required:
+      - cancelCode
+      - cancelNotes
+      description: The details of the card cancellation request
+    CreditCardCancelResponse:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+        Status:
+          $ref: '#/components/schemas/StatusForCardCancel'
+        referenceNumber:
+          type: string
+          description: Unique reference number generated by the system. Only returned in the 
+            response only when the cancellation code requires a reference. This property is not 
+            present when reactivating a cancelled card or when the cancellation code does not 
+            require a reference.
+          example: '0001234'
+          x-sor-field: referenceNbr
+    CardCustomerAdditionalDataRequest:
+      type: object
+      properties:
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile5'
+        searchCodes:
+          type: string
+          description: Search filter - array of 4 digit codes or use code [ALL] to request for all 
+            available data.
+          example: 0700,0800
+          x-sor-field: codes
+      required:
+      - searchCodes
+    CardCustomerAdditionalDataResponse:
+      type: object
+      properties:
+        CustomerAdditionalData:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerAdditionalDataItem'
+          description: It specifies the customer additional data
+          x-sor-field: customerData
+    IssuedDeviceCardEncryptedRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifierForCardRSAEncrypted'

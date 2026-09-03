@@ -1,0 +1,144 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Account Statement_Retrieve
+  version: 2.0.0
+  description: Use this API to retrieve card statement details
+  x-generated-by: SOR Polymorphizer 6.0
+  x-generated-at: '2026-09-02T13:10:38+00:00'
+  x-source-sheet: Account Statement_Retrieve
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: Credit Card
+paths:
+  /credit-card/billing/retrieve:
+    post:
+      operationId: accountStatementRetrieve
+      summary: Use this API to retrieve card statement details
+      tags:
+      - Credit Card
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingResponse'
+      description: Use this API to retrieve card statement details
+      x-bian-behaviour-qualifier: Billing
+      x-sor-endpoints: /v1/account/statement
+components:
+  schemas:
+    BillingRequest:
+      type: object
+      properties:
+        Accountidentifier:
+          type: object
+          properties:
+            accountIdentification:
+              type: string
+              description: Vertexon CMS Account ID
+              example: '00000000001'
+              x-sor-field: account
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 19
+              description: Identifier representing the issued device.
+              example: '5111222233334440'
+              x-sor-field: cardNumber
+        currencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code.
+          example: PHP
+          x-sor-field: currencyCode
+    BillingResponse:
+      type: object
+      properties:
+        BillingStatementReference:
+          type: object
+          properties:
+            StatementCurrency:
+              type: array
+              items:
+                type: object
+                properties:
+                  currencyCode:
+                    type: string
+                    description: Currency Code
+                    example: PHP
+                    x-sor-field: accountStatementInfo.currencyCode
+              description: Statement Currency Details
+            statementCycle:
+              type: string
+              description: Statement Cycle Day
+              example: '1'
+              x-sor-field: accountStatementInfo.statementCycle
+            statementAccountBalance:
+              type: array
+              items:
+                type: object
+                properties:
+                  balanceAmount:
+                    type: string
+                    description: "Value of Balance\nWhen BalanceType = AccountCurrentBalance, BalanceAmount
+                      = Account current balance\nWhen BalanceType = AccountCurrentMPBalance, BalanceAmount
+                      = Major Purchase Account current balance\nWhen BalanceType = AccountOutstandingMinDue,
+                      BalanceAmount = Outstanding minimum due\nWhen BalanceType = accountOverdueAmount,
+                      BalanceAmount = Current account overdue amount sum"
+                    example: '158.25'
+                    x-sor-field: accountStatementInfo.accountCurrentBalance 
+                      accountStatementInfo.accountCurrentMPBalance 
+                      accountStatementInfo.accountOutstandingMinDue 
+                      accountStatementInfo.accountOverdueAmount
+              description: Account Balance Details
+            accountOverdueDate:
+              type: string
+              format: date-time
+              description: Date when account became overdue
+              example: 2021-08-01 14:20:10:95
+              x-sor-field: accountStatementInfo.accountOverdueDate
+            LastStatementDetails:
+              type: object
+              properties:
+                statementDate:
+                  type: string
+                  format: date-time
+                  description: Statement closing date
+                  example: 2021-08-01 14:20:10:95
+                  x-sor-field: accountStatementInfo.lastStatement.statementDate
+                StatementBalance:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      balanceAmount:
+                        type: string
+                        description: "Value for Statement Balance\nWhen BalanceType = statementOpenBalance,
+                          BalanceAmount = Statement opening balance\nWhen BalanceType = statementCloseBalance,
+                          BalanceAmount = Statement closing balance\nWhen BalanceType = statementPenaltyAmount,
+                          BalanceAmount = Total amount of penalties\nWhen BalanceType = statementTotalDue,
+                          BalanceAmount = Total amount due\nWhen BalanceType = statementMinDue, BalanceAmount
+                          = Minimum amount due"
+                        example: '158.25'
+                        x-sor-field: accountStatementInfo.lastStatement.statementOpenBalance 
+                          accountStatementInfo.lastStatement.statementCloseBalance 
+                          accountStatementInfo.lastStatement.statementPenaltyAmount 
+                          accountStatementInfo.lastStatement.statementTotalDue 
+                          accountStatementInfo.lastStatement.statementMinDue
+                  description: Specifies type of balance, balance value and currency code.
+                statementDueDate:
+                  type: string
+                  format: date-time
+                  description: Date when account payment is due
+                  example: 2021-08-01 14:20:10:95
+                  x-sor-field: accountStatementInfo.lastStatement.statementDueDate
+              description: Object to identify last statement details
+          description: Reference to an associated statement

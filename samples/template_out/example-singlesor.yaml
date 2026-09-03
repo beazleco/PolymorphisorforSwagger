@@ -1,0 +1,91 @@
+openapi: 3.0.3
+info:
+  title: BIAN service domain Example_SingleSor
+  version: 1.0.0
+  description: What this endpoint is for, in one sentence.
+  x-generated-by: SOR Polymorphizer 6.0
+  x-generated-at: '2026-09-02T13:10:38+00:00'
+  x-source-sheet: Example_SingleSor
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: BIAN service domain
+paths:
+  /service-domain/resource/action:
+    post:
+      operationId: exampleSingleSor
+      summary: What this endpoint is for, in one sentence.
+      tags:
+      - BIAN service domain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositAccountRetrieveRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepositAccountRetrieveResponse'
+      description: What this endpoint is for, in one sentence.
+      x-bian-behaviour-qualifier: Behaviour Qualifier
+      x-bian-equivalent-endpoint: /ServiceDomain/BehaviourQualifier/Action
+      x-sor-endpoints: /v1/deposit/account/balance
+components:
+  schemas:
+    DepositAccountRetrieveRequest:
+      type: object
+      properties:
+        AccountIdentifier:
+          type: object
+          properties:
+            accountIdentification:
+              type: string
+              maxLength: 34
+              description: The account number.
+              example: GB29NWBK60161331926819
+              x-sor-field: accountNo
+          required:
+          - accountIdentification
+          description: Identifies the account.
+        accountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: ISO currency code.
+          example: GBP
+          x-sor-field: ccy
+      description: Request wrapper.
+    DepositAccountRetrieveResponse:
+      type: object
+      properties:
+        AccountBalance:
+          type: object
+          properties:
+            balanceType:
+              type: string
+              maxLength: 20
+              description: Kind of balance.
+              example: Available
+              x-sor-field: balType
+            balanceAmount:
+              type: number
+              description: Balance value.
+              example: '1250.75'
+              x-sor-field: balAmt
+            balanceCurrencyCode:
+              type: string
+              maxLength: 3
+              description: Currency of the balance.
+              example: GBP
+              x-sor-field: balCcy
+          required:
+          - balanceAmount
+          description: Balance group.
+        balanceAsOfDateTime:
+          type: string
+          format: date-time
+          description: When the balance was struck.
+          example: '2026-08-31T23:59:59Z'
+          x-sor-field: asOf
+      description: Response wrapper.

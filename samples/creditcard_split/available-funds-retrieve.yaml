@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Available Funds_Retrieve
+  version: 2.0.0
+  description: Use this API to retrieve card available funds details
+  x-generated-by: SOR Polymorphizer 6.3
+  x-generated-at: '2026-09-02T20:53:50+00:00'
+  x-source-sheet: Available Funds_Retrieve
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: Credit Card
+paths:
+  /credit-card/financial-status-tracking/retrieve:
+    post:
+      operationId: availableFundsRetrieve
+      summary: Use this API to retrieve card available funds details
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialStatusTrackingResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinancialStatusTrackingRequest'
+      description: Use this API to retrieve card available funds details
+      x-bian-behaviour-qualifier: Financial Status Tracking
+      x-sor-endpoints: /v1/card/availableFunds
+components:
+  schemas:
+    FinancialStatusTrackingRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 19
+              description: Identifier representing the issued device.
+              example: '5111222233334440'
+              x-sor-field: cardNumber
+          required:
+          - issuedDeviceIdentification
+        CurrencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code
+          example: PHP
+          x-sor-field: currencyCode
+    FinancialStatusTrackingResponse:
+      type: object
+      properties:
+        CustomerReference:
+          type: object
+          properties:
+            PartyIdentifier:
+              type: object
+              properties:
+                partyIdentification:
+                  type: string
+                  description: Unique identifier value representing the customer.
+                  example: '0014308593'
+                  x-sor-field: customerNumber
+              description: Reference to the associated party.
+          description: Represents a person or organization that participates in a business 
+            relationship with the institution.
+        CustomerLimit:
+          type: object
+          properties:
+            limitValue:
+              type: string
+              description: "Value of Limit.\nWhen LimitType = CustomerLimit,\nLimitValue = Overall limit
+                of customer"
+              example: '10000'
+              x-sor-field: customerLimit
+          description: Object used to identify type of limit on card, limit value and limit 
+            currency.
+        IssuedDeviceStatus:
+          type: object
+          properties:
+            primaryCardTag:
+              type: string
+              description: "The primary card status of the card.\nPossible Values:\nFirst Primary,\nOther
+                Primary,\nFirst Supplementary,\nOther Supplementary,"
+              example: First Primary
+              x-sor-field: primary
+            deviceStatusCode:
+              type: string
+              description: Value of card cancellation code.
+              example: L
+              x-sor-field: cancelCode
+          description: Object used to identify type of card and card details.
+        AccountInformation:
+          type: array
+          items:
+            type: object
+            properties:
+              accountCurrencyCode:
+                type: string
+                description: Currency code for the account.
+                example: PHP
+                x-sor-field: accountInfo.currency
+              accountCloseCode:
+                type: string
+                description: Account Close code
+                example: C
+                x-sor-field: accountInfo.closeCode
+              CardLimit:
+                type: object
+                properties:
+                  limitValue:
+                    type: string
+                    description: "Value of Limit.\nWhen LimitType = CreditLimit, LimitValue = Credit limit
+                      set for the account\nWhen LimitType = LimitCash, LimitValue = Cash limit calculated
+                      as percentage of Credit Limit.\nWhen LimitType = MonthlyLimit, LimitValue = The
+                      current monthly spend limit for the combination of card and account."
+                    example: '10000'
+                    x-sor-field: accountInfo.limit accountInfo.limitCash 
+                      accountInfo.cardSpending.monthlyLimit
+              AccountLimitUtilized:
+                type: object
+                properties:
+                  amountValue:
+                    type: string
+                    description: Amount Spent on the account for current month. The field is 
+                      provided when monthly spending limit is set for the card (not 0).
+                    example: '15000.00'
+                    x-sor-field: accountInfo.cardSpending.spentThisMonth
+                description: Amount and currency of limit utilized for the month.
+              AccountBalance:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    balanceAmount:
+                      type: string
+                      description: "Value of amount.\nNote:\nWhen BalanceType = Purchase, BalanceAmount
+                        = Available Amount for purchases\nWhen BalanceType = CashAdvance, BalanceAmount
+                        = Available Amount for cash advances\nWhen BalanceType = MajorPurchase, BalanceAmount
+                        = Available Amount for major purchases"
+                      example: '15000.00'
+                      x-sor-field: accountInfo.cardAvailable.purchase 
+                        accountInfo.cardAvailable.cashAdvance 
+                        accountInfo.cardAvailable.majorPurchase
+                description: Object used to identify type of amount, value of amount and currency.
+              LastPayment:
+                type: object
+                properties:
+                  paymentAmount:
+                    type: string
+                    description: Last payment amount
+                    example: '100.12'
+                    x-sor-field: accountInfo.lastPaymentAmount
+                  paymentDate:
+                    type: string
+                    format: date-time
+                    description: Date of the last payment
+                    example: 2021-08-01 14:20:10:95
+                    x-sor-field: accountInfo.lastPaymentDate
+          description: Account details.

@@ -1,0 +1,613 @@
+openapi: 3.0.3
+info:
+  title: CreditCard Card Details_Retrieve
+  version: 2.0.0
+  description: This API will be used to retrieve details about a card account
+  x-generated-by: SOR Polymorphizer 6.0
+  x-generated-at: '2026-09-02T13:10:38+00:00'
+  x-source-sheet: Card Details_Retrieve
+  x-polymorphism-pattern: P2
+  x-bian-service-domain: CreditCard
+paths:
+  /CreditCard/Account/Retrieve:
+    post:
+      operationId: cardDetailsRetrieve
+      summary: This API will be used to retrieve details about a card account
+      tags:
+      - CreditCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditCardAccountRetrieveRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditCardAccountRetrieveResponse'
+      description: This API will be used to retrieve details about a card account
+      x-bian-behaviour-qualifier: Account
+      x-bian-equivalent-endpoint: /CreditCard/Account/Retrieve
+      x-sor-endpoints: /v1/account/contact /v1/account/delinquency /v1/account/info 
+        /v1/account/historyIndicators /v1/card/account/list
+components:
+  schemas:
+    CreditCardAccountRetrieveRequestBase:
+      type: object
+      properties:
+        requestVariant:
+          type: string
+          enum:
+          - '01'
+          - '02'
+          - '03'
+          - '04'
+          - '05'
+          description: "01. Account Contact Details\n02. Accunt Deliquency\n03. Account Information\n\
+            04. Account History Indicators\n05. Account Card List"
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issueddeviceIdentification:
+              type: string
+              maxLength: 19
+              description: Identifier representing the issued device.
+              x-sor-fields:
+                /v1/account/contact: cardNumber
+                /v1/account/delinquency: cardNumber
+                /v1/account/info: cardNumber
+                /v1/account/historyIndicators: cardNumber
+                /v1/card/account/list: cardNumber
+          required:
+          - issueddeviceIdentification
+          description: It specifies issued device details
+      required:
+      - requestVariant
+      description: Attributes common to every variant of CreditCardAccountRetrieveRequest.
+    CreditCardAccountRetrieveRequestForAccountContactDetails:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '01'
+            description: 01. Account Contact Details
+          AccountIdentifier:
+            type: object
+            properties:
+              accountIdentification:
+                type: string
+                maxLength: 11
+                description: Uniquely identifies the account within the servicing institution.
+                x-sor-field: account
+            required:
+            - accountIdentification
+            description: It specifies the account details
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+          IncludePhoneAddress:
+            type: string
+            description: 'Indicator: True, If PhoneDetails required in the response'
+            x-conditional: true
+            x-sor-field: IncludePhoneDetails
+          IncludePostalAddress:
+            type: string
+            description: 'Indicator: True, If Addresses required in the response'
+            x-conditional: true
+            x-sor-field: IncludeAddresses
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/contact.
+      x-sor-endpoint: /v1/account/contact
+      x-variant: '01'
+      x-variant-name: Account Contact Details
+    CreditCardAccountRetrieveRequestForAccuntDeliquency:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '02'
+            description: 02. Accunt Deliquency
+          AccountIdentifier:
+            type: object
+            properties:
+              accountIdentification:
+                type: string
+                maxLength: 11
+                description: Uniquely identifies the account within the servicing institution.
+                x-sor-field: account
+            required:
+            - accountIdentification
+            description: It specifies the account details
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/delinquency.
+      x-sor-endpoint: /v1/account/delinquency
+      x-variant: '02'
+      x-variant-name: Accunt Deliquency
+    CreditCardAccountRetrieveRequestForAccountInformation:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '03'
+            description: 03. Account Information
+          AccountIdentifier:
+            type: object
+            properties:
+              accountIdentification:
+                type: string
+                maxLength: 11
+                description: Uniquely identifies the account within the servicing institution.
+                x-sor-field: account
+            required:
+            - accountIdentification
+            description: It specifies the account details
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/info.
+      x-sor-endpoint: /v1/account/info
+      x-variant: '03'
+      x-variant-name: Account Information
+    CreditCardAccountRetrieveRequestForAccountHistoryIndicators:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '04'
+            description: 04. Account History Indicators
+          AccountIdentifier:
+            type: object
+            properties:
+              accountIdentification:
+                type: string
+                maxLength: 11
+                description: Uniquely identifies the account within the servicing institution.
+                x-sor-field: account
+            required:
+            - accountIdentification
+            description: It specifies the account details
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code.
+            x-sor-field: currencyCode
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/account/historyIndicators.
+      x-sor-endpoint: /v1/account/historyIndicators
+      x-variant: '04'
+      x-variant-name: Account History Indicators
+    CreditCardAccountRetrieveRequestForAccountCardList:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - type: object
+        properties:
+          requestVariant:
+            type: string
+            enum:
+            - '05'
+            description: 05. Account Card List
+        required:
+        - requestVariant
+      description: CreditCardAccountRetrieveRequest as served by /v1/card/account/list.
+      x-sor-endpoint: /v1/card/account/list
+      x-variant: '05'
+      x-variant-name: Account Card List
+    CreditCardAccountRetrieveRequest:
+      oneOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
+      discriminator:
+        propertyName: requestVariant
+        mapping:
+          '01': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
+          '02': '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
+          '03': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
+          '04': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
+          '05': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
+    CreditCardAccountRetrieveResponseBase:
+      type: object
+      properties:
+        AccountDetials:
+          type: array
+          items:
+            type: object
+            properties:
+              Account:
+                type: object
+                properties:
+                  AccountIdentifier:
+                    type: object
+                    properties:
+                      accountIdentification:
+                        type: string
+                        description: The Vertexon CMS account id
+                        x-sor-fields:
+                          /v1/account/contact: accountContact.account
+                          /v1/account/delinquency: accountDeliquency.account
+                          /v1/account/info: accounts.account
+                          /v1/account/historyIndicators: accountHistoryInd.account
+                          /v1/card/account/list: cardAccounts.accountNumber
+                    description: It specifies the account number details
+                  accountCurrencyCode:
+                    type: string
+                    description: Currency Code
+                    x-sor-fields:
+                      /v1/account/contact: accountContact.currencyCode
+                      /v1/account/delinquency: accountDeliquency.currencyCode
+                      /v1/account/info: accounts.currencyCode
+                      /v1/account/historyIndicators: accountHistoryInd.currencyCode
+                      /v1/card/account/list: cardAccounts.accountCurrencyCode
+          x-sor-fields:
+            /v1/account/contact: accountContact
+            /v1/account/delinquency: accountDeliquency
+            /v1/account/info: accounts
+            /v1/account/historyIndicators: accountHistoryInd
+            /v1/card/account/list: cardAccounts
+      description: Attributes common to every variant of CreditCardAccountRetrieveResponse.
+    CreditCardAccountRetrieveResponseForAccountContactDetails:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - type: object
+        properties:
+          AccountDetials:
+            type: array
+            items:
+              type: object
+              properties:
+                Account:
+                  type: object
+                  properties:
+                    ContactPoint:
+                      type: object
+                      properties:
+                        PhoneAddress:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              phoneAddressType:
+                                type: string
+                                description: "Possible values are:\n1. Fax Number,\n2. Phone Number,\n\
+                                  3. Mobile Number,\n4. Work Number"
+                                x-sor-field: accountContact.phoneDetails.phoneType
+                              phoneNumber:
+                                type: string
+                                description: it specifies the phone number details
+                                x-sor-field: accountContact.addresses.fax 
+                                  accountContact.phoneDetails.number 
+                                  accountContact.addresses.phoneNbr 
+                                  accountContact.addresses.altphoneNbr
+                          description: The phone number details
+                          x-sor-fields:
+                            /v1/account/contact: accountContact.phoneDetails
+                        PostalAddress:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              addressType:
+                                type: string
+                                description: The type of address. To obtain the possible values in 
+                                  the system, refer to data in CODES/ADML
+                                x-sor-field: accountContact.addresses.addressType
+                              cityName:
+                                type: string
+                                description: The city name or suburb name
+                                x-sor-field: accountContact.addresses.city
+                              county:
+                                type: string
+                                description: County or state
+                                x-sor-field: accountContact.addresses.state
+                              zipCode:
+                                type: string
+                                description: Post code or Zip Code
+                                x-sor-field: accountContact.addresses.postalCode
+                          description: Physical and registered addresses of the party.
+                          x-sor-fields:
+                            /v1/account/contact: accountContact.addressess
+                      description: it specifies contact point details
+                DeliveryOptions:
+                  type: object
+                  properties:
+                    mailStatementLetter:
+                      type: boolean
+                      description: "Statement and Letter mail to address flag\nPossible Values:\n1,0"
+                      x-sor-field: accountContact.addresses.mailstmtLettr
+                    mailCardsPins:
+                      type: boolean
+                      description: "Cards/pins mail to address flag\nPossible Values:\n1,0"
+                      x-sor-field: accountContact.addresses.mailCardsPins
+            x-sor-fields:
+              /v1/account/contact: accountContact
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/contact.
+      x-sor-endpoint: /v1/account/contact
+      x-variant: '01'
+      x-variant-name: Account Contact Details
+    CreditCardAccountRetrieveResponseForAccuntDeliquency:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - type: object
+        properties:
+          AccountDetials:
+            type: array
+            items:
+              type: object
+              properties:
+                Account:
+                  type: object
+                  properties:
+                    accountCloseCode:
+                      type: string
+                      description: Account Close Code
+                      x-sor-field: accountDeliquency.accountCloseCode
+                DelinquentAccountDetails:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      deliquencyType:
+                        type: string
+                        description: Delinquency stage. Overlimit + Ageing labels match those shown 
+                          on the bottom right section of the Account Balance (ACBAL) screen, for an 
+                          account in arrears.
+                        x-sor-field: accountDelinquency.accountDelinquencyProfile.delinquencyType
+                      DeliquencyAmount:
+                        type: object
+                        properties:
+                          amountValue:
+                            type: string
+                            description: Amounts in Overlimit and/or ageing as at last statement.
+                            x-sor-field: 
+                              accountDelinquency.accountDelinquencyProfile.delinquencyAmount
+                        description: It specifies the amount details
+                      deliquencyFrequency:
+                        type: string
+                        description: Number of times the account has been on that type of 
+                          delinquency in the last 24 months.
+                        x-sor-field: accountDelinquency.accountDelinquencyProfile.frequency
+                  description: It specifies account delinquency information
+                  x-sor-fields:
+                    /v1/account/delinquency: accountDelinquency.accountDelinquencyProfile
+            x-sor-fields:
+              /v1/account/delinquency: accountDeliquency
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/delinquency.
+      x-sor-endpoint: /v1/account/delinquency
+      x-variant: '02'
+      x-variant-name: Accunt Deliquency
+    CreditCardAccountRetrieveResponseForAccountInformation:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - type: object
+        properties:
+          AccountDetials:
+            type: array
+            items:
+              type: object
+              properties:
+                Account:
+                  type: object
+                  properties:
+                    accountName:
+                      type: string
+                      description: It specifies the account name
+                      x-sor-field: accounts.accountName
+                    accountOpenDate:
+                      type: string
+                      format: date-time
+                      x-sor-field: accounts.accountOpenDate
+                    accountCloseCode:
+                      type: string
+                      description: Account Close Code
+                      x-sor-field: accounts.accountCloseCode
+                    accountStatus:
+                      type: string
+                      description: It specifies the status of the account
+                      x-sor-field: accounts.accountStatus
+                    accountType:
+                      type: string
+                      description: "C-Credit, H- Charge, D-Debit\nThe account type\nPossible Values:\n\
+                        1.Credit Card\n2.Savings Account\n3.Current Account\n3.Charge Account"
+                      x-sor-field: accounts.accountStyle
+                    sourceCode:
+                      type: string
+                      description: Account application source code as defined on PRMSR
+                      x-sor-field: accounts.sourceCode
+                    AssociationReference:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          partyName:
+                            type: string
+                            description: It specifies the party name
+                            x-sor-field: accounts.introducer, accounts.recommendingOfficer, 
+                              accounts.approvingOfficer
+                      description: Unique reference representing a defined relationship involving 
+                        the party.
+                ProductInstanceReference:
+                  type: object
+                  properties:
+                    productIdentification:
+                      type: string
+                      description: Account product code as per PRMCN.
+                      x-sor-field: accounts.accountProduct.value
+                    productDescription:
+                      type: string
+                      description: Product code description.
+                      x-sor-field: accounts.accountProduct.description
+                  description: Account Product
+                AccountReclassification:
+                  type: object
+                  properties:
+                    accountReclassificationValue:
+                      type: string
+                      description: Account reclassification code as per CODES type "RECLS"
+                      x-sor-field: accounts.reclassification.value
+                    accountReclassificationDescription:
+                      type: string
+                      description: The system description of the code
+                      x-sor-field: accounts.reclassification.description
+                  description: Reclassification
+                Repayment:
+                  type: object
+                  properties:
+                    repaymentValue:
+                      type: string
+                      description: Account repayment method code as per CODES type "REPAY"
+                      x-sor-field: accounts.repayment.value
+                    repaymentDescription:
+                      type: string
+                      description: The system description of the code
+                      x-sor-field: accounts.repayment.description
+                  description: Repayment
+                AutoDebitArrangment:
+                  type: object
+                  properties:
+                    autoDebitArrangementCode:
+                      type: string
+                      description: Linked bank account with link codes either L or G (ADA)
+                      x-sor-field: accounts.bankAccountADA
+                  description: It specifies the auto debit arrangement facility
+            x-sor-fields:
+              /v1/account/info: accounts
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/info.
+      x-sor-endpoint: /v1/account/info
+      x-variant: '03'
+      x-variant-name: Account Information
+    CreditCardAccountRetrieveResponseForAccountHistoryIndicators:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - type: object
+        properties:
+          AccountDetials:
+            type: array
+            items:
+              type: object
+              properties:
+                Account:
+                  type: object
+                  properties:
+                    accountCloseCode:
+                      type: string
+                      description: Account Close Code
+                      x-sor-field: accountHistoryInd.accountCloseCode
+                DelinquentAccountDetails:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      delinquencyIndicator:
+                        type: string
+                        description: The deliquency indicators
+                        x-sor-field: accountHistoryInd.historyInd.delinquencyIndicator
+                  description: It specifies account delinquency information
+                HistoryIndicators:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      statementDate:
+                        type: string
+                        format: date
+                        description: Statement cycle month MMYY
+                        x-sor-field: accountHistoryInd.historyInd.cycleDate
+                      paymentIndicator:
+                        type: string
+                        description: payment state indicators
+                        x-sor-field: accountHistoryInd.historyInd.paymentIndicator
+                  description: Account history indicators
+                  x-sor-fields:
+                    /v1/account/historyIndicators: accountHistoryInd.historyInd
+            x-sor-fields:
+              /v1/account/historyIndicators: accountHistoryInd
+      description: CreditCardAccountRetrieveResponse as served by /v1/account/historyIndicators.
+      x-sor-endpoint: /v1/account/historyIndicators
+      x-variant: '04'
+      x-variant-name: Account History Indicators
+    CreditCardAccountRetrieveResponseForAccountCardList:
+      allOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - type: object
+        properties:
+          AccountDetials:
+            type: array
+            items:
+              type: object
+              properties:
+                Account:
+                  type: object
+                  properties:
+                    accountCloseCode:
+                      type: string
+                      description: Account Close Code
+                      x-sor-field: cardAccounts.accountCloseCode
+                    accountStatus:
+                      type: string
+                      description: It specifies the status of the account
+                      x-sor-field: cardAccounts.accountStatus
+                    accountType:
+                      type: string
+                      description: "C-Credit, H- Charge, D-Debit\nThe account type\nPossible Values:\n\
+                        1.Credit Card\n2.Savings Account\n3.Current Account\n3.Charge Account"
+                      x-sor-field: cardAccounts.accountStyle
+                ProductInstanceReference:
+                  type: object
+                  properties:
+                    productIdentification:
+                      type: string
+                      description: Account product code as per PRMCN.
+                      x-sor-field: cardAccounts.accountProduct.value
+                    productDescription:
+                      type: string
+                      description: Product code description.
+                      x-sor-field: cardAccounts.accountProduct.description
+                  description: Account Product
+            x-sor-fields:
+              /v1/card/account/list: cardAccounts
+      description: CreditCardAccountRetrieveResponse as served by /v1/card/account/list.
+      x-sor-endpoint: /v1/card/account/list
+      x-variant: '05'
+      x-variant-name: Account Card List
+    CreditCardAccountRetrieveResponse:
+      oneOf:
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountCardList'
+      x-selected-by: requestVariant
+      description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
+        cannot express a response discriminator that depends on a request property, so the 
+        dependency is recorded here.

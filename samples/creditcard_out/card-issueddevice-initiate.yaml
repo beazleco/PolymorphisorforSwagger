@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Card issuedDevice_Initiate
+  version: 2.0.0
+  description: This API will be used to initiate/enable a type of device for the card account
+  x-generated-by: SOR Polymorphizer 6.0
+  x-generated-at: '2026-09-02T13:10:38+00:00'
+  x-source-sheet: Card issuedDevice_Initiate
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: Credit Card
+paths:
+  /CreditCard/IssuedDevice/Initiate:
+    post:
+      operationId: cardIssuedDeviceInitiate
+      summary: This API will be used to initiate/enable a type of device for the card account
+      tags:
+      - Credit Card
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssuedDeviceInstanceInitiateRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuedDeviceInstanceInitiateResponse'
+      description: This API will be used to initiate/enable a type of device for the card account
+      x-bian-behaviour-qualifier: Issued Device
+      x-bian-equivalent-endpoint: /CreditCard/IssuedDevice/Initiate
+      x-sor-endpoints: 'PUT: /v1/card/activate'
+components:
+  schemas:
+    IssuedDeviceInstanceInitiateRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issueddeviceIdentification:
+              type: string
+              maxLength: 19
+              x-sor-field: cardNumber
+          required:
+          - issueddeviceIdentification
+    IssuedDeviceInstanceInitiateResponse:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issueddeviceIdentification:
+              type: string
+              x-sor-field: cardToken
+            issueddeviceIdentificationMasked:
+              type: string
+              x-sor-field: cardNumberMasked
+        Status:
+          type: object
+          properties:
+            statusEffectiveDate:
+              type: string
+              format: date-time
+              x-sor-field: statusDate, statusTime

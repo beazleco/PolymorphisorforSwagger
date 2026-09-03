@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Transaction Adjustment_Initiate
+  version: 2.0.0
+  description: Use this API to post cardholder account adjustment
+  x-generated-by: SOR Polymorphizer 6.3
+  x-generated-at: '2026-09-02T20:53:50+00:00'
+  x-source-sheet: Transaction Adjustment_Initiate
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: Credit Card
+paths:
+  /credit-card/card-transaction/adjustment/initiate:
+    post:
+      operationId: transactionAdjustmentInitiate
+      summary: Use this API to post cardholder account adjustment
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardTransactionAdjustmentResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardTransactionAdjustmentRequest'
+      description: Use this API to post cardholder account adjustment
+      x-bian-behaviour-qualifier: Card Transaction
+      x-sor-endpoints: /v1/account/transaction/adjustment
+components:
+  schemas:
+    CardTransactionAdjustmentRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: External user ID captured for tracking purpose.
+          example: ABC123
+          x-sor-field: userID
+        accountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code.
+          example: PHP
+          x-sor-field: currencyCode
+        CardPaymentTransaction:
+          type: object
+          properties:
+            IssuedDeviceIdentifier:
+              type: object
+              properties:
+                issuedDeviceIdentification:
+                  type: string
+                  maxLength: 19
+                  description: Identifier representing the issued device.
+                  example: '5111222233334440'
+                  x-sor-field: cardNumber
+              required:
+              - issuedDeviceIdentification
+              description: Credit card details
+            cardTransactionDateTime:
+              type: string
+              format: date-time
+              description: The date of the transaction.
+              example: 2021-08-01 14:20:10:95
+              x-sor-field: transactionDate
+            cardTransactionEffectiveDateTime:
+              type: string
+              format: date-time
+              description: The date when transaction is effective from in Vertexon
+              example: 2021-08-01 14:20:10:95
+              x-sor-field: effectiveDate
+            cardTransactionType:
+              type: string
+              maxLength: 4
+              description: Vertexon transaction type.
+              example: '1000'
+              x-sor-field: transactionType
+            transactionDescriptionLine1:
+              type: string
+              maxLength: 42
+              description: Transaction description line 1.
+              example: Interest Adjustment
+              x-sor-field: narration1
+            transactionDescriptionLine2:
+              type: string
+              maxLength: 25
+              description: Transaction description line 2.
+              example: PH
+              x-sor-field: narration2
+            CardTransactionAmount:
+              type: object
+              properties:
+                amountValue:
+                  type: string
+                  description: Absolute original Transaction Amount. Number of decimals must must 
+                    not be greater than currency exponent.
+                  example: '100.123'
+                  x-sor-field: transactionAmount
+                amountCurrencyCode:
+                  type: string
+                  maxLength: 3
+                  description: ISO numeric 3 digit currency code.
+                  example: PHP
+                  x-sor-field: transactionCurrency
+              required:
+              - amountValue
+              description: Card transaction amount and currency
+            amountQualifier:
+              type: string
+              maxLength: 1
+              description: Transaction Role. O - original, R - reversal
+              example: O
+              x-sor-field: transactionRole
+            DebitCreditDirection:
+              type: object
+              properties:
+                debitCreditIndicatorValue:
+                  type: string
+                  maxLength: 1
+                  description: "Transaction Sign.\n“+” – Debit to cardholder,\n“-“ – Credit to cardholder."
+                  example: +
+                  x-sor-field: transactionSign
+            cardTransactionReference:
+              type: string
+              maxLength: 12
+              description: Retrieval Reference Number
+              example: '123459878232'
+              x-sor-field: reference
+          required:
+          - cardTransactionType
+          - cardTransactionReference
+          description: Object specific to card payment transaction details
+      required:
+      - userIdentification
+      - accountCurrencyCode
+      description: Request parent object
+    CardTransactionAdjustmentResponse:
+      type: object
+      properties:
+        cardTransactionReference:
+          type: string
+          description: Retrieval Reference Number
+          example: '123459878232'
+          x-sor-field: reference
+        IssuedDeviceStatus:
+          type: object
+          properties:
+            deviceStatusCode:
+              type: string
+              description: Value of card cancellation code.
+              example: L
+              x-sor-field: cancelCode
+        AccountStatus:
+          type: object
+          properties:
+            accountStatusTypeValues:
+              type: string
+              description: The account status
+              example: open
+              x-sor-field: accountStatus
+        systemEffectiveDate:
+          type: string
+          format: date-time
+          description: "Calendar date and time when transaction was posted.\nSystemEffectiveDate will
+            be a combination of postingDate and postingTime in DateTime format."
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: postingDate postingTime

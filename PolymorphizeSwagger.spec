@@ -3,7 +3,7 @@ from PyInstaller.utils.hooks import collect_all
 
 datas = []
 binaries = []
-hiddenimports = ['openpyxl']
+hiddenimports = ['openpyxl', 'polymorphize_core', 'polymorphize_workbook', 'polymorphize_generate', 'polymorphize_merge', 'polymorphize_sor', 'polymorphize_showcase', 'polymorphize_validate', 'polymorphize_template']
 tmp_ret = collect_all('ruamel.yaml')
 datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 tmp_ret = collect_all('tkinterdnd2')

@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Credit Card Recency Check_Retrieve
+  version: 2.0.0
+  description: Use this API to perform recency check
+  x-generated-by: SOR Polymorphizer 6.3
+  x-generated-at: '2026-09-02T20:53:50+00:00'
+  x-source-sheet: Recency Check_Retrieve
+  x-polymorphism-pattern: P1
+  x-bian-service-domain: Credit Card
+paths:
+  /credit-card/mobile-recency/retrieve:
+    post:
+      operationId: recencyCheckRetrieve
+      summary: Use this API to perform recency check
+      tags:
+      - Credit Card
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileRecencyResponse'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileRecencyRequest'
+      description: Use this API to perform recency check
+      x-bian-behaviour-qualifier: Mobile Recency
+      x-sor-endpoints: /v1/card/recencyCheck
+components:
+  schemas:
+    MobileRecencyRequest:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          type: object
+          properties:
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 19
+              description: Identifier representing the issued device.
+              example: '5111222233334440'
+              x-sor-field: cardNumber
+          required:
+          - issuedDeviceIdentification
+        currencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code
+          example: PHP
+          x-sor-field: currencyCode
+        auditType:
+          type: string
+          description: Vertexon audit type (CHGS/ACHG)
+          example: CHGS
+          x-sor-field: auditType
+        fieldType:
+          type: string
+          description: Vertexon audit code assigned to a specific field, defined in SCODE type 
+            'CHGS' or 'ACHG'.
+          example: CU54
+          x-sor-field: fieldAudit
+      required:
+      - auditType
+      - fieldType
+    MobileRecencyResponse:
+      type: object
+      properties:
+        changeDate:
+          type: string
+          format: date-time
+          description: The calendar date on which the field was changed
+          example: 2021-08-01 14:20:10:95
+          x-sor-field: changeDate
+        result:
+          type: boolean
+          description: Checking result pass/fail
+          example: pass
+          x-sor-field: result
+        age:
+          type: string
+          description: Number of days from change date until current calendar day (inclusive of both
+            days).
+          example: '5'
+          x-sor-field: age
