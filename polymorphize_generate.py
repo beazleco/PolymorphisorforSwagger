@@ -1,7 +1,7 @@
 """
 polymorphize_generate — one OpenAPI specification per worksheet.
 
-Version 6.3.
+Version 6.4.
 
 The workbook is authoritative. Each operation sheet describes one endpoint, so
 one workbook yields one specification per sheet rather than one specification
@@ -57,7 +57,7 @@ from polymorphize_workbook import (
     Finding, SECTION_REQUEST, VARIANT_PROPERTY, cell_ref, key, text,
 )
 
-__version__ = "6.3"
+__version__ = "6.4"
 
 OPENAPI_VERSION = "3.0.3"
 

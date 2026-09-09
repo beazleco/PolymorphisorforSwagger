@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
   title: Credit Card Card issuedDevice_Initiate
-  version: 2.0.0
+  version: 1.0.0
   description: This API will be used to initiate/enable a type of device for the card account
-  x-generated-by: SOR Polymorphizer 6.3
-  x-generated-at: '2026-09-02T20:53:50+00:00'
+  x-generated-by: SOR Polymorphizer 6.4
+  x-generated-at: '2026-09-09T02:20:54+00:00'
   x-source-sheet: Card issuedDevice_Initiate
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card

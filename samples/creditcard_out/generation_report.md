@@ -54,18 +54,18 @@ These groups are used by more than one operation and do not agree on what they p
 
 | Group | Shared base | Derived schemas |
 |---|---|---|
-| `Account` | `Account` | 4 |
+| `Account` | `AccountBase` | 4 |
 | `AccountDetialsItem` | none | 5 |
 | `AccountIdentifier` | none | 2 |
-| `AccountTransactionItem` | `AccountTransactionItem` | 3 |
-| `CardPaymentTransactionItem` | `CardPaymentTransactionItem` | 3 |
-| `CardTransactionAmount` | `CardTransactionAmount` | 2 |
-| `CardTransactionAuthorizationRecord` | `CardTransactionAuthorizationRecord` | 2 |
+| `AccountTransactionItem` | `AccountTransactionItemBase` | 3 |
+| `CardPaymentTransactionItem` | `CardPaymentTransactionItemBase` | 3 |
+| `CardTransactionAmount` | `CardTransactionAmountBase` | 2 |
+| `CardTransactionAuthorizationRecord` | `CardTransactionAuthorizationRecordBase` | 2 |
 | `CardTransactionMerchantReference` | none | 3 |
 | `DelinquentAccountDetailsItem` | none | 2 |
 | `IssuedDeviceIdentifier` | none | 6 |
-| `IssuedDeviceStatus` | `IssuedDeviceStatus` | 2 |
-| `PointOfService` | `PointOfService` | 2 |
+| `IssuedDeviceStatus` | `IssuedDeviceStatusBase` | 2 |
+| `PointOfService` | `PointOfServiceBase` | 2 |
 | `Status` | none | 2 |
 
 ### Findings from the merge

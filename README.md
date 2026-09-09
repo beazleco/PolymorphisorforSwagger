@@ -1,13 +1,16 @@
-# SOR Polymorphizer 6.3
+# SOR Polymorphizer 6.4
 
 Turns a System of Record mapping workbook into **one** OpenAPI 3.0.3
 specification, publishing only the attributes the SOR actually supports and
 specialising shared schemas so a consumer is never shown a field that is not
 wired to anything.
 
-> Full documentation has not yet been updated for this release. See
-> `DOCUMENTATION_NOTES.md` for what changed and what the documentation pass
-> must cover.
+> Full documentation for this release is in `SOR_Polymorphizer_User_Manual.docx`
+> (for analysts building the workbook, including an error guide organised by
+> root cause) and `SOR_Polymorphizer_Technical_Guide.docx` (for maintainers,
+> including a prompt guide for working with an AI coding assistant).
+> `DOCUMENTATION_NOTES.md` records what changed at each release and the three
+> questions that remain open.
 
 ## Quick start
 
@@ -96,7 +99,13 @@ discriminator, annotated `x-selected-by: requestVariant`, because OpenAPI
 cannot express a response subtype that depends on a request property.
 
 Every group with children is published as a named component, so a property is
-always either a scalar or a `$ref`. Shapes are compared on the contract, type,
+always either a scalar or a `$ref`. Where a group splits because the
+operations using it publish different attributes, the shape most references
+point at **keeps the plain name**, the shared core takes `<Name>Base`, and the
+rest become `<Name>For<Operation>`. That matters because a code generator names
+its classes after component schemas, so the plain name is what a consumer
+meets; it does not affect the wire, where a property key comes from the
+workbook's Level column. Shapes are compared on the contract, type,
 format, length, obligation and enum, and never on prose, so differing
 descriptions cannot fragment the namespace. An SOR field that differs between
 operations is recorded as `x-sor-field-by-operation`.

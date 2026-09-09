@@ -1,10 +1,10 @@
 openapi: 3.0.3
 info:
   title: Credit Card Card Cancel
-  version: 2.0.0
+  version: 1.0.0
   description: This API will be used to cancel a card with specified reason or cancellation code
-  x-generated-by: SOR Polymorphizer 6.3
-  x-generated-at: '2026-09-02T20:53:50+00:00'
+  x-generated-by: SOR Polymorphizer 6.4
+  x-generated-at: '2026-09-09T02:20:54+00:00'
   x-source-sheet: Card Cancel
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card

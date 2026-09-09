@@ -75,7 +75,7 @@ import openpyxl
 from ruamel.yaml import YAML
 from ruamel.yaml.comments import CommentedMap, CommentedSeq
 
-__version__ = "6.3"
+__version__ = "6.4"
 
 CONTAINER_TYPES = {"object", "array"}
 

@@ -1,6 +1,13 @@
 # Notes for the deferred documentation pass
 
-Documentation has deliberately not been updated. This file records everything
+> **Status: the documentation pass was carried out at release 6.3.**
+> `SOR_Polymorphizer_User_Manual.docx` and
+> `SOR_Polymorphizer_Technical_Guide.docx` were rewritten from nothing against
+> items 1 to 37 below. See "What the pass covered, and what it did not" at the
+> end of this file. The items are kept because they are the record of why each
+> decision was made, and because three of them remain open.
+
+This file records everything
 the pass must cover. Items 1 to 7 were carried over from v5.3; items 8 to 18
 came in with the Level-format contract in v6.0; items 19 to 25 came with the
 single merged specification in v6.1; items 26 to 32 came with verification
@@ -491,3 +498,108 @@ single `VERSION` variable at the top, all eleven modules in the rescue loop and
 the presence check, and a `--hidden-import` for each module the GUI imports
 lazily. Keep `VERSION` in step with `__version__` when the toolkit is next
 bumped.
+
+
+---
+
+## What the pass covered, and what it did not
+
+Carried out at release 6.3. Both Word documents were rewritten rather than
+edited, because items 8 and 19 changed the input contract and the output shape
+so far that no paragraph of the 5.x editions survived intact.
+
+### `SOR_Polymorphizer_User_Manual.docx`
+
+Rewritten for a reasonably technical reader. Covers items 1, 8, 9, 10, 11, 13,
+14, 15, 16, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 and
+36. The centrepiece is chapter 9, an error guide organised by **what went wrong
+in the workbook** rather than by finding code, on the reasoning that a message
+describes a symptom while a correction depends on the cause, and that two
+sheets can raise the same code for opposite reasons. Fifteen root causes, each
+with what happened, how to confirm it, the correction and the consequence of
+leaving it. Appendix A maps all 50 codes to the section that explains them.
+
+Item 12 was rewritten rather than reproduced: `E001` and `R001` are no longer
+examples of failure (items 24 and 33), so the only worked failure in the manual
+is the `S001` mislabelled section. Item 6, the obsolete screenshots, was
+resolved by removing every screenshot: the window is described in prose and by
+its three tabs, so the manual does not go stale the next time the layout moves.
+
+### `SOR_Polymorphizer_Technical_Guide.docx`
+
+Written for maintainers. Covers items 2, 3, 4, 5, 11, 13, 14, 17, 20, 21, 22,
+23, 29, 32 and 37, plus the module dependency order, the ten invariants with
+the check group that guards each, the finding contract and the test strategy.
+
+Chapter 8 is the prompt guide the request asked for: a standing preamble to
+paste before every task, a table of which files to hand the assistant for which
+kind of change and what the acceptance gate is in each case, a complete
+paste-ready specification for recreating the toolkit from nothing, task prompts
+for adding a finding, changing emission and diagnosing a failing check, a table
+of the thirteen traps this codebase has actually produced with the instruction
+that prevents each, a seven-point review checklist, and four things not to
+delegate. Appendix B carries the measured baselines as regression anchors.
+
+### Still open
+
+1. **Item 18**, how `Card Issued Device_Retrieve` chooses between its three SOR
+   endpoints. Recorded in Appendix C of the technical guide as an open
+   question. Until it is answered, pattern P3 has no worked example in the
+   manual and the only P3 sheet fails for an unrelated reason.
+2. **Item 7**, the cheque field names on slide 11. Still unverified, still
+   waiting on a cheque mapping workbook. Recorded in Appendix C.
+3. **Items 2 and 20**, slides 12 and 13 of
+   `Polymorphism_OpenAPI_for_BAs_v2_corrected.pptx`. Still teaching the 5.2
+   discriminator position. The two-axis table they need is now written in
+   chapter 3 of the technical guide and chapter 4 of the manual, so the slide
+   rewrite is a transcription job rather than a research one.
+
+Two newer decks, `SOR_Polymorphizer_Showcase.pptx` and
+`BIAN_Interface_Independence.pptx`, were built at 6.3 and are current.
+
+
+---
+
+## New in 6.4
+
+### 38. The plain concept name goes to the shape consumers reference
+Raised in review as observation three, and correctly. Up to 6.3, when a group
+split because the operations using it published different attributes, the plain
+family name was reserved for the intersection **base** and every actual shape
+took a suffix. Measured on the reference workbook, not one of the ten bases was
+referenced by any property: the clean name belonged exclusively to the schema
+nobody pointed at, and all 36 of the consumer-visible suffixed references
+carried `For<Operation>` or `Profile<n>`.
+
+That is the wrong way round. A code generator names its classes after component
+schema names, and Swagger UI and Redoc list them, so the suffix reaches a
+consuming developer even though the contract does not change. `assign_names`
+now gives the plain name to the shape seen in the most places and names the
+intersection base `<Name>Base`.
+
+Effect on the reference workbook: suffixed property references fall from **36
+of 68 to 23 of 68**, 53% to 34%. The example raised in the review reads as
+`IssuedDeviceStatus` on `AvailableFundsRetrieve` where it previously read
+`IssuedDeviceStatusForAvailableFundsRetrieve`; only the adjustment operation,
+whose shape genuinely differs, still carries a suffix.
+
+**The wire is unchanged, and this needs saying whenever the change is
+described.** A property key comes from the workbook's Level column and the
+schema name from the registry, so `"IssuedDeviceStatus": {"$ref": ...}` sends
+the same JSON whatever the referenced schema is called. What does change is the
+class names a generator produces, which is why this is 6.4 and not 6.3.1:
+anyone who has generated a client from 6.3 output will see renamed classes.
+
+An alternative tie-break, giving the plain name to the shape used by the most
+distinct operations rather than the shape seen in the most places, was measured
+and rejected: it improved the figure by one reference out of sixty-eight and
+needed a longer rule to explain.
+
+Three checks in `W16` guard this and should not be relaxed: that most property
+references carry no tool-generated suffix, that every intersection base is
+named with the `Base` suffix, and that the plain name each base gave up is a
+published shape. Test count 499 to **501**.
+
+### Still open from earlier releases
+Items 7, 18 and the presentation slides are unaffected by this change and
+remain as recorded above.

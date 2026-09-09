@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
   title: Credit Card API
-  version: 2.0.0
+  version: 1.0.0
   description: Generated from the SOR mapping workbook. 11 operations across Credit Card. Only 
     attributes mapped to a System of Record field are published; shared groups that differ between 
     operations are specialised with allOf, and operations served by several SOR endpoints carry a 
     requestVariant discriminator.
-  x-generated-by: SOR Polymorphizer 6.3
-  x-generated-at: '2026-09-02T20:53:49+00:00'
+  x-generated-by: SOR Polymorphizer 6.4
+  x-generated-at: '2026-09-09T02:20:52+00:00'
   x-source-sheets:
   - Available Funds_Retrieve
   - Transaction Adjustment_Initiate
@@ -278,11 +278,11 @@ paths:
       x-sor-endpoints: GET /v1/card/{cardNumber}/cardRSAEncrypted
 components:
   schemas:
-    Account:
+    AccountBase:
       type: object
       properties:
         AccountIdentifier:
-          $ref: '#/components/schemas/AccountIdentifierProfile1'
+          $ref: '#/components/schemas/AccountIdentifier'
         accountCurrencyCode:
           type: string
           description: Currency Code
@@ -291,18 +291,18 @@ components:
             cardDetailsRetrieve[04]: accountHistoryInd.currencyCode
             (unattributed): accountContact.currencyCode
       description: Attributes of Account common to every operation that uses it.
-    AccountForCardDetailsRetrieve3:
+    AccountForCardDetailsRetrieve2:
       allOf:
-      - $ref: '#/components/schemas/Account'
+      - $ref: '#/components/schemas/AccountBase'
       - type: object
         properties:
           ContactPoint:
             $ref: '#/components/schemas/ContactPoint'
       x-used-by:
       - cardDetailsRetrieve
-    AccountForCardDetailsRetrieve:
+    Account:
       allOf:
-      - $ref: '#/components/schemas/Account'
+      - $ref: '#/components/schemas/AccountBase'
       - type: object
         properties:
           accountCloseCode:
@@ -313,9 +313,9 @@ components:
               cardDetailsRetrieve[04]: accountHistoryInd.accountCloseCode
       x-used-by:
       - cardDetailsRetrieve
-    AccountForCardDetailsRetrieve2:
+    AccountForCardDetailsRetrieve:
       allOf:
-      - $ref: '#/components/schemas/Account'
+      - $ref: '#/components/schemas/AccountBase'
       - type: object
         properties:
           accountOpenDate:
@@ -346,9 +346,9 @@ components:
             description: Unique reference representing a defined relationship involving the party.
       x-used-by:
       - cardDetailsRetrieve
-    AccountForCardDetailsRetrieve4:
+    AccountForCardDetailsRetrieve3:
       allOf:
-      - $ref: '#/components/schemas/Account'
+      - $ref: '#/components/schemas/AccountBase'
       - type: object
         properties:
           accountCloseCode:
@@ -378,29 +378,29 @@ components:
           example: '15000.00'
           x-sor-field: accountInfo.cardAvailable.purchase accountInfo.cardAvailable.cashAdvance 
             accountInfo.cardAvailable.majorPurchase
-    AccountDetialsItemForCardDetailsRetrieve2:
-      type: object
-      properties:
-        Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve3'
-        DeliveryOptions:
-          $ref: '#/components/schemas/DeliveryOptions'
-    AccountDetialsItemForCardDetailsRetrieve4:
-      type: object
-      properties:
-        Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve'
-        DelinquentAccountDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/DelinquentAccountDetailsItemForCardDetailsRetrieve'
-          description: It specifies account delinquency information
-          x-sor-field: accountDelinquency.accountDelinquencyProfile
     AccountDetialsItemForCardDetailsRetrieve:
       type: object
       properties:
         Account:
           $ref: '#/components/schemas/AccountForCardDetailsRetrieve2'
+        DeliveryOptions:
+          $ref: '#/components/schemas/DeliveryOptions'
+    AccountDetialsItemForCardDetailsRetrieve3:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/Account'
+        DelinquentAccountDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/DelinquentAccountDetailsItem'
+          description: It specifies account delinquency information
+          x-sor-field: accountDelinquency.accountDelinquencyProfile
+    AccountDetialsItem:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve'
         ProductInstanceReference:
           $ref: '#/components/schemas/ProductInstanceReference'
         AccountReclassification:
@@ -409,15 +409,15 @@ components:
           $ref: '#/components/schemas/Repayment'
         AutoDebitArrangment:
           $ref: '#/components/schemas/AutoDebitArrangment'
-    AccountDetialsItemForCardDetailsRetrieve5:
+    AccountDetialsItemForCardDetailsRetrieve4:
       type: object
       properties:
         Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve'
+          $ref: '#/components/schemas/Account'
         DelinquentAccountDetails:
           type: array
           items:
-            $ref: '#/components/schemas/DelinquentAccountDetailsItemForCardDetailsRetrieve2'
+            $ref: '#/components/schemas/DelinquentAccountDetailsItemForCardDetailsRetrieve'
           description: It specifies account delinquency information
         HistoryIndicators:
           type: array
@@ -425,14 +425,14 @@ components:
             $ref: '#/components/schemas/HistoryIndicatorsItem'
           description: Account history indicators
           x-sor-field: accountHistoryInd.historyInd
-    AccountDetialsItemForCardDetailsRetrieve3:
+    AccountDetialsItemForCardDetailsRetrieve2:
       type: object
       properties:
         Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve4'
+          $ref: '#/components/schemas/AccountForCardDetailsRetrieve3'
         ProductInstanceReference:
           $ref: '#/components/schemas/ProductInstanceReference'
-    AccountIdentifierProfile1:
+    AccountIdentifier:
       type: object
       properties:
         accountIdentification:
@@ -516,11 +516,11 @@ components:
           description: The account status
           example: open
           x-sor-field: accountStatus
-    AccountTransactionItem:
+    AccountTransactionItemBase:
       type: object
       properties:
         AccountIdentifier:
-          $ref: '#/components/schemas/AccountIdentifierProfile1'
+          $ref: '#/components/schemas/AccountIdentifier'
         accountCurrencyCode:
           type: string
           maxLength: 3
@@ -530,9 +530,21 @@ components:
           - accountMps.currencyCode
           - accountTransactions.currencyCode
       description: Attributes of AccountTransactionItem common to every operation that uses it.
+    AccountTransactionItem:
+      allOf:
+      - $ref: '#/components/schemas/AccountTransactionItemBase'
+      - type: object
+        properties:
+          CardPaymentTransaction:
+            type: array
+            items:
+              $ref: '#/components/schemas/CardPaymentTransactionItem'
+            description: Array for transaction details
+      x-used-by:
+      - cardTransactionRetrieve
     AccountTransactionItemForCardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/AccountTransactionItem'
+      - $ref: '#/components/schemas/AccountTransactionItemBase'
       - type: object
         properties:
           CardPaymentTransaction:
@@ -540,30 +552,18 @@ components:
             items:
               $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve'
             description: Array for transaction details
+            x-sor-field: acccountAuthorizations.authorizations
       x-used-by:
       - cardTransactionRetrieve
     AccountTransactionItemForCardTransactionRetrieve2:
       allOf:
-      - $ref: '#/components/schemas/AccountTransactionItem'
+      - $ref: '#/components/schemas/AccountTransactionItemBase'
       - type: object
         properties:
           CardPaymentTransaction:
             type: array
             items:
               $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve2'
-            description: Array for transaction details
-            x-sor-field: acccountAuthorizations.authorizations
-      x-used-by:
-      - cardTransactionRetrieve
-    AccountTransactionItemForCardTransactionRetrieve3:
-      allOf:
-      - $ref: '#/components/schemas/AccountTransactionItem'
-      - type: object
-        properties:
-          CardPaymentTransaction:
-            type: array
-            items:
-              $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve3'
             description: Array for transaction details
             x-sor-field: accountMps.mps
       x-used-by:
@@ -677,7 +677,7 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
         cardTransactionDateTime:
           type: string
           format: date-time
@@ -728,11 +728,11 @@ components:
       - cardTransactionType
       - cardTransactionReference
       description: Object specific to card payment transaction details
-    CardPaymentTransactionItem:
+    CardPaymentTransactionItemBase:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
         cardTransactionDateTime:
           type: string
           format: date-time
@@ -747,9 +747,9 @@ components:
             $ref: '#/components/schemas/CardTransactionAmountItem'
           x-sor-field: accountMps.mps.transactionAmount
       description: Attributes of CardPaymentTransactionItem common to every operation that uses it.
-    CardPaymentTransactionItemForCardTransactionRetrieve:
+    CardPaymentTransactionItem:
       allOf:
-      - $ref: '#/components/schemas/CardPaymentTransactionItem'
+      - $ref: '#/components/schemas/CardPaymentTransactionItemBase'
       - type: object
         properties:
           cardTransactionEffectiveDateTime:
@@ -774,9 +774,9 @@ components:
           CardTransactionPurchaseDetails:
             $ref: '#/components/schemas/CardTransactionPurchaseDetails'
           CardTransactionAuthorizationRecord:
-            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve'
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
           PointOfService:
-            $ref: '#/components/schemas/PointOfServiceForCardTransactionRetrieve2'
+            $ref: '#/components/schemas/PointOfServiceForCardTransactionRetrieve'
           cardTransactionReference:
             type: string
             description: Retrieval Reference Number.
@@ -784,7 +784,7 @@ components:
           ProductAndServiceReference:
             $ref: '#/components/schemas/ProductAndServiceReference'
           CardTransactionMerchantReference:
-            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve'
+            $ref: '#/components/schemas/CardTransactionMerchantReference'
           systemEffectiveDate:
             type: string
             format: date-time
@@ -792,18 +792,18 @@ components:
             x-sor-field: accountTransactions.transactions.inputDate
       x-used-by:
       - cardTransactionRetrieve
-    CardPaymentTransactionItemForCardTransactionRetrieve2:
+    CardPaymentTransactionItemForCardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/CardPaymentTransactionItem'
+      - $ref: '#/components/schemas/CardPaymentTransactionItemBase'
       - type: object
         properties:
           cardTransactionCode:
             type: string
             x-sor-field: acccountAuthorizations.authorizations.transactionCode
           CardTransactionAuthorizationRecord:
-            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve'
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
           PointOfService:
-            $ref: '#/components/schemas/PointOfServiceForCardTransactionRetrieve'
+            $ref: '#/components/schemas/PointOfService'
           cardTransactionReference:
             type: string
             description: Retrieval Reference Number.
@@ -811,12 +811,12 @@ components:
           ProductAndServiceReference:
             $ref: '#/components/schemas/ProductAndServiceReference'
           CardTransactionMerchantReference:
-            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve3'
+            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve2'
       x-used-by:
       - cardTransactionRetrieve
-    CardPaymentTransactionItemForCardTransactionRetrieve3:
+    CardPaymentTransactionItemForCardTransactionRetrieve2:
       allOf:
-      - $ref: '#/components/schemas/CardPaymentTransactionItem'
+      - $ref: '#/components/schemas/CardPaymentTransactionItemBase'
       - type: object
         properties:
           cardTransactionEffectiveDateTime:
@@ -833,12 +833,12 @@ components:
           CardTransactionPurchaseDetails:
             $ref: '#/components/schemas/CardTransactionPurchaseDetails'
           CardTransactionAuthorizationRecord:
-            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve2'
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve'
           CardTransactionMerchantReference:
-            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve2'
+            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve'
       x-used-by:
       - cardTransactionRetrieve
-    CardTransactionAmount:
+    CardTransactionAmountBase:
       type: object
       properties:
         amountCurrencyCode:
@@ -850,7 +850,7 @@ components:
       description: Attributes of CardTransactionAmount common to every operation that uses it.
     CardTransactionAmountForTransactionAdjustmentInitiate:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAmount'
+      - $ref: '#/components/schemas/CardTransactionAmountBase'
       - type: object
         properties:
           amountValue:
@@ -863,9 +863,9 @@ components:
         - amountValue
       x-used-by:
       - transactionAdjustmentInitiate
-    CardTransactionAmountForCardTransactionRetrieve:
+    CardTransactionAmount:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAmount'
+      - $ref: '#/components/schemas/CardTransactionAmountBase'
       - type: object
         properties:
           amountValue:
@@ -896,7 +896,7 @@ components:
             cardTransactionRetrieve[02]: 
               acccountAuthorizations.authorizations.transactionAmount.currencyCode
             cardTransactionRetrieve[03]: accountMps.mps.transactionAmount.currencyCode
-    CardTransactionAuthorizationRecord:
+    CardTransactionAuthorizationRecordBase:
       type: object
       properties:
         cardTransactionAuthenticationCode:
@@ -908,9 +908,9 @@ components:
             (unattributed): accountMps.mps.authCode
       description: Attributes of CardTransactionAuthorizationRecord common to every operation that 
         uses it.
-    CardTransactionAuthorizationRecordForCardTransactionRetrieve:
+    CardTransactionAuthorizationRecord:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
+      - $ref: '#/components/schemas/CardTransactionAuthorizationRecordBase'
       - type: object
         properties:
           ElectronicCommerceAuthenticationResult:
@@ -920,9 +920,9 @@ components:
             description: Array to store authetication results.
       x-used-by:
       - cardTransactionRetrieve
-    CardTransactionAuthorizationRecordForCardTransactionRetrieve2:
+    CardTransactionAuthorizationRecordForCardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
+      - $ref: '#/components/schemas/CardTransactionAuthorizationRecordBase'
       - type: object
       x-used-by:
       - cardTransactionRetrieve
@@ -935,7 +935,7 @@ components:
           description: Statement close date of the statement where transaction was billed to the 
             cardholder.
           x-sor-field: accountTransactions.transactions.statementDate
-    CardTransactionMerchantReferenceForCardTransactionRetrieve:
+    CardTransactionMerchantReference:
       type: object
       properties:
         cardTransactionMerchant:
@@ -947,7 +947,7 @@ components:
           description: Merchant Category Code.
           x-sor-field: accountTransactions.transactions.mcc
       description: Object used for card transaction merchant details.
-    CardTransactionMerchantReferenceForCardTransactionRetrieve3:
+    CardTransactionMerchantReferenceForCardTransactionRetrieve2:
       type: object
       properties:
         cardTransactionMerchantCode:
@@ -955,7 +955,7 @@ components:
           description: Merchant Category Code.
           x-sor-field: acccountAuthorizations.authorizations.mcc
       description: Object used for card transaction merchant details.
-    CardTransactionMerchantReferenceForCardTransactionRetrieve2:
+    CardTransactionMerchantReferenceForCardTransactionRetrieve:
       type: object
       properties:
         cardTransactionMerchant:
@@ -1054,7 +1054,7 @@ components:
           description: "Transaction Sign.\n“+” – Debit to cardholder,\n“-“ – Credit to cardholder."
           example: +
           x-sor-field: transactionSign
-    DelinquentAccountDetailsItemForCardDetailsRetrieve:
+    DelinquentAccountDetailsItem:
       type: object
       properties:
         deliquencyType:
@@ -1069,7 +1069,7 @@ components:
           description: Number of times the account has been on that type of delinquency in the last 
             24 months.
           x-sor-field: accountDelinquency.accountDelinquencyProfile.frequency
-    DelinquentAccountDetailsItemForCardDetailsRetrieve2:
+    DelinquentAccountDetailsItemForCardDetailsRetrieve:
       type: object
       properties:
         delinquencyIndicator:
@@ -1123,7 +1123,7 @@ components:
           type: string
           description: payment state indicators
           x-sor-field: accountHistoryInd.historyInd.paymentIndicator
-    IssuedDeviceIdentifierProfile2:
+    IssuedDeviceIdentifierProfile1:
       type: object
       properties:
         issuedDeviceIdentification:
@@ -1140,7 +1140,7 @@ components:
       - cardTransactionRetrieve
       - recencyCheckRetrieve
       - transactionAdjustmentInitiate
-    IssuedDeviceIdentifierProfile3:
+    IssuedDeviceIdentifierProfile2:
       type: object
       properties:
         issuedDeviceIdentification:
@@ -1157,7 +1157,7 @@ components:
       x-used-by:
       - accountStatementRetrieve
       - cardTransactionRetrieve
-    IssuedDeviceIdentifierProfile1:
+    IssuedDeviceIdentifier:
       type: object
       properties:
         issueddeviceIdentification:
@@ -1172,7 +1172,7 @@ components:
       - cardDetailsRetrieve
       - cardIssuedDeviceInitiate
       - cardIssuedDeviceUpdate
-    IssuedDeviceIdentifierProfile4:
+    IssuedDeviceIdentifierProfile3:
       type: object
       properties:
         issueddeviceIdentification:
@@ -1190,7 +1190,7 @@ components:
       - cardCancel
       - cardIssuedDeviceInitiate
       - cardIssuedDeviceUpdate
-    IssuedDeviceIdentifierProfile5:
+    IssuedDeviceIdentifierProfile4:
       type: object
       properties:
         issueddeviceIdentification:
@@ -1210,7 +1210,7 @@ components:
           x-sor-field: cardNumber
       required:
       - issueddeviceIdentification
-    IssuedDeviceStatus:
+    IssuedDeviceStatusBase:
       type: object
       properties:
         deviceStatusCode:
@@ -1219,9 +1219,9 @@ components:
           example: L
           x-sor-field: cancelCode
       description: Attributes of IssuedDeviceStatus common to every operation that uses it.
-    IssuedDeviceStatusForAvailableFundsRetrieve:
+    IssuedDeviceStatus:
       allOf:
-      - $ref: '#/components/schemas/IssuedDeviceStatus'
+      - $ref: '#/components/schemas/IssuedDeviceStatusBase'
       - type: object
         properties:
           primaryCardTag:
@@ -1234,7 +1234,7 @@ components:
       - availableFundsRetrieve
     IssuedDeviceStatusForTransactionAdjustmentInitiate:
       allOf:
-      - $ref: '#/components/schemas/IssuedDeviceStatus'
+      - $ref: '#/components/schemas/IssuedDeviceStatusBase'
       - type: object
       x-used-by:
       - transactionAdjustmentInitiate
@@ -1321,7 +1321,7 @@ components:
           description: it specifies the phone number details
           x-sor-field: accountContact.addresses.fax accountContact.phoneDetails.number 
             accountContact.addresses.phoneNbr accountContact.addresses.altphoneNbr
-    PointOfService:
+    PointOfServiceBase:
       type: object
       properties:
         pointOfServiceData:
@@ -1337,9 +1337,9 @@ components:
           - acccountAuthorizations.authorizations.acceptorId
           - accountTransactions.transactions.acceptorId
       description: Attributes of PointOfService common to every operation that uses it.
-    PointOfServiceForCardTransactionRetrieve2:
+    PointOfServiceForCardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/PointOfService'
+      - $ref: '#/components/schemas/PointOfServiceBase'
       - type: object
         properties:
           terminalIdentification:
@@ -1348,9 +1348,9 @@ components:
             x-sor-field: accountTransactions.transactions.terminalId
       x-used-by:
       - cardTransactionRetrieve
-    PointOfServiceForCardTransactionRetrieve:
+    PointOfService:
       allOf:
-      - $ref: '#/components/schemas/PointOfService'
+      - $ref: '#/components/schemas/PointOfServiceBase'
       - type: object
         properties:
           cardAcceptorName:
@@ -1441,7 +1441,7 @@ components:
           description: Currency Code
           example: PHP
           x-sor-field: accountStatementInfo.currencyCode
-    StatusProfile1:
+    Status:
       type: object
       properties:
         statusEffectiveDate:
@@ -1482,7 +1482,7 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
         CurrencyCode:
           type: string
           maxLength: 3
@@ -1497,7 +1497,7 @@ components:
         CustomerLimit:
           $ref: '#/components/schemas/CustomerLimit'
         IssuedDeviceStatus:
-          $ref: '#/components/schemas/IssuedDeviceStatusForAvailableFundsRetrieve'
+          $ref: '#/components/schemas/IssuedDeviceStatus'
         AccountInformation:
           type: array
           items:
@@ -1546,7 +1546,7 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
         currencyCode:
           type: string
           maxLength: 3
@@ -1593,7 +1593,7 @@ components:
         Accountidentifier:
           $ref: '#/components/schemas/Accountidentifier'
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
         currencyCode:
           type: string
           maxLength: 3
@@ -1682,14 +1682,14 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
         currencyCode:
           type: string
           maxLength: 3
           description: Currency Code.
           x-sor-field: currencyCode
         CardTransactionAmount:
-          $ref: '#/components/schemas/CardTransactionAmountForCardTransactionRetrieve'
+          $ref: '#/components/schemas/CardTransactionAmount'
         cardTransactionAuthenticationCode:
           type: string
           maxLength: 6
@@ -1730,7 +1730,7 @@ components:
           AccountTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve'
+              $ref: '#/components/schemas/AccountTransactionItem'
             description: Account Details
       description: CardTransactionResponse as served by v1/account/search/trans.
       x-sor-endpoint: v1/account/search/trans
@@ -1744,7 +1744,7 @@ components:
           AccountTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve2'
+              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve'
             description: Account Details
             x-sor-field: acccountAuthorizations
       description: CardTransactionResponse as served by v1/account/search/auth.
@@ -1759,7 +1759,7 @@ components:
           AccountTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve3'
+              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve2'
             description: Account Details
             x-sor-field: accountMps
       description: CardTransactionResponse as served by /v1/account/search/mps.
@@ -1906,7 +1906,7 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier'
       description: Attributes common to every variant of CreditCardAccountRetrieveRequest.
     CreditCardAccountRetrieveRequest:
       oneOf:
@@ -1929,7 +1929,7 @@ components:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve2'
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve'
           x-sor-field: accountContact
       description: CreditCardAccountRetrieveResponse as served by /v1/account/contact.
       x-sor-endpoint: /v1/account/contact
@@ -1941,7 +1941,7 @@ components:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve4'
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve3'
           x-sor-field: accountDeliquency
       description: CreditCardAccountRetrieveResponse as served by /v1/account/delinquency.
       x-sor-endpoint: /v1/account/delinquency
@@ -1953,7 +1953,7 @@ components:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve'
+            $ref: '#/components/schemas/AccountDetialsItem'
           x-sor-field: accounts
       description: CreditCardAccountRetrieveResponse as served by /v1/account/info.
       x-sor-endpoint: /v1/account/info
@@ -1965,7 +1965,7 @@ components:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve5'
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve4'
           x-sor-field: accountHistoryInd
       description: CreditCardAccountRetrieveResponse as served by /v1/account/historyIndicators.
       x-sor-endpoint: /v1/account/historyIndicators
@@ -1977,7 +1977,7 @@ components:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve3'
+            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve2'
           x-sor-field: cardAccounts
       description: CreditCardAccountRetrieveResponse as served by /v1/card/account/list.
       x-sor-endpoint: /v1/card/account/list
@@ -1998,31 +1998,31 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier'
     IssuedDeviceInstanceInitiateResponse:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
         Status:
-          $ref: '#/components/schemas/StatusProfile1'
+          $ref: '#/components/schemas/Status'
     IssuedDeviceInstanceUpdateRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier'
     IssuedDeviceInstanceUpdateResponse:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
         Status:
-          $ref: '#/components/schemas/StatusProfile1'
+          $ref: '#/components/schemas/Status'
     CreditCardCancelRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile5'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
         cancelCode:
           type: string
           maxLength: 1
@@ -2045,7 +2045,7 @@ components:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
         Status:
           $ref: '#/components/schemas/StatusForCardCancel'
         referenceNumber:
@@ -2062,7 +2062,7 @@ components:
         PartyIdentifier:
           $ref: '#/components/schemas/PartyIdentifier'
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile5'
+          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
         searchCodes:
           type: string
           description: Search filter - array of 4 digit codes or use code [ALL] to request for all 

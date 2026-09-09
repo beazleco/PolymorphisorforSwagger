@@ -1,7 +1,7 @@
 """
 polymorphize_validate — workbook validation against the Level-format contract.
 
-Version 6.3.
+Version 6.4.
 
 Validation runs the real reader and the real generator rather than a parallel
 set of rules, so a workbook that validates clean is a workbook that generates,
@@ -51,7 +51,7 @@ import polymorphize_generate as gen
 import polymorphize_workbook as wbk
 from polymorphize_workbook import Finding, cell_ref, text
 
-__version__ = "6.3"
+__version__ = "6.4"
 
 #: Banner labels a strict workbook is expected to fill in.
 REQUIRED_BANNER = OrderedDict([

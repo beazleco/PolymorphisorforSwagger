@@ -1056,30 +1056,53 @@ def w16():
     eq("one document holds both operations", len(d["paths"]), 2)
     s = d["components"]["schemas"]
 
-    check("the shared group keeps its name for the base", "Party" in s,
-          sorted(s))
-    eq("the base holds only what both operations publish",
-       sorted(s["Party"]["properties"]), ["partyId"])
-    for name, own, other in (("PartyForAlphaRetrieve", "alphaOnly", "betaOnly"),
-                             ("PartyForBetaRetrieve", "betaOnly", "alphaOnly")):
-        check("%s exists" % name, name in s, sorted(s))
-        eq("%s inherits from the base" % name,
-           s[name]["allOf"][0]["$ref"], "#/components/schemas/Party")
+    # Since 6.4 the shared core takes <Name>Base and the most-used shape keeps
+    # the plain name, because the plain name is what a consumer meets in
+    # generated code and in rendered documentation. Reserving it for a base
+    # that no property references left every visible name suffixed.
+    check("the shared core takes the Base suffix", "PartyBase" in s, sorted(s))
+    eq("and holds only what both operations publish",
+       sorted(s["PartyBase"]["properties"]), ["partyId"])
+    check("the plain name is a real, usable shape", "Party" in s, sorted(s))
+    check("and is a subtype of the shared core",
+          s["Party"]["allOf"][0]["$ref"] == "#/components/schemas/PartyBase",
+          s["Party"].get("allOf"))
+
+    shapes = [n for n in s if n == "Party" or n.startswith("PartyFor")]
+    eq("two shapes are published, one of them plainly named", len(shapes), 2)
+    suffixed = [n for n in shapes if n != "Party"]
+    eq("exactly one carries a suffix", len(suffixed), 1)
+    check("and it names the operation it serves",
+          suffixed[0] in ("PartyForAlphaRetrieve", "PartyForBetaRetrieve"),
+          suffixed)
+
+    for name in shapes:
+        eq("%s inherits from the shared core" % name,
+           s[name]["allOf"][0]["$ref"], "#/components/schemas/PartyBase")
         delta = s[name]["allOf"][1]["properties"]
-        check("%s declares %s" % (name, own), own in delta, sorted(delta))
-        check("%s does not declare %s" % (name, other), other not in delta,
-              sorted(delta))
+        check("%s carries exactly one of the two differing attributes" % name,
+              sorted(delta) in (["alphaOnly"], ["betaOnly"]), sorted(delta))
         check("%s does not repeat the shared attribute" % name,
               "partyId" not in delta, sorted(delta))
+
     check("no discriminator is introduced for the operation axis",
           not [n for n, v in s.items() if "discriminator" in v],
           [n for n, v in s.items() if "discriminator" in v])
-    eq("each request points at its own derived group",
-       s["AlphaRequest"]["properties"]["Party"]["$ref"],
-       "#/components/schemas/PartyForAlphaRetrieve")
-    eq("and the other at its own",
-       s["BetaRequest"]["properties"]["Party"]["$ref"],
-       "#/components/schemas/PartyForBetaRetrieve")
+
+    # The point of the change: each request still points at its own shape, and
+    # one of the two now reads as the plain concept name.
+    pointed = sorted([s["AlphaRequest"]["properties"]["Party"]["$ref"],
+                      s["BetaRequest"]["properties"]["Party"]["$ref"]])
+    eq("the two requests point at the two shapes", pointed,
+       sorted(["#/components/schemas/Party",
+               "#/components/schemas/" + suffixed[0]]))
+    check("neither points at the shared core directly",
+          "#/components/schemas/PartyBase" not in pointed, pointed)
+    # And whichever schema they point at, the property key is unchanged, which
+    # is what keeps the wire identical.
+    eq("the property key is the concept name on both",
+       [list(s["AlphaRequest"]["properties"]).count("Party"),
+        list(s["BetaRequest"]["properties"]).count("Party")], [1, 1])
 
     # A group that agrees everywhere is published once.
     same = [
@@ -1264,6 +1287,34 @@ def w16():
         check("the three spellings of the domain are reported as N002",
               any(f.code == "N002" for f in m10.findings))
         eq("no schema is empty", gen.empty_schemas(d10), [])
+
+        # 6.4: the plain concept name must belong to a shape a property points
+        # at, not to an intersection base that nothing references. A generator
+        # names its classes after component schemas, so this is the difference
+        # between a consumer meeting Account or AccountForCardDetailsRetrieve3.
+        import re as _re
+        _suf = _re.compile(r"(For[A-Z]\w*?\d?|Profile\d+|Base)$")
+        _refs = []
+        for _owner, _sch in d10["components"]["schemas"].items():
+            for _prop, _v in (_sch.get("properties") or {}).items():
+                if not isinstance(_v, dict):
+                    continue
+                _t = _v.get("$ref") or (_v.get("items") or {}).get("$ref")
+                if _t:
+                    _refs.append(_t.split("/")[-1])
+        _suffixed = [t for t in _refs if _suf.search(t)]
+        check("most property references carry no tool-generated suffix",
+              len(_suffixed) * 2 < len(_refs),
+              "%d of %d suffixed" % (len(_suffixed), len(_refs)))
+        _bases = {d10["components"]["schemas"][n]["allOf"][0]["$ref"].split("/")[-1]
+                  for n in d10["components"]["schemas"]
+                  if "allOf" in d10["components"]["schemas"][n]}
+        check("every intersection base is named with the Base suffix",
+              all(b.endswith("Base") for b in _bases), sorted(_bases))
+        _plain = {b[:-4] for b in _bases}
+        check("and the plain name it gave up is a published shape",
+              _plain <= set(d10["components"]["schemas"]),
+              sorted(_plain - set(d10["components"]["schemas"])))
         eq("no reference dangles", mrg._dangling_refs(d10), set())
         check("groups were specialised across operations",
               m10.stats["split_groups"] >= 10, m10.stats)

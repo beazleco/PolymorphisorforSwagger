@@ -1,7 +1,7 @@
 """
 polymorphize_gui — the desktop front end.
 
-Version 6.3.
+Version 6.4.
 
 One window, three tabs, and one rule: a failed endpoint is impossible to
 miss. Every failure appears three times over, in the banner across the top of
@@ -23,7 +23,7 @@ import polymorphize_generate as gen
 import polymorphize_template as tmpl
 import polymorphize_validate as val
 
-__version__ = "6.3"
+__version__ = "6.4"
 
 # --------------------------------------------------------------------------- #
 # Drag and drop

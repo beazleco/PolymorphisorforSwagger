@@ -1,7 +1,7 @@
 """
 polymorphize_merge — one specification for the whole workbook.
 
-Version 6.3.
+Version 6.4.
 
 Why one document
 ================
@@ -49,11 +49,20 @@ group whose content agrees appears once, because its ``$ref`` is the same.
 Naming
 ======
 
-A group with one shape keeps its own name. A group with several takes its own
-name for the intersection base, and each shape becomes a derived schema named
-after the operation that uses it, or ``<Name>Profile<n>`` when several
-operations share a shape. Every derived schema carries ``x-used-by`` naming
-the operations it serves.
+A group with one shape keeps its own name. Where a group splits, the shape
+seen in the most places **keeps the plain name**, the intersection base takes
+``<Name>Base``, and the remaining shapes become ``<Name>For<Operation>``, or
+``<Name>Profile<n>`` where several operations share a shape. Every derived
+schema carries ``x-used-by`` naming the operations it serves.
+
+Changed in 6.4. Up to 6.3 the plain name was reserved for the intersection
+base, which no property ever references: on the reference workbook not one of
+the ten bases was pointed at directly, so every consumer-visible reference
+carried a suffix. Because a generator names its classes after component
+schemas, that suffix reached the consumer even though the wire did not change,
+a property key coming from the workbook's Level column rather than from the
+component name. Giving the plain name to the shape most references point at
+took suffixed references on the reference workbook from 36 of 68 to 23.
 """
 
 from __future__ import annotations
@@ -68,7 +77,7 @@ import polymorphize_generate as gen
 import polymorphize_workbook as wbk
 from polymorphize_workbook import Finding, VARIANT_PROPERTY, cell_ref, key, text
 
-__version__ = "6.3"
+__version__ = "6.4"
 
 OPENAPI_VERSION = gen.OPENAPI_VERSION
 
@@ -243,6 +252,19 @@ class Registry:
 
         Shapes are ordered by how many contexts use them, then by signature,
         so numbering is stable between runs.
+
+        Where a group splits, the **most-used shape keeps the plain name** and
+        the shared core takes ``<Name>Base``. Releases up to 6.3 did the
+        opposite, reserving the plain name for the intersection base. That base
+        is referenced only through ``allOf`` and never by a property, so on the
+        credit card workbook not one of the ten bases was pointed at directly
+        and every consumer-visible reference carried a suffix. The name a
+        consumer meets in generated client code and in rendered documentation
+        should be the plain one wherever it can be.
+
+        This changes published schema names, and therefore the class names a
+        generator produces. It does not change the wire: a property key comes
+        from the workbook's Level column, never from the component name.
         """
         for name in sorted(self.shapes):
             sigs = self.shapes[name]
@@ -250,9 +272,12 @@ class Registry:
             if len(ordered) == 1:
                 self.assigned[(name, ordered[0])] = self._unique(name)
                 continue
-            self.base_names[name] = self._unique(name)
+            # Claim the plain name for the commonest shape first, so the base
+            # cannot take it, then name the remaining shapes.
+            self.assigned[(name, ordered[0])] = self._unique(name)
+            self.base_names[name] = self._unique("%sBase" % name)
             profile = 0
-            for sig in ordered:
+            for sig in ordered[1:]:
                 operations = OrderedDict(
                     (c.operation_id, None) for c, _n in sigs[sig])
                 if len(operations) == 1:

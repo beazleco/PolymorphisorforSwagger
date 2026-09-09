@@ -2,7 +2,7 @@
 """
 polymorphize_batch — several mapping workbooks in one run.
 
-Version 6.3.
+Version 6.4.
 
 Under the workbook-authoritative contract one workbook already fans out to many
 endpoints, so a batch is a list of workbooks rather than a list of jobs with
@@ -49,7 +49,7 @@ import traceback
 
 import polymorphize_generate as gen
 
-__version__ = "6.3"
+__version__ = "6.4"
 
 EXIT_OK, EXIT_UNREADABLE, EXIT_PARTIAL, EXIT_TOTAL_FAILURE = 0, 2, 6, 7
 
