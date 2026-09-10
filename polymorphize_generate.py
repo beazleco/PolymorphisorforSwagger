@@ -1,7 +1,7 @@
 """
 polymorphize_generate — one OpenAPI specification per worksheet.
 
-Version 6.4.
+Version 6.6.
 
 The workbook is authoritative. Each operation sheet describes one endpoint, so
 one workbook yields one specification per sheet rather than one specification
@@ -52,14 +52,30 @@ from dataclasses import dataclass, field
 from ruamel.yaml import YAML
 
 import polymorphize_core as core
+import polymorphize_errors as errs
 import polymorphize_workbook as wbk
 from polymorphize_workbook import (
     Finding, SECTION_REQUEST, VARIANT_PROPERTY, cell_ref, key, text,
 )
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 OPENAPI_VERSION = "3.0.3"
+
+#: Separates a class from the context that qualifies it. See
+#: :mod:`polymorphize_merge` for why it is not a tilde.
+SEP = "__"
+
+#: The lifecycle stage every generated operation declares. The tool generates
+#: a design, never an implementation, so the stage is fixed rather than an
+#: option: an operation that has reached a later stage is no longer something
+#: this tool produced.
+LIFECYCLE_STATUS = "Design"
+
+#: The operation description, exactly as it should render. Markdown for the
+#: emphasis, raw HTML for the underline, which CommonMark permits and which
+#: Swagger UI and Redoc both render.
+LIFECYCLE_DESCRIPTION = "**<u>API Lifecycle Status - %s</u>**" % LIFECYCLE_STATUS
 
 #: Sheet-name suffix to HTTP method.
 METHOD_BY_SUFFIX = {
@@ -180,10 +196,27 @@ def derive_path(sheet, banner):
 
 
 def supported(node, endpoints):
-    """True when the node, or anything beneath it, is supplied by ``endpoints``."""
-    if any(node.sor.get(e) for e in endpoints):
-        return True
-    return any(supported(c, endpoints) for c in node.children)
+    """True when ``endpoints`` supply a value this node publishes.
+
+    For a **leaf** that is its own SOR mapping. For a **container** it is
+    whether any leaf beneath it is mapped, and the container's own SOR cell is
+    deliberately not consulted: a mapping written against a group describes
+    where the group came from rather than a value that can be carried, so a
+    mapped group whose every child is unmapped has nothing to publish. Reading
+    the group's own cell instead let an object through with ``properties: {}``,
+    which is the defect this whole tool exists to prevent. It surfaced on the
+    field mapping workbook, where three sheets map an array and none of its
+    members, and the Level reader had the same hole waiting for a workbook
+    shaped that way.
+    """
+    if node.children:
+        return any(supported(c, endpoints) for c in node.children)
+    if node.json_type in ("object", "array"):
+        # Declared as a group and carrying no members. There is no shape to
+        # publish, whatever its own SOR cell says, so it is subtracted and
+        # reported as A006 rather than emitted as an empty object.
+        return False
+    return any(node.sor.get(e) for e in endpoints)
 
 
 def retained(node, endpoints, *, protect=()):
@@ -414,7 +447,7 @@ def _message(result, section, variants, pattern, schemas, *, is_request):
         inter = sig if inter is None else (inter & sig)
     inter = inter or set()
 
-    core_name = base_name + "Base"
+    core_name = base_name + SEP + "Base"
     base_schema = emit(root, common, protect=protect,
                        variant_codes=codes if is_request else None)
     _subtract(base_schema, inter)
@@ -425,7 +458,7 @@ def _message(result, section, variants, pattern, schemas, *, is_request):
 
     refs, mapping, counts = [], {}, {}
     for v in variants:
-        name = base_name + "For" + v.name_fragment
+        name = base_name + SEP + v.name_fragment
         delta = per[v.code] - inter
         derived = emit(root, [v.endpoint], protect=protect,
                        variant_codes=[v.code] if is_request else None)
@@ -573,8 +606,13 @@ def generate_sheet(result, *, title=None, version="1.0.0"):
                            "Response Body section of the mapping workbook "
                            "carries no attribute mapped to an SOR field.",
         }
+    # The description is the lifecycle statement and nothing else, so that it
+    # renders as one line in every viewer. The use case is not lost: it is the
+    # summary, and x-use-case carries it untruncated.
+    operation["description"] = LIFECYCLE_DESCRIPTION
+    operation["x-api-lifecycle-status"] = LIFECYCLE_STATUS
     if banner.get("use_case"):
-        operation["description"] = text(banner["use_case"])
+        operation["x-use-case"] = text(banner["use_case"])
     if banner.get("behaviour_qualifier"):
         operation["x-bian-behaviour-qualifier"] = banner["behaviour_qualifier"]
     if banner.get("bian_endpoint"):
@@ -601,6 +639,15 @@ def generate_sheet(result, *, title=None, version="1.0.0"):
     }
     if banner.get("service_domain"):
         document["info"]["x-bian-service-domain"] = text(banner["service_domain"])
+
+    # The Apigee error set, on every operation. Added before the guards so
+    # that anything it contributes is checked like everything else.
+    errs.attach(document)
+
+    import polymorphize_merge as _mrg          # late: merge imports generate
+    for _n, _sch in document["components"]["schemas"].items():
+        if isinstance(_sch, dict):
+            _mrg.identify(_sch, _n)
 
     leftovers = empty_schemas(document)
     if leftovers:
@@ -711,6 +758,15 @@ class RunResult:
     sor_index: object = None
     verifications: dict = field(default_factory=dict)
     showcase_path: str = ""
+    #: Which input format was read, from polymorphize_classify.
+    input_format: str = "level"
+    #: The sheet results this run actually read. Held so that the showcase and
+    #: the field mapping export describe the run rather than a second read of
+    #: the file, which is how the showcase came to be built by the wrong
+    #: reader for a field mapping workbook in 6.5.
+    results: list = field(default_factory=list)
+    #: The field mapping document, when one was written.
+    export_path: str = ""
 
     @property
     def sor_verified(self):
@@ -731,7 +787,7 @@ class RunResult:
 
 def run(workbook, out_dir, *, strict=False, version="1.0.0", fmt="yaml",
         write=True, split=False, merged_name="openapi", title=None,
-        sor=None, showcase=True, log=print):
+        sor=None, showcase=True, export=False, log=print):
     """Every operation sheet of a workbook.
 
     By default the sheets are merged into one specification, because
@@ -739,14 +795,41 @@ def run(workbook, out_dir, *, strict=False, version="1.0.0", fmt="yaml",
     writes one file per sheet instead, which is what the earlier releases did
     and is useful when isolating a single endpoint while debugging.
 
+    ``export`` writes the field mapping document beside the specification.
+    It is off here and switched on by the desktop window and the batch
+    runner; by instruction it is not offered on the command line.
+
     ``sor`` is one or more System of Record specifications, or a folder of
     them. When given, every SOR field name in the workbook is looked up in the
     SOR endpoint that sheet names, and an element whose field does not exist
     there is excluded from the interface. Without it the workbook's word is
     taken, which every report states plainly.
+
+    The input format is classified rather than assumed. Both readers produce
+    the same ``SheetResult`` and the same ``Node`` tree, so everything after
+    this line is format-blind.
     """
-    results = wbk.read_workbook(workbook, strict=strict)
-    out = RunResult(workbook=workbook, out_dir=out_dir, split=split)
+    import polymorphize_classify as cls
+    verdict = cls.classify(workbook)
+    if not verdict.readable:
+        raise IOError(verdict.error)
+    if verdict.fmt == cls.MAPPING:
+        import polymorphize_mapping as mapfmt
+        results = mapfmt.read_workbook(workbook, strict=strict)
+    else:
+        if verdict.fmt == cls.UNKNOWN:
+            # Neither reader recognises a header. Say so rather than skipping
+            # every sheet in silence and reporting nothing wrong.
+            raise ValueError(
+                "%s. The tool reads the Level format (a Level 1 column on the "
+                "header row) and the field mapping format (a Parameter Type "
+                "column). Neither was found." % verdict.line())
+        if verdict.mixed:
+            log("  NOTE   %s" % verdict.line())
+        results = wbk.read_workbook(workbook, strict=strict)
+    out_format = verdict.fmt
+    out = RunResult(workbook=workbook, out_dir=out_dir, split=split,
+                    input_format=out_format, results=results)
     if write:
         os.makedirs(out_dir, exist_ok=True)
 
@@ -851,6 +934,30 @@ def run(workbook, out_dir, *, strict=False, version="1.0.0", fmt="yaml",
             log("  WARNING: could not build the showcase report: %s: %s"
                 % (type(exc).__name__, exc))
 
+    if write and export and split:
+        # The document states which specification it matches, and in split
+        # mode there is no single specification to match. Saying so beats
+        # writing a document whose provenance reads "not written".
+        log("  NOTE   the field mapping document is not written for a split "
+            "run: it documents one specification and a split run produces "
+            "several.")
+    elif write and export and (out.ok or out.failed):
+        import polymorphize_export as expmod
+        try:
+            spec_path = ""
+            if out.merged is not None and out.merged.document:
+                spec_path = os.path.join(
+                    out_dir, "%s.%s" % (merged_name,
+                                        "yaml" if fmt == "yaml" else "json"))
+            target = os.path.join(out_dir, expmod.default_filename(out, merged_name))
+            out.export_path = expmod.write(out, target, spec_path=spec_path)
+            log("  wrote  %s" % os.path.basename(out.export_path))
+        except Exception as exc:                               # noqa: BLE001
+            # The specification is already on disk. Failing to write the
+            # documentation must not discard a good run.
+            log("  WARNING: could not write the field mapping document: %s: %s"
+                % (type(exc).__name__, exc))
+
     if write:
         core._write(os.path.join(out_dir, "generation_report.md"), build_report(out))
     return out
@@ -895,6 +1002,11 @@ def build_report(out):
     L.append("# SOR Polymorphizer generation report")
     L.append("")
     L.append("Workbook: `%s`" % os.path.basename(out.workbook))
+    L.append("")
+    L.append("Input format: **%s**"
+             % {"level": "Level format",
+                "mapping": "field mapping document"}.get(out.input_format,
+                                                          out.input_format))
     L.append("")
     L.append("Generated %d of %d endpoints. **%d failed.**"
              % (len(out.ok), total, len(out.failed)))
@@ -978,12 +1090,20 @@ def build_report(out):
             L.append("### Groups specialised across operations")
             L.append("")
             L.append("These groups are used by more than one operation and do "
-                     "not agree on what they publish. Each keeps its own name "
-                     "for the shared core, and every operation that uses it "
-                     "gets a derived schema inheriting through `allOf`. A group "
-                     "with no shared base has nothing in common between its "
-                     "uses; the P001 and P002 warnings say whether that is "
-                     "intended or a workbook inconsistency.")
+                     "not agree on what they publish. Where the shapes have "
+                     "attributes in common, the common part is published as "
+                     "`<Class>__Base` and every shape inherits it through "
+                     "`allOf`, carrying only its own delta. Where they have "
+                     "nothing in common, an `allOf` against an empty base "
+                     "would add nothing, so each shape is published whole and "
+                     "the Shared base column reads none. That is not "
+                     "necessarily a defect: two groups can share a label and "
+                     "genuinely describe different things. A `P001` warning "
+                     "against the group is the case that is worth fixing, "
+                     "because there the shapes do declare the same attribute "
+                     "and differ only in how, so aligning the workbook "
+                     "produces a base. The `P002` warnings name the exact "
+                     "differences.")
             L.append("")
             L.append("| Group | Shared base | Derived schemas |")
             L.append("|---|---|---|")

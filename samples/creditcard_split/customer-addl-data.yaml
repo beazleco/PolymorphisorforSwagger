@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   description: This API will be used to get the customer additional data for specified customer 
     number or card number
-  x-generated-by: SOR Polymorphizer 6.4
-  x-generated-at: '2026-09-09T02:20:54+00:00'
+  x-generated-by: SOR Polymorphizer 6.6
+  x-generated-at: '2026-09-10T00:00:08+00:00'
   x-source-sheet: Customer Addl Data
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card
@@ -24,13 +24,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardCustomerAdditionalDataResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CardCustomerAdditionalDataRequest'
-      description: This API will be used to get the customer additional data for specified customer 
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to get the customer additional data for specified customer 
         number or card number
       x-bian-behaviour-qualifier: '- Additional Data'
       x-bian-equivalent-endpoint: /credit-card/customer/additional-data/retrieve
@@ -64,6 +97,8 @@ components:
           x-sor-field: codes
       required:
       - searchCodes
+      x-class: CardCustomerAdditionalDataRequest
+      x-qualified-name: CardCustomerAdditionalDataRequest
     CardCustomerAdditionalDataResponse:
       type: object
       properties:
@@ -90,3 +125,254 @@ components:
           description: It specifies the customer additional data
           x-sor-fields:
             /v1/customer/additionalData: customerData
+      x-class: CardCustomerAdditionalDataResponse
+      x-qualified-name: CardCustomerAdditionalDataResponse
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help 
+        remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error 
+                  originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated 
+                  with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went 
+                  wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        status: '400'
+        title: Bad Request
+        timestamp: '2026-07-14T08:16:49.876Z'
+        errors:
+        - realm: Apigee
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+      x-class: ErrorResponse
+      x-qualified-name: ErrorResponse
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferable uuidv4) provided by the client for a specific HTTP 
+        request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace 
+        represents a single request or transaction as it flows through multiple services in a 
+        distributed system.
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: Uniquely identifies a single span within a trace. A span represents one unit of 
+        work, for example an HTTP request or a database query.
+  responses:
+    BadRequest:
+      description: "Bad Request\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: "Unauthorized\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: "Forbidden\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: "Not Found\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: "Method Not Allowed\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: "Conflict\n\nDisclaimer: The error message is Apigee error only and not mapped to the
+        System API error. Consumers should not rely on the exact error text as it may change depends on
+        the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: "Unprocessable Entity\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: "Too Many Requests\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: "Internal Server Error\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: "Bad Gateway\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: "Service Unavailable\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: "Gateway Timeout\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

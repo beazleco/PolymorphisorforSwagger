@@ -1,7 +1,7 @@
 """
 polymorphize_cli — command line entry points.
 
-Version 6.4.
+Version 6.6.
 
 Two subcommands:
 
@@ -17,6 +17,7 @@ Exit codes
 ===  ==========================================================
 0    every operation sheet generated
 2    the workbook could not be opened
+3    the file is neither recognised input format
 6    at least one endpoint failed, the rest generated
 7    no endpoint generated at all
 ===  ==========================================================
@@ -34,10 +35,11 @@ import sys
 import polymorphize_generate as gen
 import polymorphize_validate as val
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 EXIT_OK = 0
 EXIT_UNREADABLE = 2
+EXIT_UNRECOGNISED = 3
 EXIT_PARTIAL = 6
 EXIT_TOTAL_FAILURE = 7
 
@@ -88,7 +90,37 @@ def _wrap(body, width):
     return out or [""]
 
 
+def _preflight(path, stream=None):
+    """Classify the input before any work, and say what it is.
+
+    Returns ``(classification, exit_code_or_None)``. Up to 6.4 a field mapping
+    workbook handed to the tool had every sheet classified as a support sheet,
+    because the Level reader searches only the first six rows for a header and
+    that format's header is on row 10. The run reported no errors, no warnings
+    and exited zero, so a build step went green having produced nothing. This
+    is what closes that.
+    """
+    import polymorphize_classify as cls
+    stream = stream or sys.stdout
+    verdict = cls.classify(path)
+    print("Format:   %s" % verdict.line(), file=stream)
+    if not verdict.readable:
+        return verdict, EXIT_UNREADABLE
+    if verdict.fmt == cls.UNKNOWN:
+        print("", file=stream)
+        print("This file is neither input format. The tool reads the Level "
+              "format, which\ncarries a Level 1 column on its header row, and "
+              "the field mapping format,\nwhich carries a Parameter Type "
+              "column. Neither was found in the first\n%d rows of %d sheet(s)."
+              % (cls.PEEK_ROWS, verdict.sheets_sampled), file=stream)
+        return verdict, EXIT_UNRECOGNISED
+    return verdict, None
+
+
 def cmd_check(args):
+    verdict, code = _preflight(args.workbook)
+    if code is not None:
+        return code
     try:
         reports = val.validate_workbook(args.workbook,
                                         strict=(args.level == "strict"),
@@ -120,7 +152,9 @@ def cmd_check(args):
           % (s["operations"], s["ok"], s["failed"], s["errors"], s["warnings"]))
 
     if args.report:
-        text = val.format_report(args.workbook, reports, args.level == "strict")
+        text = val.format_report(args.workbook, reports,
+                                 args.level == "strict", sor=args.sor,
+                                 input_format=verdict.label)
         with open(args.report, "w", encoding="utf-8", newline="\n") as fh:
             fh.write(text)
         print("Wrote %s" % args.report)
@@ -140,6 +174,15 @@ def cmd_check(args):
 
 
 def cmd_generate(args):
+    verdict, code = _preflight(args.workbook)
+    if code is not None:
+        return code
+    if verdict.needs_specification and not args.sor:
+        print("", file=sys.stderr)
+        print("This is a field mapping document. It describes an interface "
+              "against a\nSystem of Record, so supply that System of Record's "
+              "specification with\n--sor, or every field name in it is taken "
+              "on trust.", file=sys.stderr)
     try:
         out = gen.run(args.workbook, args.out_dir, strict=args.strict,
                       version=args.api_version, fmt=args.format,
@@ -226,7 +269,13 @@ def build_parser():
                    help="list every finding on stdout")
     c.set_defaults(func=cmd_check)
 
-    g = sub.add_parser("generate", help="write one specification per operation sheet")
+    g = sub.add_parser(
+        "generate", help="write one specification per operation sheet",
+        epilog="The field mapping document is not written here. It is "
+               "available in the desktop window (polymorphize_gui.py) and in "
+               "the batch runner (polymorphize_batch.py), which is where the "
+               "documentation is refreshed alongside the specifications.",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     g.add_argument("workbook")
     g.add_argument("out_dir")
     g.add_argument("--format", choices=("yaml", "json"), default="yaml")

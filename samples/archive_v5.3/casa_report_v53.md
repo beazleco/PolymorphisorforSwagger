@@ -1,0 +1,679 @@
+# SOR-driven refactor report (SOR Polymorphizer v5.1)
+
+* Source swagger: `/tmp/casa_in.yaml`
+* SOR mapping:   `casa_map.xlsx`
+* Output:        `samples/casa_profiled_v53.yaml`
+
+## Mapping coverage
+
+* Attributes in the specification: **989**
+* Resolved against the mapping:    **989** (100.0%)
+* Not found in the mapping:        **0** (kept and flagged)
+* Resolution strategies: {'exact-path': 982, 'suffix-2': 5, 'suffix-3': 2}
+* Mapping rows indexed: 2371 across 26 sheet(s) (735 mapped, 1636 marked not-used)
+
+### Detected spreadsheet layout
+
+* `CASA_Initiate` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `CASA_Update` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `CASA_AcctBal_retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `CASA_AcctRelation_retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `CASA_AcctDetails_retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `CASA_AcctDates_retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `BillPurchase_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `AccountLimit_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `Payments_Credit` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `Payments_Debit` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `DebitandCredit_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `AmountBlock_Initiate` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `AmountBlock_Control` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `AmountBlock_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `AmountBlockDate_Update` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `AmountBlock_Update` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `BankCert_Initiate` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `ChequeBook_Initiate` — mode **path**, header row 11, desc=col8, dtype=col5, example=col7, field=col2, ptype=col1, remarks=col9, sor=col6, usage=col3
+* ` IssuedDevice_Initiate` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* ` IssuedDevice_Update` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* ` IssuedDevice_Request` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* ` IssuedDevice_CardAcc_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* ` IssuedDevice_CardTokn_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* ` IssuedDevice_RetrieveList` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `Passbook_Retrieve` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+* `Passbook_Update` — mode **path**, header row 11, desc=col7, dtype=col4, example=col6, field=col2, ptype=col1, remarks=col8, sor=col5, usage=col3
+
+## Attributes eliminated (494)
+
+* `CurrentAndSavingsAccountFacilityInitiateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `Partyidentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `partyRole.partyRoleType` — not-used-in-SOR (matched by exact-path)
+* `partyRole.partyRoleName` — not-used-in-SOR (matched by exact-path)
+* `ProductIdentifier.ProductIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `ProductIdentifier.productIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `ProductIdentifier.productName` — not-used-in-SOR (matched by exact-path)
+* `BranchReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `BranchReference.branchName` — not-used-in-SOR (matched by exact-path)
+* `BranchReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `BranchReference.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `MaximumLiabilityAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `MaximumLiabilityAmount.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `Party.Partyidentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityUpdateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityUpdateRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `PartyRole.partyRoleType` — not-used-in-SOR (matched by exact-path)
+* `PartyRole.partyRoleName` — not-used-in-SOR (matched by exact-path)
+* `PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `PartyObligationOrEntitlement.partyObligationOrEntitlementType` — not-used-in-SOR (matched by exact-path)
+* `AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountBalanceRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountBalanceRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountBalanceRetrieveRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountBalanceRetrieveResponse.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountBalanceRetrieveResponse.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountBalanceRetrieveResponse.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveRequest.PartyIdentifier.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveResponse.AccountInvolvement.Party.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveResponse.AccountInvolvement.Party.PartyObligationOrEntitlement.partyObligationOrEntitlementType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountRelationRetrieveResponse.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `PhoneAddress.countryCode` — not-used-in-SOR (matched by exact-path)
+* `PhoneAddress.phoneAddressType` — not-used-in-SOR (matched by exact-path)
+* `ElectronicAddress.electronicAddressType` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.addressType` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.buildingNumber` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.countryCode` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.fulladdress` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.others` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.postalCode` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.streetName` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.townName` — not-used-in-SOR (matched by exact-path)
+* `PostalAddress.fullAddress` — not-used-in-SOR (matched by exact-path)
+* `ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `PaginationResponse.hasMore` — not-used-in-SOR (matched by exact-path)
+* `PaginationResponse.nextCursor` — not-used-in-SOR (matched by exact-path)
+* `PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.CustomerReference.Party.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.CustomerReference.Party.PartyObligationOrEntitlement.partyObligationOrEntitlementType` — not-used-in-SOR (matched by suffix-3)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.CustomerReference.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by suffix-3)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.Account.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.Account.closeDate` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.Account.accountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.BranchReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.BranchReference.branchName` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.BranchReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityRetrieveResponse.BranchReference.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `AccountDateTime.accountDateType` — not-used-in-SOR (matched by exact-path)
+* `AccountStatement.accountStatementType` — not-used-in-SOR (matched by exact-path)
+* `InterestRatePlan.interestRatePlanType` — not-used-in-SOR (matched by exact-path)
+* `InterestArrangement.interestRateType` — not-used-in-SOR (matched by exact-path)
+* `ExchangedAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `AccountBalances.balanceCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `AccountBalances.balanceDate` — not-used-in-SOR (matched by exact-path)
+* `ExtendedAccountBalances.balanceAmount` — not-used-in-SOR (matched by exact-path)
+* `ExtendedAccountBalances.balanceCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `EntryAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountDatesRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountDatesRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountDatesRetrieveRequest.PartyIdentifier.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountDatesRetrieveRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `CurrentAndSavingsAccountFacilityAccountDatesRetrieveResponse.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseRequest.Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseRequest.Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseRequest.Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseRequest.Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseResponse.PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `Bank.bankLocation` — not-used-in-SOR (matched by exact-path)
+* `Bank.bankType` — not-used-in-SOR (matched by exact-path)
+* `Bank.bankName` — not-used-in-SOR (matched by exact-path)
+* `Bank.branchCount` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseLineAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseLineAmount.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `BillPurchaseInstance.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `PaymentTransactionAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.BranchReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.BranchReference.branchName` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.BranchReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.BranchReference.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.accountType` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.AccountIdentifier.AccountIdentification` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.AccountStatus.statusDescription` — not-used-in-SOR (matched by exact-path)
+* `AccountLimitResponse.AccountStatus.statusEffectiveDate` — not-used-in-SOR (matched by exact-path)
+* `CustomerIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `Limit.limitCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `Limit.limitType` — not-used-in-SOR (matched by exact-path)
+* `PaymentCreditRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `PaymentCreditRequest.PaymentTransaction.BranchReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `PaymentCreditRequest.PaymentTransaction.BranchReference.branchName` — not-used-in-SOR (matched by exact-path)
+* `PaymentCreditRequest.PaymentTransaction.BranchReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `PaymentCreditRequest.PaymentTransaction.BranchReference.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `PaymentCreditRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `TransactionAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `ExchangeAmount.amountValue` — not-used-in-SOR (matched by exact-path)
+* `ExchangeAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `ExchangeAmount.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `FeeAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `FeeAmount.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `TransactionDescription.descriptionLine` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.PaymentTransaction.BranchReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.PaymentTransaction.BranchReference.branchName` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.PaymentTransaction.BranchReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.PaymentTransaction.BranchReference.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.PaymentTransaction.TransactionAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.PaymentTransaction.TransactionDescription.descriptionLine` — not-used-in-SOR (matched by exact-path)
+* `PaymentDebitRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.transactionType` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditRequest.Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditResponse.PaginationResponse.hasMore` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditResponse.PaginationResponse.nextCursor` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditResponse.PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `DebitAndCreditResponse.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `Branch.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `Branch.branchName` — not-used-in-SOR (matched by exact-path)
+* `Branch.branchType` — not-used-in-SOR (matched by exact-path)
+* `Branch.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `TransactionReference.referenceIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `BalanceAmount.balanceType` — not-used-in-SOR (matched by exact-path)
+* `TransactionAssociation.associationType` — not-used-in-SOR (matched by exact-path)
+* `Amount.amountType` — not-used-in-SOR (matched by exact-path)
+* `Amount.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `FundAvailability.availabilityType` — not-used-in-SOR (matched by exact-path)
+* `DepositTransaction.TransactionDescription.descriptionLine` — not-used-in-SOR (matched by exact-path)
+* `DepositTransaction.TransactionUserReference.tillIdentification` — not-used-in-SOR (matched by exact-path)
+* `DepositTransaction.TransactionAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `DepositTransaction.TransactionAmount.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockInitiateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockInitiateRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockInitiateRequest.Partyidentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockAmount.amountType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlock.amountBlockType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockControlRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockControlRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockControlRequest.Partyidentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockControlRequest.AmountBlock.amountBlockType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockControlRequest.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockControlRequest.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.Partyidentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.amountBlockReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveRequest.Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveResponse.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveResponse.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveResponse.PaginationResponse.nextCursor` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockRetrieveResponse.PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockDateUpdateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockDateUpdateRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockDateUpdateRequest.AmountBlock.amountBlockType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockDateUpdateRequest.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockDateUpdateRequest.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockOldData.AmountBlock.amountBlockType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockOldData.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockOldData.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AmountBlock.amountBlockType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AmountBlockOldData.AmountBlock.amountBlockType` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AmountBlockOldData.AmountBlock.amountBlockPriorityNumber` — not-used-in-SOR (matched by exact-path)
+* `AmountBlockUpdateRequest.AmountBlockOldData.AmountBlock.amountBlockOriginatorReference` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateRequest.Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateRequest.Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateRequest.Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateRequest.Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `RequestedAccounts.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateResponse.PaginationResponse.hasMore` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateResponse.PaginationResponse.nextCursor` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInitiateResponse.PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `AccountBalance.balanceType` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInformation.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInformation.Branch.branchIdentification` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInformation.Branch.branchName` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInformation.Branch.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `BankCertificateInformation.ProductIdentifier.productIdentification` — not-used-in-SOR (matched by exact-path)
+* `ChequeBookInitiateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `ChequeBookInitiateRequest.AccountIdentifier.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `OrderDebitAccount.accountIdentification` — not-used-in-SOR (matched by exact-path)
+* `OrderDebitAccount.accountIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `OrderPaymentAccountType.accountType` — not-used-in-SOR (matched by exact-path)
+* `ChequeBookServiceFee.amount` — not-used-in-SOR (matched by exact-path)
+* `ChequeBookServiceFee.amountType` — not-used-in-SOR (matched by exact-path)
+* `ChequeBookServiceFee.amountCurrencyCode` — not-used-in-SOR (matched by exact-path)
+* `ChequeOrderOptions.deviceCustomizationType` — not-used-in-SOR (matched by exact-path)
+* `ChequeOrderRecord.ChequeOrderOptions.deviceCustomizationType` — not-used-in-SOR (matched by exact-path)
+* `ChequeOrderRecord.ChequeOrderOptions.unpaidFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `DeviceCustomization.issuedDeviceEmbossName2` — not-used-in-SOR (matched by exact-path)
+* `DeviceLocationReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `DeviceLocationReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `OldIssuedDeviceIdentifier.issuedDeviceIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceAdministrationReference.deviceCancelDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceAdministrationReference.deviceProfile` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceAdministrationReference.devicePrimaryCardTag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceDetails.deviceBankIdentifier` — not-used-in-SOR (matched by exact-path)
+* `PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountProfile.creditOnlyFlag` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountProfile.monetaryFlag` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.linkedCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountIdentifier` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountProfile.creditOnlyFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountProfile.monetaryFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceInitiateResponse.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.linkedCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountIdentifier` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountProfile.creditOnlyFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountProfile.monetaryFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateRequest.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceUpdateResponse.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.linkedCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestRequest.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.linkedCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountIdentifier` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountProfile.creditOnlyFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountProfile.monetaryFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceRequestResponse.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardAccountRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardAccountRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.linkedCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountIdentifier` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountProfile.creditOnlyFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountProfile.monetaryFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveRequest.IssuedDeviceIdentifier.issuedDeviceIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveRequest.PartyIdentifier.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.IssuedDeviceDetails.deviceCustomizationTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.linkedCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountIdentifier` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountNickName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountStatus` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountProfile.creditOnlyFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountProfile.monetaryFlag` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveRequest.applicationIdICBS` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveRequest.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveRequest.Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveRequest.Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveRequest.Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveRequest.Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.PartyIdentifier.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.accountCloseCode` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.accountDescription` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.accountName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.accountOpenDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.principleCardHolder` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.involvedPartyCount` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.accountInvolvementType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentification` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyFirstName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyMiddleName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyLastName` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyTitle` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.partyOccupation` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.PartyDateTime.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.LinkedAccounts.AccountInvolvement.Party.ContactPoint.contactPointType` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.PaginationResponse.hasMore` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.PaginationResponse.nextCursor` — not-used-in-SOR (matched by exact-path)
+* `IssuedDeviceListRetrieveResponse.PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveRequest.IssuedDeviceIdentifier.issuedDeviceIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveRequest.Pagination.keyword` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveRequest.Pagination.page` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveRequest.Pagination.includeTotal` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveRequest.Pagination.order` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveResponse.PaginationResponse.hasMore` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveResponse.PaginationResponse.nextCursor` — not-used-in-SOR (matched by exact-path)
+* `PassbookRetrieveResponse.PaginationResponse.currentPage` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.deviceCancelDate` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.DeviceDateTimeType.dateTimeTypeValues` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.DeviceDateTimeType.dateTimeTypeDate` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.IssuedDeviceIdentifier.issuedDeviceIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.IssuedDeviceIdentifier.issuedDeviceIdentification` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.deviceIssueDate` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.deviceLanguage` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.deviceStatus` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.deviceTypeValues` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.deviceMagneticSecurityCodeNew` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.issuedDeviceIdentificationType` — not-used-in-SOR (matched by exact-path)
+* `PassbookDeviceReference.issuedDeviceIdentification` — not-used-in-SOR (matched by exact-path)
+* `TransactionBranchReference.branchLocation` — not-used-in-SOR (matched by exact-path)
+* `TransactionBranchReference.branchName` — not-used-in-SOR (matched by exact-path)
+* `TransactionBranchReference.branchType` — not-used-in-SOR (matched by exact-path)
+* `TransactionBranchReference.branchFlag` — not-used-in-SOR (matched by exact-path)
+* `PassbookEntryTransaction.transactionAmount` — not-used-in-SOR (matched by exact-path)
+* `PassbookEntryTransaction.TransactionAmount.amountType` — not-used-in-SOR (matched by exact-path)
+
+## Cascade removals
+
+* Emptied objects removed: 8
+    * `ChequeBookServiceFee`
+    * `DeviceDateTimeType`
+    * `ExchangeAmount`
+    * `OrderDebitAccount`
+    * `OrderPaymentAccountType`
+    * `PartyDateTime`
+    * `PartyObligationOrEntitlement`
+    * `PostalAddress`
+* References removed: 96
+    * `CurrentAndSavingsAccountFacilityAccountRelationRetrieveRequest.PartyIdentifier` — inline object left with no attributes
+    * `CurrentAndSavingsAccountFacilityAccountDatesRetrieveRequest.PartyIdentifier` — inline object left with no attributes
+    * `AmountBlockControlRequest.AmountBlockProcessingInstruction` — inline object left with no attributes
+    * `AmountBlockRetrieveRequest.AmountBlockProcessingInstruction` — inline object left with no attributes
+    * `AmountBlockDateUpdateRequest.AmountBlockProcessingInstruction` — inline object left with no attributes
+    * `AmountBlockUpdateRequest.AmountBlockProcessingInstruction` — inline object left with no attributes
+    * `LinkedAccounts.AccountDateTime` — inline object left with no attributes
+    * `LinkedAccounts.AccountProfile` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountProfile` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountProfile` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountProfile` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountProfile` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveRequest.PartyIdentifier` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountProfile` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].AccountDateTime` — inline object left with no attributes
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.PartyDateTime` — inline object left with no attributes
+    * `PassbookDeviceReference.DeviceDateTimeType` — inline object left with no attributes
+    * `PassbookDeviceReference.IssuedDeviceIdentifier` — inline object left with no attributes
+    * `AccountInvolvement.Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `ContactPoint.PostalAddress` — referenced an object that was removed
+    * `CurrentAndSavingsAccountFacilityRetrieveResponse.CustomerReference.Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `TransactionCurrencyConversion.ExchangeAmount` — referenced an object that was removed
+    * `PaymentDebitRequest.PaymentTransaction.TransactionCurrencyConversion.ExchangeAmount` — referenced an object that was removed
+    * `ChequeOrderOptions.OrderDebitAccount` — referenced an object that was removed
+    * `ChequeOrderOptions.OrderPaymentAccountType` — referenced an object that was removed
+    * `ChequeOrderOptions.ChequeBookServiceFee` — referenced an object that was removed
+    * `ChequeOrderRecord.ChequeOrderOptions.OrderDebitAccount` — referenced an object that was removed
+    * `ChequeOrderRecord.ChequeOrderOptions.OrderPaymentAccountType` — referenced an object that was removed
+    * `ChequeOrderRecord.ChequeOrderOptions.ChequeBookServiceFee` — referenced an object that was removed
+    * `LinkedAccounts.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `LinkedAccounts.AccountInvolvement[].Party.PartyDateTime` — referenced an object that was removed
+    * `LinkedAccounts.AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint[].PostalAddress` — referenced an object that was removed
+    * `AccountInvolvement.Party.ContactPoint` — inline object left with no attributes
+    * `LinkedAccounts.ContactPoint` — inline object left with no attributes
+    * `LinkedAccounts.AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `LinkedAccounts.AccountInvolvement[].Party` — inline object left with no attributes
+    * `LinkedAccounts.AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceInitiateResponse.LinkedAccounts` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceUpdateRequest.LinkedAccounts` — inline object left with no attributes
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceRequestRequest.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceRequestResponse.LinkedAccounts` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceCadAccountRetrieveResponse.LinkedAccounts` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+    * `IssuedDeviceCardTokenRetrieveResponse.LinkedAccounts` — inline object left with no attributes
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party.ContactPoint` — inline object left with no attributes
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].AccountInvolvement[].Party` — inline object left with no attributes
+    * `IssuedDeviceListRetrieveResponse.LinkedAccounts[].AccountInvolvement` — inline object left with no attributes
+
+## Polymorphism applied
+
+* (no shared-schema differences required a base/profile split)
+
+## De-duplication
+
+* CurrentAndSavingsAccountFacilityRetrieveRequest.IssuedDeviceIdentifier -> $ref IssuedDeviceIdentifier (equivalent in the source document)
+* CurrentAndSavingsAccountFacilityAccountDatesRetrieveResponse.AccountStatus -> $ref AccountStatus (equivalent in the source document)
+* DebitAndCreditResponse.PaginationResponse -> $ref PaginationResponse (equivalent in the source document)
+* SKIPPED AmountBlockControlRequest.AmountBlockProcessingInstruction -> AmountBlockProcessingInstruction (no longer an inline object)
+* AmountBlockControlRequest.AmountBlock -> $ref AmountBlock (equivalent in the source document)
+* SKIPPED AmountBlockRetrieveRequest.AmountBlockProcessingInstruction -> AmountBlockProcessingInstruction (no longer an inline object)
+* SKIPPED AmountBlockRetrieveRequest.AmountBlock -> AmountBlock (shapes diverged after pruning, not merged)
+* SKIPPED AmountBlockDateUpdateRequest.AmountBlockProcessingInstruction -> AmountBlockProcessingInstruction (no longer an inline object)
+* AmountBlockDateUpdateRequest.AmountBlock -> $ref AmountBlock (equivalent in the source document)
+* AmountBlockOldData.AmountBlock -> $ref AmountBlock (equivalent in the source document)
+* SKIPPED AmountBlockUpdateRequest.AmountBlockProcessingInstruction -> AmountBlockProcessingInstruction (no longer an inline object)
+* AmountBlockUpdateRequest.AmountBlock -> $ref AmountBlock (equivalent in the source document)
+* SKIPPED AmountBlockUpdateRequest.AmountBlockOldData -> AmountBlockOldData (shapes diverged after pruning, not merged)
+* SKIPPED IssuedDeviceInitiateResponse.IssuedDeviceDetails -> IssuedDeviceDetails (shapes diverged after pruning, not merged)
+* SKIPPED IssuedDeviceUpdateRequest.IssuedDeviceDetails -> IssuedDeviceDetails (shapes diverged after pruning, not merged)
+* SKIPPED IssuedDeviceRequestRequest.IssuedDeviceDetails -> IssuedDeviceDetails (shapes diverged after pruning, not merged)
+* SKIPPED IssuedDeviceRequestResponse.IssuedDeviceDetails -> IssuedDeviceDetails (shapes diverged after pruning, not merged)
+* SKIPPED IssuedDeviceCadAccountRetrieveResponse.IssuedDeviceDetails -> IssuedDeviceDetails (shapes diverged after pruning, not merged)
+* SKIPPED IssuedDeviceCardTokenRetrieveResponse.IssuedDeviceDetails -> IssuedDeviceDetails (shapes diverged after pruning, not merged)
+* SKIPPED PassbookUpdateRequest.PassbookInstanceRecord -> PassbookInstanceRecord (shapes diverged after pruning, not merged)
+
+## Output assertions
+
+* All post-run assertions passed (no empty objects, no dangling refs, no required-without-property).

@@ -1,7 +1,7 @@
 """
 polymorphize_workbook — reader for the Level-indented SOR mapping contract.
 
-Version 6.4.
+Version 6.6.
 
 This module replaces the dotted-path reader used up to v5.3. The authoritative
 workbook format expresses schema nesting through a run of ``Level 1`` ..
@@ -64,7 +64,7 @@ from dataclasses import dataclass, field
 
 import polymorphize_core as core
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 # --------------------------------------------------------------------------- #
 # Contract constants
@@ -510,6 +510,13 @@ class SheetResult:
     findings: list = field(default_factory=list)
     ignored_sections: list = field(default_factory=list)
     ignored_rows: int = 0
+    #: The sheet exactly as it was read, kept only by the field mapping reader
+    #: and only so that the exporter can write it back without losing the rows
+    #: the tool does not interpret. See :mod:`polymorphize_export`. It is the
+    #: same list the reader already built, so it costs no extra memory.
+    source_rows: list = field(default_factory=list)
+    #: The field mapping layout, when the sheet came from that format.
+    mapping_layout: object = None
 
     @property
     def errors(self):
@@ -711,8 +718,9 @@ def _build_tree(section, layout, result):
         if n.is_container and not n.children:
             result.findings.append(Finding(
                 "A006", "warning", sheet, cell_ref(n.row, layout.roles.get("type", 0)),
-                "%r is declared %s but has no nested rows beneath it"
-                % (n.name, n.json_type),
+                "%r is declared %s but has no nested rows beneath it, so "
+                "there is no shape to publish and the element was removed "
+                "from the interface" % (n.name, n.json_type),
                 "at least one row one Level deeper, or a scalar Data Type",
                 "add the attributes of %r one Level deeper, or change its Data Type "
                 "to a scalar" % n.name,

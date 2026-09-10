@@ -2,7 +2,7 @@
 """
 polymorphize_batch — several mapping workbooks in one run.
 
-Version 6.4.
+Version 6.6.
 
 Under the workbook-authoritative contract one workbook already fans out to many
 endpoints, so a batch is a list of workbooks rather than a list of jobs with
@@ -21,6 +21,7 @@ api_version      stamped into info.version                   (default: 1.0.0)
 title            info.title of the merged specification
 split            true writes one file per sheet             (default: false)
 sor              SOR specification(s) or folder, ';'-separated
+export           false suppresses the field mapping document  (default: true)
 ===============  =========================================================
 
 Relative paths resolve against the manifest's own folder unless ``--base-dir``
@@ -30,8 +31,13 @@ Outputs
 =======
 
 Each workbook's specifications go to its own folder, alongside that run's
-``generation_report.md`` and a ``.FAILED.md`` for every endpoint that failed.
-The batch itself writes ``batch_summary.csv`` and ``batch_index.html``.
+``generation_report.md``, a ``.FAILED.md`` for every endpoint that failed, and
+the field mapping document for the specification the run produced. The batch
+itself writes ``batch_summary.csv`` and ``batch_index.html``.
+
+The field mapping document is written here and in the desktop window, and by
+instruction not on the command line. Set ``export`` to false in a manifest row
+to suppress it for that workbook.
 
 Exit codes match the single-workbook CLI: 0 when every endpoint of every
 workbook generated, 6 when some generated and some failed, 7 when none did.
@@ -49,7 +55,7 @@ import traceback
 
 import polymorphize_generate as gen
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 EXIT_OK, EXIT_UNREADABLE, EXIT_PARTIAL, EXIT_TOTAL_FAILURE = 0, 2, 6, 7
 
@@ -124,6 +130,10 @@ def plan(manifest_path, base_dir=None):
             "sor": [_resolve(base, x.strip())
                     for x in (row.get("sor") or "").split(";")
                     if x.strip()] or None,
+            # On unless the row says otherwise: the batch is where a whole
+            # set of workbooks is refreshed, so it is where the documentation
+            # most needs to keep step with the specifications.
+            "export": (row.get("export") or "true").strip().lower() in TRUE,
         })
     return jobs
 
@@ -133,13 +143,28 @@ def run_job(job):
     result = dict(job)
     result.update({"status": "ok", "ok": 0, "failed": 0, "skipped": 0,
                    "failed_sheets": [], "error": "", "merged": {},
-                   "sor_verified": False, "showcase": ""})
+                   "sor_verified": False, "showcase": "", "export": ""})
+    import polymorphize_classify as cls
+    verdict = cls.classify(job["workbook"])
+    result["format"] = verdict.fmt
+    if not verdict.readable:
+        result["status"] = "unreadable"
+        result["error"] = verdict.error
+        return result
+    if verdict.fmt == cls.UNKNOWN:
+        # Neither input format. Report it rather than skipping every sheet and
+        # recording a clean run that produced nothing.
+        result["status"] = "unrecognised"
+        result["error"] = verdict.line()
+        return result
+
     try:
         out = gen.run(job["workbook"], job["out_dir"],
                       strict=(job["level"] == "strict"),
                       version=job["api_version"], fmt=job["format"],
                       split=job["split"], title=job["title"],
-                      sor=job["sor"], log=lambda *_a: None)
+                      sor=job["sor"], export=job.get("export", True),
+                      log=lambda *_a: None)
     except Exception as exc:                                   # noqa: BLE001
         result["status"] = "unreadable"
         result["error"] = "%s: %s" % (type(exc).__name__, exc)
@@ -153,6 +178,7 @@ def run_job(job):
         result["error"] = "; ".join(f.what for f in out.merged.errors)[:400]
     result["sor_verified"] = bool(out.sor_verified)
     result["showcase"] = out.showcase_path
+    result["export"] = out.export_path
     result["merged"] = (out.merged.stats
                         if out.merged is not None and out.merged.document
                         else {})
@@ -169,7 +195,7 @@ def run_job(job):
 
 def write_summary(results, out_path):
     cols = ["name", "workbook", "out_dir", "level", "status", "ok", "failed",
-            "skipped", "sor_verified", "showcase", "error"]
+            "skipped", "sor_verified", "showcase", "export", "error"]
     with open(out_path, "w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=cols, extrasaction="ignore")
         writer.writeheader()
@@ -212,7 +238,8 @@ def write_index(results, out_path):
              % (len(results), "" if len(results) == 1 else "s",
                 total_ok, "" if total_ok == 1 else "s", total_failed),
              "<table><tr><th>Workbook</th><th>Status</th><th>Generated</th>",
-             "<th>Failed</th><th>Support sheets</th><th>Output</th></tr>"]
+             "<th>Failed</th><th>Support sheets</th><th>Output</th>",
+             "<th>Field mapping document</th></tr>"]
     for r in results:
         bg, fg, label = BADGE.get(r["status"], ("#eee", "#333", r["status"]))
         cell = ["<td><strong>%s</strong><br><code>%s</code>"
@@ -228,11 +255,14 @@ def write_index(results, out_path):
         if r["error"]:
             cell.append("<br><code>%s</code>" % e(r["error"]))
         cell.append("</td>")
+        exported = os.path.basename(r.get("export") or "")
         parts.append("<tr>%s<td><span class='b' style='background:%s;color:%s'>"
                      "%s</span></td><td class='n'>%d</td><td class='n'>%d</td>"
-                     "<td class='n'>%d</td><td><code>%s</code></td></tr>"
+                     "<td class='n'>%d</td><td><code>%s</code></td>"
+                     "<td><code>%s</code></td></tr>"
                      % ("".join(cell), bg, fg, e(label), r["ok"], r["failed"],
-                        r["skipped"], e(r["out_dir"])))
+                        r["skipped"], e(r["out_dir"]),
+                        e(exported) if exported else "&mdash;"))
     parts.append("</table>")
     with open(out_path, "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(parts))

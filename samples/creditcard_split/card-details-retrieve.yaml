@@ -3,8 +3,8 @@ info:
   title: CreditCard Card Details_Retrieve
   version: 1.0.0
   description: This API will be used to retrieve details about a card account
-  x-generated-by: SOR Polymorphizer 6.4
-  x-generated-at: '2026-09-09T02:20:53+00:00'
+  x-generated-by: SOR Polymorphizer 6.6
+  x-generated-at: '2026-09-10T00:00:08+00:00'
   x-source-sheet: Card Details_Retrieve
   x-polymorphism-pattern: P2
   x-bian-service-domain: CreditCard
@@ -22,20 +22,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditCardAccountRetrieveResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreditCardAccountRetrieveRequest'
-      description: This API will be used to retrieve details about a card account
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to retrieve details about a card account
       x-bian-behaviour-qualifier: Account
       x-bian-equivalent-endpoint: /CreditCard/Account/Retrieve
       x-sor-endpoints: /v1/account/contact /v1/account/delinquency /v1/account/info 
         /v1/account/historyIndicators /v1/card/account/list
 components:
   schemas:
-    CreditCardAccountRetrieveRequestBase:
+    CreditCardAccountRetrieveRequest__Base:
       type: object
       properties:
         requestVariant:
@@ -67,9 +100,12 @@ components:
       required:
       - requestVariant
       description: Attributes common to every variant of CreditCardAccountRetrieveRequest.
-    CreditCardAccountRetrieveRequestForAccountContactDetails:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: Base
+      x-qualified-name: CreditCardAccountRetrieveRequest~Base
+    CreditCardAccountRetrieveRequest__AccountContactDetails:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -109,9 +145,12 @@ components:
       x-sor-endpoint: /v1/account/contact
       x-variant: '01'
       x-variant-name: Account Contact Details
-    CreditCardAccountRetrieveRequestForAccuntDeliquency:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountContactDetails
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountContactDetails
+    CreditCardAccountRetrieveRequest__AccuntDeliquency:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -141,9 +180,12 @@ components:
       x-sor-endpoint: /v1/account/delinquency
       x-variant: '02'
       x-variant-name: Accunt Deliquency
-    CreditCardAccountRetrieveRequestForAccountInformation:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccuntDeliquency
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccuntDeliquency
+    CreditCardAccountRetrieveRequest__AccountInformation:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -173,9 +215,12 @@ components:
       x-sor-endpoint: /v1/account/info
       x-variant: '03'
       x-variant-name: Account Information
-    CreditCardAccountRetrieveRequestForAccountHistoryIndicators:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountInformation
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountInformation
+    CreditCardAccountRetrieveRequest__AccountHistoryIndicators:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -205,9 +250,12 @@ components:
       x-sor-endpoint: /v1/account/historyIndicators
       x-variant: '04'
       x-variant-name: Account History Indicators
-    CreditCardAccountRetrieveRequestForAccountCardList:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountHistoryIndicators
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountHistoryIndicators
+    CreditCardAccountRetrieveRequest__AccountCardList:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -221,22 +269,27 @@ components:
       x-sor-endpoint: /v1/card/account/list
       x-variant: '05'
       x-variant-name: Account Card List
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountCardList
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountCardList
     CreditCardAccountRetrieveRequest:
       oneOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountCardList'
       discriminator:
         propertyName: requestVariant
         mapping:
-          '01': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
-          '02': '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
-          '03': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
-          '04': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
-          '05': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
-    CreditCardAccountRetrieveResponseBase:
+          '01': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountContactDetails'
+          '02': '#/components/schemas/CreditCardAccountRetrieveRequest__AccuntDeliquency'
+          '03': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountInformation'
+          '04': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountHistoryIndicators'
+          '05': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountCardList'
+      x-class: CreditCardAccountRetrieveRequest
+      x-qualified-name: CreditCardAccountRetrieveRequest
+    CreditCardAccountRetrieveResponse__Base:
       type: object
       properties:
         AccountDetials:
@@ -276,9 +329,12 @@ components:
             /v1/account/historyIndicators: accountHistoryInd
             /v1/card/account/list: cardAccounts
       description: Attributes common to every variant of CreditCardAccountRetrieveResponse.
-    CreditCardAccountRetrieveResponseForAccountContactDetails:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: Base
+      x-qualified-name: CreditCardAccountRetrieveResponse~Base
+    CreditCardAccountRetrieveResponse__AccountContactDetails:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__Base'
       - type: object
         properties:
           AccountDetials:
@@ -355,9 +411,12 @@ components:
       x-sor-endpoint: /v1/account/contact
       x-variant: '01'
       x-variant-name: Account Contact Details
-    CreditCardAccountRetrieveResponseForAccuntDeliquency:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountContactDetails
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountContactDetails
+    CreditCardAccountRetrieveResponse__AccuntDeliquency:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__Base'
       - type: object
         properties:
           AccountDetials:
@@ -406,9 +465,12 @@ components:
       x-sor-endpoint: /v1/account/delinquency
       x-variant: '02'
       x-variant-name: Accunt Deliquency
-    CreditCardAccountRetrieveResponseForAccountInformation:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccuntDeliquency
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccuntDeliquency
+    CreditCardAccountRetrieveResponse__AccountInformation:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__Base'
       - type: object
         properties:
           AccountDetials:
@@ -419,6 +481,10 @@ components:
                 Account:
                   type: object
                   properties:
+                    accountName:
+                      type: string
+                      description: It specifies the account name
+                      x-sor-field: accounts.accountName
                     accountOpenDate:
                       type: string
                       format: date-time
@@ -502,9 +568,12 @@ components:
       x-sor-endpoint: /v1/account/info
       x-variant: '03'
       x-variant-name: Account Information
-    CreditCardAccountRetrieveResponseForAccountHistoryIndicators:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountInformation
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountInformation
+    CreditCardAccountRetrieveResponse__AccountHistoryIndicators:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__Base'
       - type: object
         properties:
           AccountDetials:
@@ -552,9 +621,12 @@ components:
       x-sor-endpoint: /v1/account/historyIndicators
       x-variant: '04'
       x-variant-name: Account History Indicators
-    CreditCardAccountRetrieveResponseForAccountCardList:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountHistoryIndicators
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountHistoryIndicators
+    CreditCardAccountRetrieveResponse__AccountCardList:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__Base'
       - type: object
         properties:
           AccountDetials:
@@ -596,14 +668,268 @@ components:
       x-sor-endpoint: /v1/card/account/list
       x-variant: '05'
       x-variant-name: Account Card List
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountCardList
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountCardList
     CreditCardAccountRetrieveResponse:
       oneOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountContactDetails'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccuntDeliquency'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountInformation'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountHistoryIndicators'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountCardList'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountCardList'
       x-selected-by: requestVariant
       description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
         cannot express a response discriminator that depends on a request property, so the 
         dependency is recorded here.
+      x-class: CreditCardAccountRetrieveResponse
+      x-qualified-name: CreditCardAccountRetrieveResponse
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help 
+        remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error 
+                  originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated 
+                  with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went 
+                  wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        status: '400'
+        title: Bad Request
+        timestamp: '2026-07-14T08:16:49.876Z'
+        errors:
+        - realm: Apigee
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+      x-class: ErrorResponse
+      x-qualified-name: ErrorResponse
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferable uuidv4) provided by the client for a specific HTTP 
+        request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace 
+        represents a single request or transaction as it flows through multiple services in a 
+        distributed system.
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: Uniquely identifies a single span within a trace. A span represents one unit of 
+        work, for example an HTTP request or a database query.
+  responses:
+    BadRequest:
+      description: "Bad Request\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: "Unauthorized\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: "Forbidden\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: "Not Found\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: "Method Not Allowed\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: "Conflict\n\nDisclaimer: The error message is Apigee error only and not mapped to the
+        System API error. Consumers should not rely on the exact error text as it may change depends on
+        the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: "Unprocessable Entity\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: "Too Many Requests\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: "Internal Server Error\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: "Bad Gateway\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: "Service Unavailable\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: "Gateway Timeout\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

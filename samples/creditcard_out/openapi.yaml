@@ -6,8 +6,8 @@ info:
     attributes mapped to a System of Record field are published; shared groups that differ between 
     operations are specialised with allOf, and operations served by several SOR endpoints carry a 
     requestVariant discriminator.
-  x-generated-by: SOR Polymorphizer 6.4
-  x-generated-at: '2026-09-09T02:20:52+00:00'
+  x-generated-by: SOR Polymorphizer 6.6
+  x-generated-at: '2026-09-09T23:59:46+00:00'
   x-source-sheets:
   - Available Funds_Retrieve
   - Transaction Adjustment_Initiate
@@ -38,13 +38,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FinancialStatusTrackingResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/FinancialStatusTrackingRequest'
-      description: Use this API to retrieve card available funds details
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: Use this API to retrieve card available funds details
       x-bian-behaviour-qualifier: Financial Status Tracking
       x-sor-endpoints: /v1/card/availableFunds
   /credit-card/card-transaction/adjustment/initiate:
@@ -60,13 +93,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardTransactionAdjustmentResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CardTransactionAdjustmentRequest'
-      description: Use this API to post cardholder account adjustment
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: Use this API to post cardholder account adjustment
       x-bian-behaviour-qualifier: Card Transaction
       x-sor-endpoints: /v1/account/transaction/adjustment
   /credit-card/mobile-recency/retrieve:
@@ -82,13 +148,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MobileRecencyResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/MobileRecencyRequest'
-      description: Use this API to perform recency check
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: Use this API to perform recency check
       x-bian-behaviour-qualifier: Mobile Recency
       x-sor-endpoints: /v1/card/recencyCheck
   /credit-card/billing/retrieve:
@@ -104,13 +203,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BillingResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/BillingRequest'
-      description: Use this API to retrieve card statement details
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: Use this API to retrieve card statement details
       x-bian-behaviour-qualifier: Billing
       x-sor-endpoints: /v1/account/statement
   /CreditCard/CardTransaction/Retrieve:
@@ -126,13 +258,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardTransactionResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CardTransactionRequest'
-      description: This API will be used to retrieve details about a card account transaction
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to retrieve details about a card account transaction
       x-bian-behaviour-qualifier: Card Transaction
       x-bian-equivalent-endpoint: /CreditCard/CardTransaction/Retrieve
       x-sor-endpoints: 'GET: v1/account/search/trans, GET: v1/account/search/auth, GET: /v1/account/search/mps'
@@ -149,13 +314,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditCardAccountRetrieveResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreditCardAccountRetrieveRequest'
-      description: This API will be used to retrieve details about a card account
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to retrieve details about a card account
       x-bian-behaviour-qualifier: Account
       x-bian-equivalent-endpoint: /CreditCard/Account/Retrieve
       x-sor-endpoints: /v1/account/contact /v1/account/delinquency /v1/account/info 
@@ -173,13 +371,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IssuedDeviceInstanceInitiateResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceInstanceInitiateRequest'
-      description: This API will be used to initiate/enable a type of device for the card account
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to initiate/enable a type of device for the card account
       x-bian-behaviour-qualifier: Issued Device
       x-bian-equivalent-endpoint: /CreditCard/IssuedDevice/Initiate
       x-sor-endpoints: 'PUT: /v1/card/activate'
@@ -196,13 +427,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/IssuedDeviceInstanceUpdateResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceInstanceUpdateRequest'
-      description: This API will be used to update details for an issued device
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to update details for an issued device
       x-bian-behaviour-qualifier: Issued Device
       x-bian-equivalent-endpoint: /CreditCard/IssuedDevice/Update
       x-sor-endpoints: 'DELETE: /v1/card/cancel'
@@ -219,13 +483,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreditCardCancelResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreditCardCancelRequest'
-      description: This API will be used to cancel a card with specified reason or cancellation code
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to cancel a card with specified reason or cancellation code
       x-bian-behaviour-qualifier: Issued Device
       x-bian-equivalent-endpoint: /credit-card/issued-device/control
       x-sor-endpoints: PUT /v1/card/cancel
@@ -243,13 +540,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardCustomerAdditionalDataResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CardCustomerAdditionalDataRequest'
-      description: This API will be used to get the customer additional data for specified customer 
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to get the customer additional data for specified customer 
         number or card number
       x-bian-behaviour-qualifier: '- Additional Data'
       x-bian-equivalent-endpoint: /credit-card/customer/additional-data/retrieve
@@ -265,20 +595,53 @@ paths:
         '204':
           description: 'Successful. This operation returns no content: the Response Body section of the
             mapping workbook carries no attribute mapped to an SOR field.'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceCardEncryptedRequest'
-      description: This API will be used to get the card number encrypted, the expiry date, and 
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to get the card number encrypted, the expiry date, and 
         optionally the CVV2. Encryption is made via a Public RSA key base64 encoded in format X.509.
       x-bian-behaviour-qualifier: Issued Device
       x-bian-equivalent-endpoint: /credit-card/issued-device/card-rsa-encrypted/retrieve
       x-sor-endpoints: GET /v1/card/{cardNumber}/cardRSAEncrypted
 components:
   schemas:
-    AccountBase:
+    Account__Base:
       type: object
       properties:
         AccountIdentifier:
@@ -291,18 +654,24 @@ components:
             cardDetailsRetrieve[04]: accountHistoryInd.currencyCode
             (unattributed): accountContact.currencyCode
       description: Attributes of Account common to every operation that uses it.
-    AccountForCardDetailsRetrieve2:
+      x-class: Account
+      x-context: Base
+      x-qualified-name: Account~Base
+    Account__CardDetailsRetrieve2:
       allOf:
-      - $ref: '#/components/schemas/AccountBase'
+      - $ref: '#/components/schemas/Account__Base'
       - type: object
         properties:
           ContactPoint:
             $ref: '#/components/schemas/ContactPoint'
       x-used-by:
       - cardDetailsRetrieve
+      x-class: Account
+      x-context: CardDetailsRetrieve2
+      x-qualified-name: Account~CardDetailsRetrieve2
     Account:
       allOf:
-      - $ref: '#/components/schemas/AccountBase'
+      - $ref: '#/components/schemas/Account__Base'
       - type: object
         properties:
           accountCloseCode:
@@ -313,11 +682,17 @@ components:
               cardDetailsRetrieve[04]: accountHistoryInd.accountCloseCode
       x-used-by:
       - cardDetailsRetrieve
-    AccountForCardDetailsRetrieve:
+      x-class: Account
+      x-qualified-name: Account
+    Account__CardDetailsRetrieve:
       allOf:
-      - $ref: '#/components/schemas/AccountBase'
+      - $ref: '#/components/schemas/Account__Base'
       - type: object
         properties:
+          accountName:
+            type: string
+            description: It specifies the account name
+            x-sor-field: accounts.accountName
           accountOpenDate:
             type: string
             format: date-time
@@ -346,9 +721,12 @@ components:
             description: Unique reference representing a defined relationship involving the party.
       x-used-by:
       - cardDetailsRetrieve
-    AccountForCardDetailsRetrieve3:
+      x-class: Account
+      x-context: CardDetailsRetrieve
+      x-qualified-name: Account~CardDetailsRetrieve
+    Account__CardDetailsRetrieve3:
       allOf:
-      - $ref: '#/components/schemas/AccountBase'
+      - $ref: '#/components/schemas/Account__Base'
       - type: object
         properties:
           accountCloseCode:
@@ -366,6 +744,9 @@ components:
             x-sor-field: cardAccounts.accountStyle
       x-used-by:
       - cardDetailsRetrieve
+      x-class: Account
+      x-context: CardDetailsRetrieve3
+      x-qualified-name: Account~CardDetailsRetrieve3
     AccountBalanceItem:
       type: object
       properties:
@@ -378,14 +759,19 @@ components:
           example: '15000.00'
           x-sor-field: accountInfo.cardAvailable.purchase accountInfo.cardAvailable.cashAdvance 
             accountInfo.cardAvailable.majorPurchase
-    AccountDetialsItemForCardDetailsRetrieve:
+      x-class: AccountBalanceItem
+      x-qualified-name: AccountBalanceItem
+    AccountDetialsItem__CardDetailsRetrieve:
       type: object
       properties:
         Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve2'
+          $ref: '#/components/schemas/Account__CardDetailsRetrieve2'
         DeliveryOptions:
           $ref: '#/components/schemas/DeliveryOptions'
-    AccountDetialsItemForCardDetailsRetrieve3:
+      x-class: AccountDetialsItem
+      x-context: CardDetailsRetrieve
+      x-qualified-name: AccountDetialsItem~CardDetailsRetrieve
+    AccountDetialsItem__CardDetailsRetrieve3:
       type: object
       properties:
         Account:
@@ -396,11 +782,14 @@ components:
             $ref: '#/components/schemas/DelinquentAccountDetailsItem'
           description: It specifies account delinquency information
           x-sor-field: accountDelinquency.accountDelinquencyProfile
+      x-class: AccountDetialsItem
+      x-context: CardDetailsRetrieve3
+      x-qualified-name: AccountDetialsItem~CardDetailsRetrieve3
     AccountDetialsItem:
       type: object
       properties:
         Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve'
+          $ref: '#/components/schemas/Account__CardDetailsRetrieve'
         ProductInstanceReference:
           $ref: '#/components/schemas/ProductInstanceReference'
         AccountReclassification:
@@ -409,7 +798,9 @@ components:
           $ref: '#/components/schemas/Repayment'
         AutoDebitArrangment:
           $ref: '#/components/schemas/AutoDebitArrangment'
-    AccountDetialsItemForCardDetailsRetrieve4:
+      x-class: AccountDetialsItem
+      x-qualified-name: AccountDetialsItem
+    AccountDetialsItem__CardDetailsRetrieve4:
       type: object
       properties:
         Account:
@@ -417,7 +808,7 @@ components:
         DelinquentAccountDetails:
           type: array
           items:
-            $ref: '#/components/schemas/DelinquentAccountDetailsItemForCardDetailsRetrieve'
+            $ref: '#/components/schemas/DelinquentAccountDetailsItem__CardDetailsRetrieve'
           description: It specifies account delinquency information
         HistoryIndicators:
           type: array
@@ -425,13 +816,19 @@ components:
             $ref: '#/components/schemas/HistoryIndicatorsItem'
           description: Account history indicators
           x-sor-field: accountHistoryInd.historyInd
-    AccountDetialsItemForCardDetailsRetrieve2:
+      x-class: AccountDetialsItem
+      x-context: CardDetailsRetrieve4
+      x-qualified-name: AccountDetialsItem~CardDetailsRetrieve4
+    AccountDetialsItem__CardDetailsRetrieve2:
       type: object
       properties:
         Account:
-          $ref: '#/components/schemas/AccountForCardDetailsRetrieve3'
+          $ref: '#/components/schemas/Account__CardDetailsRetrieve3'
         ProductInstanceReference:
           $ref: '#/components/schemas/ProductInstanceReference'
+      x-class: AccountDetialsItem
+      x-context: CardDetailsRetrieve2
+      x-qualified-name: AccountDetialsItem~CardDetailsRetrieve2
     AccountIdentifier:
       type: object
       properties:
@@ -451,7 +848,9 @@ components:
       x-used-by:
       - cardDetailsRetrieve
       - cardTransactionRetrieve
-    AccountIdentifierForCardDetailsRetrieve:
+      x-class: AccountIdentifier
+      x-qualified-name: AccountIdentifier
+    AccountIdentifier__CardDetailsRetrieve:
       type: object
       properties:
         accountIdentification:
@@ -462,6 +861,9 @@ components:
       required:
       - accountIdentification
       description: It specifies the account details
+      x-class: AccountIdentifier
+      x-context: CardDetailsRetrieve
+      x-qualified-name: AccountIdentifier~CardDetailsRetrieve
     AccountInformationItem:
       type: object
       properties:
@@ -486,6 +888,8 @@ components:
           description: Object used to identify type of amount, value of amount and currency.
         LastPayment:
           $ref: '#/components/schemas/LastPayment'
+      x-class: AccountInformationItem
+      x-qualified-name: AccountInformationItem
     AccountLimitUtilized:
       type: object
       properties:
@@ -496,6 +900,8 @@ components:
           example: '15000.00'
           x-sor-field: accountInfo.cardSpending.spentThisMonth
       description: Amount and currency of limit utilized for the month.
+      x-class: AccountLimitUtilized
+      x-qualified-name: AccountLimitUtilized
     AccountReclassification:
       type: object
       properties:
@@ -508,6 +914,8 @@ components:
           description: The system description of the code
           x-sor-field: accounts.reclassification.description
       description: Reclassification
+      x-class: AccountReclassification
+      x-qualified-name: AccountReclassification
     AccountStatus:
       type: object
       properties:
@@ -516,7 +924,9 @@ components:
           description: The account status
           example: open
           x-sor-field: accountStatus
-    AccountTransactionItemBase:
+      x-class: AccountStatus
+      x-qualified-name: AccountStatus
+    AccountTransactionItem__Base:
       type: object
       properties:
         AccountIdentifier:
@@ -530,9 +940,12 @@ components:
           - accountMps.currencyCode
           - accountTransactions.currencyCode
       description: Attributes of AccountTransactionItem common to every operation that uses it.
+      x-class: AccountTransactionItem
+      x-context: Base
+      x-qualified-name: AccountTransactionItem~Base
     AccountTransactionItem:
       allOf:
-      - $ref: '#/components/schemas/AccountTransactionItemBase'
+      - $ref: '#/components/schemas/AccountTransactionItem__Base'
       - type: object
         properties:
           CardPaymentTransaction:
@@ -542,32 +955,40 @@ components:
             description: Array for transaction details
       x-used-by:
       - cardTransactionRetrieve
-    AccountTransactionItemForCardTransactionRetrieve:
+      x-class: AccountTransactionItem
+      x-qualified-name: AccountTransactionItem
+    AccountTransactionItem__CardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/AccountTransactionItemBase'
+      - $ref: '#/components/schemas/AccountTransactionItem__Base'
       - type: object
         properties:
           CardPaymentTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve'
+              $ref: '#/components/schemas/CardPaymentTransactionItem__CardTransactionRetrieve'
             description: Array for transaction details
             x-sor-field: acccountAuthorizations.authorizations
       x-used-by:
       - cardTransactionRetrieve
-    AccountTransactionItemForCardTransactionRetrieve2:
+      x-class: AccountTransactionItem
+      x-context: CardTransactionRetrieve
+      x-qualified-name: AccountTransactionItem~CardTransactionRetrieve
+    AccountTransactionItem__CardTransactionRetrieve2:
       allOf:
-      - $ref: '#/components/schemas/AccountTransactionItemBase'
+      - $ref: '#/components/schemas/AccountTransactionItem__Base'
       - type: object
         properties:
           CardPaymentTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/CardPaymentTransactionItemForCardTransactionRetrieve2'
+              $ref: '#/components/schemas/CardPaymentTransactionItem__CardTransactionRetrieve2'
             description: Array for transaction details
             x-sor-field: accountMps.mps
       x-used-by:
       - cardTransactionRetrieve
+      x-class: AccountTransactionItem
+      x-context: CardTransactionRetrieve2
+      x-qualified-name: AccountTransactionItem~CardTransactionRetrieve2
     Accountidentifier:
       type: object
       properties:
@@ -576,6 +997,8 @@ components:
           description: Vertexon CMS Account ID
           example: '00000000001'
           x-sor-field: account
+      x-class: Accountidentifier
+      x-qualified-name: Accountidentifier
     AssociationReferenceItem:
       type: object
       properties:
@@ -583,6 +1006,8 @@ components:
           type: string
           description: It specifies the party name
           x-sor-field: accounts.introducer, accounts.recommendingOfficer, accounts.approvingOfficer
+      x-class: AssociationReferenceItem
+      x-qualified-name: AssociationReferenceItem
     AutoDebitArrangment:
       type: object
       properties:
@@ -591,6 +1016,8 @@ components:
           description: Linked bank account with link codes either L or G (ADA)
           x-sor-field: accounts.bankAccountADA
       description: It specifies the auto debit arrangement facility
+      x-class: AutoDebitArrangment
+      x-qualified-name: AutoDebitArrangment
     BillingStatementReference:
       type: object
       properties:
@@ -618,6 +1045,8 @@ components:
         LastStatementDetails:
           $ref: '#/components/schemas/LastStatementDetails'
       description: Reference to an associated statement
+      x-class: BillingStatementReference
+      x-qualified-name: BillingStatementReference
     CancelReportDetails:
       type: object
       properties:
@@ -662,6 +1091,8 @@ components:
           x-sor-field: reportDetails.reportedBy
       description: "\nCancellation report details should be sent if required by the specified cancel code,
         e.g. if the card is lost or stolen"
+      x-class: CancelReportDetails
+      x-qualified-name: CancelReportDetails
     CardLimit:
       type: object
       properties:
@@ -673,11 +1104,13 @@ components:
             for the combination of card and account."
           example: '10000'
           x-sor-field: accountInfo.limit accountInfo.limitCash accountInfo.cardSpending.monthlyLimit
+      x-class: CardLimit
+      x-qualified-name: CardLimit
     CardPaymentTransaction:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile1'
         cardTransactionDateTime:
           type: string
           format: date-time
@@ -709,7 +1142,7 @@ components:
           example: PH
           x-sor-field: narration2
         CardTransactionAmount:
-          $ref: '#/components/schemas/CardTransactionAmountForTransactionAdjustmentInitiate'
+          $ref: '#/components/schemas/CardTransactionAmount__TransactionAdjustmentInitiate'
         amountQualifier:
           type: string
           maxLength: 1
@@ -728,11 +1161,13 @@ components:
       - cardTransactionType
       - cardTransactionReference
       description: Object specific to card payment transaction details
-    CardPaymentTransactionItemBase:
+      x-class: CardPaymentTransaction
+      x-qualified-name: CardPaymentTransaction
+    CardPaymentTransactionItem__Base:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile2'
         cardTransactionDateTime:
           type: string
           format: date-time
@@ -747,9 +1182,12 @@ components:
             $ref: '#/components/schemas/CardTransactionAmountItem'
           x-sor-field: accountMps.mps.transactionAmount
       description: Attributes of CardPaymentTransactionItem common to every operation that uses it.
+      x-class: CardPaymentTransactionItem
+      x-context: Base
+      x-qualified-name: CardPaymentTransactionItem~Base
     CardPaymentTransactionItem:
       allOf:
-      - $ref: '#/components/schemas/CardPaymentTransactionItemBase'
+      - $ref: '#/components/schemas/CardPaymentTransactionItem__Base'
       - type: object
         properties:
           cardTransactionEffectiveDateTime:
@@ -776,7 +1214,7 @@ components:
           CardTransactionAuthorizationRecord:
             $ref: '#/components/schemas/CardTransactionAuthorizationRecord'
           PointOfService:
-            $ref: '#/components/schemas/PointOfServiceForCardTransactionRetrieve'
+            $ref: '#/components/schemas/PointOfService__CardTransactionRetrieve'
           cardTransactionReference:
             type: string
             description: Retrieval Reference Number.
@@ -792,9 +1230,11 @@ components:
             x-sor-field: accountTransactions.transactions.inputDate
       x-used-by:
       - cardTransactionRetrieve
-    CardPaymentTransactionItemForCardTransactionRetrieve:
+      x-class: CardPaymentTransactionItem
+      x-qualified-name: CardPaymentTransactionItem
+    CardPaymentTransactionItem__CardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/CardPaymentTransactionItemBase'
+      - $ref: '#/components/schemas/CardPaymentTransactionItem__Base'
       - type: object
         properties:
           cardTransactionCode:
@@ -811,12 +1251,15 @@ components:
           ProductAndServiceReference:
             $ref: '#/components/schemas/ProductAndServiceReference'
           CardTransactionMerchantReference:
-            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve2'
+            $ref: '#/components/schemas/CardTransactionMerchantReference__CardTransactionRetrieve2'
       x-used-by:
       - cardTransactionRetrieve
-    CardPaymentTransactionItemForCardTransactionRetrieve2:
+      x-class: CardPaymentTransactionItem
+      x-context: CardTransactionRetrieve
+      x-qualified-name: CardPaymentTransactionItem~CardTransactionRetrieve
+    CardPaymentTransactionItem__CardTransactionRetrieve2:
       allOf:
-      - $ref: '#/components/schemas/CardPaymentTransactionItemBase'
+      - $ref: '#/components/schemas/CardPaymentTransactionItem__Base'
       - type: object
         properties:
           cardTransactionEffectiveDateTime:
@@ -833,12 +1276,15 @@ components:
           CardTransactionPurchaseDetails:
             $ref: '#/components/schemas/CardTransactionPurchaseDetails'
           CardTransactionAuthorizationRecord:
-            $ref: '#/components/schemas/CardTransactionAuthorizationRecordForCardTransactionRetrieve'
+            $ref: '#/components/schemas/CardTransactionAuthorizationRecord__CardTransactionRetrieve'
           CardTransactionMerchantReference:
-            $ref: '#/components/schemas/CardTransactionMerchantReferenceForCardTransactionRetrieve'
+            $ref: '#/components/schemas/CardTransactionMerchantReference__CardTransactionRetrieve'
       x-used-by:
       - cardTransactionRetrieve
-    CardTransactionAmountBase:
+      x-class: CardPaymentTransactionItem
+      x-context: CardTransactionRetrieve2
+      x-qualified-name: CardPaymentTransactionItem~CardTransactionRetrieve2
+    CardTransactionAmount__Base:
       type: object
       properties:
         amountCurrencyCode:
@@ -848,9 +1294,12 @@ components:
           example: PHP
           x-sor-field: transactionCurrency
       description: Attributes of CardTransactionAmount common to every operation that uses it.
-    CardTransactionAmountForTransactionAdjustmentInitiate:
+      x-class: CardTransactionAmount
+      x-context: Base
+      x-qualified-name: CardTransactionAmount~Base
+    CardTransactionAmount__TransactionAdjustmentInitiate:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAmountBase'
+      - $ref: '#/components/schemas/CardTransactionAmount__Base'
       - type: object
         properties:
           amountValue:
@@ -863,9 +1312,12 @@ components:
         - amountValue
       x-used-by:
       - transactionAdjustmentInitiate
+      x-class: CardTransactionAmount
+      x-context: TransactionAdjustmentInitiate
+      x-qualified-name: CardTransactionAmount~TransactionAdjustmentInitiate
     CardTransactionAmount:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAmountBase'
+      - $ref: '#/components/schemas/CardTransactionAmount__Base'
       - type: object
         properties:
           amountValue:
@@ -875,6 +1327,8 @@ components:
             x-sor-field: transactionAmount
       x-used-by:
       - cardTransactionRetrieve
+      x-class: CardTransactionAmount
+      x-qualified-name: CardTransactionAmount
     CardTransactionAmountItem:
       type: object
       properties:
@@ -896,7 +1350,9 @@ components:
             cardTransactionRetrieve[02]: 
               acccountAuthorizations.authorizations.transactionAmount.currencyCode
             cardTransactionRetrieve[03]: accountMps.mps.transactionAmount.currencyCode
-    CardTransactionAuthorizationRecordBase:
+      x-class: CardTransactionAmountItem
+      x-qualified-name: CardTransactionAmountItem
+    CardTransactionAuthorizationRecord__Base:
       type: object
       properties:
         cardTransactionAuthenticationCode:
@@ -908,9 +1364,12 @@ components:
             (unattributed): accountMps.mps.authCode
       description: Attributes of CardTransactionAuthorizationRecord common to every operation that 
         uses it.
+      x-class: CardTransactionAuthorizationRecord
+      x-context: Base
+      x-qualified-name: CardTransactionAuthorizationRecord~Base
     CardTransactionAuthorizationRecord:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAuthorizationRecordBase'
+      - $ref: '#/components/schemas/CardTransactionAuthorizationRecord__Base'
       - type: object
         properties:
           ElectronicCommerceAuthenticationResult:
@@ -920,12 +1379,17 @@ components:
             description: Array to store authetication results.
       x-used-by:
       - cardTransactionRetrieve
-    CardTransactionAuthorizationRecordForCardTransactionRetrieve:
+      x-class: CardTransactionAuthorizationRecord
+      x-qualified-name: CardTransactionAuthorizationRecord
+    CardTransactionAuthorizationRecord__CardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionAuthorizationRecordBase'
+      - $ref: '#/components/schemas/CardTransactionAuthorizationRecord__Base'
       - type: object
       x-used-by:
       - cardTransactionRetrieve
+      x-class: CardTransactionAuthorizationRecord
+      x-context: CardTransactionRetrieve
+      x-qualified-name: CardTransactionAuthorizationRecord~CardTransactionRetrieve
     CardTransactionBillingStatementReference:
       type: object
       properties:
@@ -935,6 +1399,8 @@ components:
           description: Statement close date of the statement where transaction was billed to the 
             cardholder.
           x-sor-field: accountTransactions.transactions.statementDate
+      x-class: CardTransactionBillingStatementReference
+      x-qualified-name: CardTransactionBillingStatementReference
     CardTransactionMerchantReference:
       type: object
       properties:
@@ -947,7 +1413,9 @@ components:
           description: Merchant Category Code.
           x-sor-field: accountTransactions.transactions.mcc
       description: Object used for card transaction merchant details.
-    CardTransactionMerchantReferenceForCardTransactionRetrieve2:
+      x-class: CardTransactionMerchantReference
+      x-qualified-name: CardTransactionMerchantReference
+    CardTransactionMerchantReference__CardTransactionRetrieve2:
       type: object
       properties:
         cardTransactionMerchantCode:
@@ -955,7 +1423,10 @@ components:
           description: Merchant Category Code.
           x-sor-field: acccountAuthorizations.authorizations.mcc
       description: Object used for card transaction merchant details.
-    CardTransactionMerchantReferenceForCardTransactionRetrieve:
+      x-class: CardTransactionMerchantReference
+      x-context: CardTransactionRetrieve2
+      x-qualified-name: CardTransactionMerchantReference~CardTransactionRetrieve2
+    CardTransactionMerchantReference__CardTransactionRetrieve:
       type: object
       properties:
         cardTransactionMerchant:
@@ -963,6 +1434,9 @@ components:
           description: Vertexon merchant number for transactions acquired by on-us merchant.
           x-sor-field: accountMps.mps.merchant
       description: Object used for card transaction merchant details.
+      x-class: CardTransactionMerchantReference
+      x-context: CardTransactionRetrieve
+      x-qualified-name: CardTransactionMerchantReference~CardTransactionRetrieve
     CardTransactionPurchaseDetails:
       type: object
       properties:
@@ -994,6 +1468,8 @@ components:
               accountTransactions.transactions.purchaseId.purchaseIdentifierValue
             cardTransactionRetrieve[03]: accountMps.mps.purchaseId.purchaseIdentifierValue
       description: Details of purchase
+      x-class: CardTransactionPurchaseDetails
+      x-qualified-name: CardTransactionPurchaseDetails
     ContactPoint:
       type: object
       properties:
@@ -1010,6 +1486,8 @@ components:
           description: Physical and registered addresses of the party.
           x-sor-field: accountContact.addressess
       description: it specifies contact point details
+      x-class: ContactPoint
+      x-qualified-name: ContactPoint
     CustomerAdditionalDataItem:
       type: object
       properties:
@@ -1028,6 +1506,8 @@ components:
           description: code value
           example: SYSTM
           x-sor-field: customerData.value
+      x-class: CustomerAdditionalDataItem
+      x-qualified-name: CustomerAdditionalDataItem
     CustomerLimit:
       type: object
       properties:
@@ -1037,7 +1517,14 @@ components:
             customer"
           example: '10000'
           x-sor-field: customerLimit
+        limitCurrencyCode:
+          type: string
+          description: Identifies the currency in which the limit value is expressed.
+          example: PHP
+          x-sor-field: customerLimitCurrency
       description: Object used to identify type of limit on card, limit value and limit currency.
+      x-class: CustomerLimit
+      x-qualified-name: CustomerLimit
     CustomerReference:
       type: object
       properties:
@@ -1045,6 +1532,8 @@ components:
           $ref: '#/components/schemas/PartyIdentifier'
       description: Represents a person or organization that participates in a business relationship 
         with the institution.
+      x-class: CustomerReference
+      x-qualified-name: CustomerReference
     DebitCreditDirection:
       type: object
       properties:
@@ -1054,6 +1543,8 @@ components:
           description: "Transaction Sign.\n“+” – Debit to cardholder,\n“-“ – Credit to cardholder."
           example: +
           x-sor-field: transactionSign
+      x-class: DebitCreditDirection
+      x-qualified-name: DebitCreditDirection
     DelinquentAccountDetailsItem:
       type: object
       properties:
@@ -1069,13 +1560,18 @@ components:
           description: Number of times the account has been on that type of delinquency in the last 
             24 months.
           x-sor-field: accountDelinquency.accountDelinquencyProfile.frequency
-    DelinquentAccountDetailsItemForCardDetailsRetrieve:
+      x-class: DelinquentAccountDetailsItem
+      x-qualified-name: DelinquentAccountDetailsItem
+    DelinquentAccountDetailsItem__CardDetailsRetrieve:
       type: object
       properties:
         delinquencyIndicator:
           type: string
           description: The deliquency indicators
           x-sor-field: accountHistoryInd.historyInd.delinquencyIndicator
+      x-class: DelinquentAccountDetailsItem
+      x-context: CardDetailsRetrieve
+      x-qualified-name: DelinquentAccountDetailsItem~CardDetailsRetrieve
     DeliquencyAmount:
       type: object
       properties:
@@ -1084,6 +1580,8 @@ components:
           description: Amounts in Overlimit and/or ageing as at last statement.
           x-sor-field: accountDelinquency.accountDelinquencyProfile.delinquencyAmount
       description: It specifies the amount details
+      x-class: DeliquencyAmount
+      x-qualified-name: DeliquencyAmount
     DeliveryOptions:
       type: object
       properties:
@@ -1095,6 +1593,8 @@ components:
           type: boolean
           description: "Cards/pins mail to address flag\nPossible Values:\n1,0"
           x-sor-field: accountContact.addresses.mailCardsPins
+      x-class: DeliveryOptions
+      x-qualified-name: DeliveryOptions
     ElectronicCommerceAuthenticationResultItem:
       type: object
       properties:
@@ -1111,6 +1611,8 @@ components:
             cardTransactionRetrieve[02]: 
               acccountAuthorizations.authorizations.posEntryMode.capturePANMethod, 
               acccountAuthorizations.authorizations.posEntryMode.pinEntryCapability
+      x-class: ElectronicCommerceAuthenticationResultItem
+      x-qualified-name: ElectronicCommerceAuthenticationResultItem
     HistoryIndicatorsItem:
       type: object
       properties:
@@ -1123,7 +1625,9 @@ components:
           type: string
           description: payment state indicators
           x-sor-field: accountHistoryInd.historyInd.paymentIndicator
-    IssuedDeviceIdentifierProfile1:
+      x-class: HistoryIndicatorsItem
+      x-qualified-name: HistoryIndicatorsItem
+    IssuedDeviceIdentifier__Profile1:
       type: object
       properties:
         issuedDeviceIdentification:
@@ -1140,7 +1644,10 @@ components:
       - cardTransactionRetrieve
       - recencyCheckRetrieve
       - transactionAdjustmentInitiate
-    IssuedDeviceIdentifierProfile2:
+      x-class: IssuedDeviceIdentifier
+      x-context: Profile1
+      x-qualified-name: IssuedDeviceIdentifier~Profile1
+    IssuedDeviceIdentifier__Profile2:
       type: object
       properties:
         issuedDeviceIdentification:
@@ -1157,6 +1664,9 @@ components:
       x-used-by:
       - accountStatementRetrieve
       - cardTransactionRetrieve
+      x-class: IssuedDeviceIdentifier
+      x-context: Profile2
+      x-qualified-name: IssuedDeviceIdentifier~Profile2
     IssuedDeviceIdentifier:
       type: object
       properties:
@@ -1172,7 +1682,9 @@ components:
       - cardDetailsRetrieve
       - cardIssuedDeviceInitiate
       - cardIssuedDeviceUpdate
-    IssuedDeviceIdentifierProfile3:
+      x-class: IssuedDeviceIdentifier
+      x-qualified-name: IssuedDeviceIdentifier
+    IssuedDeviceIdentifier__Profile3:
       type: object
       properties:
         issueddeviceIdentification:
@@ -1190,7 +1702,10 @@ components:
       - cardCancel
       - cardIssuedDeviceInitiate
       - cardIssuedDeviceUpdate
-    IssuedDeviceIdentifierProfile4:
+      x-class: IssuedDeviceIdentifier
+      x-context: Profile3
+      x-qualified-name: IssuedDeviceIdentifier~Profile3
+    IssuedDeviceIdentifier__Profile4:
       type: object
       properties:
         issueddeviceIdentification:
@@ -1201,7 +1716,10 @@ components:
       x-used-by:
       - cardCancel
       - customerAddlData
-    IssuedDeviceIdentifierForCardRSAEncrypted:
+      x-class: IssuedDeviceIdentifier
+      x-context: Profile4
+      x-qualified-name: IssuedDeviceIdentifier~Profile4
+    IssuedDeviceIdentifier__CardRSAEncrypted:
       type: object
       properties:
         issueddeviceIdentification:
@@ -1210,7 +1728,10 @@ components:
           x-sor-field: cardNumber
       required:
       - issueddeviceIdentification
-    IssuedDeviceStatusBase:
+      x-class: IssuedDeviceIdentifier
+      x-context: CardRSAEncrypted
+      x-qualified-name: IssuedDeviceIdentifier~CardRSAEncrypted
+    IssuedDeviceStatus__Base:
       type: object
       properties:
         deviceStatusCode:
@@ -1219,9 +1740,12 @@ components:
           example: L
           x-sor-field: cancelCode
       description: Attributes of IssuedDeviceStatus common to every operation that uses it.
+      x-class: IssuedDeviceStatus
+      x-context: Base
+      x-qualified-name: IssuedDeviceStatus~Base
     IssuedDeviceStatus:
       allOf:
-      - $ref: '#/components/schemas/IssuedDeviceStatusBase'
+      - $ref: '#/components/schemas/IssuedDeviceStatus__Base'
       - type: object
         properties:
           primaryCardTag:
@@ -1232,12 +1756,17 @@ components:
             x-sor-field: primary
       x-used-by:
       - availableFundsRetrieve
-    IssuedDeviceStatusForTransactionAdjustmentInitiate:
+      x-class: IssuedDeviceStatus
+      x-qualified-name: IssuedDeviceStatus
+    IssuedDeviceStatus__TransactionAdjustmentInitiate:
       allOf:
-      - $ref: '#/components/schemas/IssuedDeviceStatusBase'
+      - $ref: '#/components/schemas/IssuedDeviceStatus__Base'
       - type: object
       x-used-by:
       - transactionAdjustmentInitiate
+      x-class: IssuedDeviceStatus
+      x-context: TransactionAdjustmentInitiate
+      x-qualified-name: IssuedDeviceStatus~TransactionAdjustmentInitiate
     LastPayment:
       type: object
       properties:
@@ -1252,6 +1781,8 @@ components:
           description: Date of the last payment
           example: 2021-08-01 14:20:10:95
           x-sor-field: accountInfo.lastPaymentDate
+      x-class: LastPayment
+      x-qualified-name: LastPayment
     LastStatementDetails:
       type: object
       properties:
@@ -1273,6 +1804,8 @@ components:
           example: 2021-08-01 14:20:10:95
           x-sor-field: accountStatementInfo.lastStatement.statementDueDate
       description: Object to identify last statement details
+      x-class: LastStatementDetails
+      x-qualified-name: LastStatementDetails
     MajorPurchaseDetails:
       type: object
       properties:
@@ -1287,6 +1820,8 @@ components:
           x-sor-field: accountMps.mps.interestRate
         MultiPaymentStatus:
           $ref: '#/components/schemas/MultiPaymentStatus'
+      x-class: MajorPurchaseDetails
+      x-qualified-name: MajorPurchaseDetails
     MultiPaymentStatus:
       type: object
       properties:
@@ -1296,6 +1831,8 @@ components:
         description:
           type: string
           x-sor-field: accountMps.mps.mpStatus.description
+      x-class: MultiPaymentStatus
+      x-qualified-name: MultiPaymentStatus
     PartyIdentifier:
       type: object
       properties:
@@ -1308,6 +1845,8 @@ components:
       x-used-by:
       - availableFundsRetrieve
       - customerAddlData
+      x-class: PartyIdentifier
+      x-qualified-name: PartyIdentifier
     PhoneAddressItem:
       type: object
       properties:
@@ -1321,7 +1860,9 @@ components:
           description: it specifies the phone number details
           x-sor-field: accountContact.addresses.fax accountContact.phoneDetails.number 
             accountContact.addresses.phoneNbr accountContact.addresses.altphoneNbr
-    PointOfServiceBase:
+      x-class: PhoneAddressItem
+      x-qualified-name: PhoneAddressItem
+    PointOfService__Base:
       type: object
       properties:
         pointOfServiceData:
@@ -1337,9 +1878,12 @@ components:
           - acccountAuthorizations.authorizations.acceptorId
           - accountTransactions.transactions.acceptorId
       description: Attributes of PointOfService common to every operation that uses it.
-    PointOfServiceForCardTransactionRetrieve:
+      x-class: PointOfService
+      x-context: Base
+      x-qualified-name: PointOfService~Base
+    PointOfService__CardTransactionRetrieve:
       allOf:
-      - $ref: '#/components/schemas/PointOfServiceBase'
+      - $ref: '#/components/schemas/PointOfService__Base'
       - type: object
         properties:
           terminalIdentification:
@@ -1348,9 +1892,12 @@ components:
             x-sor-field: accountTransactions.transactions.terminalId
       x-used-by:
       - cardTransactionRetrieve
+      x-class: PointOfService
+      x-context: CardTransactionRetrieve
+      x-qualified-name: PointOfService~CardTransactionRetrieve
     PointOfService:
       allOf:
-      - $ref: '#/components/schemas/PointOfServiceBase'
+      - $ref: '#/components/schemas/PointOfService__Base'
       - type: object
         properties:
           cardAcceptorName:
@@ -1359,6 +1906,8 @@ components:
             x-sor-field: acccountAuthorizations.authorizations.acceptorName
       x-used-by:
       - cardTransactionRetrieve
+      x-class: PointOfService
+      x-qualified-name: PointOfService
     PostalAddressItem:
       type: object
       properties:
@@ -1379,6 +1928,8 @@ components:
           type: string
           description: Post code or Zip Code
           x-sor-field: accountContact.addresses.postalCode
+      x-class: PostalAddressItem
+      x-qualified-name: PostalAddressItem
     ProductAndServiceReference:
       type: object
       properties:
@@ -1389,6 +1940,8 @@ components:
             cardTransactionRetrieve[01]: accountTransactions.transactions.productId
             cardTransactionRetrieve[02]: acccountAuthorizations.authorizations.productId
       description: Object used for product related details.
+      x-class: ProductAndServiceReference
+      x-qualified-name: ProductAndServiceReference
     ProductInstanceReference:
       type: object
       properties:
@@ -1405,6 +1958,8 @@ components:
             cardDetailsRetrieve[03]: accounts.accountProduct.description
             cardDetailsRetrieve[05]: cardAccounts.accountProduct.description
       description: Account Product
+      x-class: ProductInstanceReference
+      x-qualified-name: ProductInstanceReference
     Repayment:
       type: object
       properties:
@@ -1417,6 +1972,8 @@ components:
           description: The system description of the code
           x-sor-field: accounts.repayment.description
       description: Repayment
+      x-class: Repayment
+      x-qualified-name: Repayment
     StatementBalanceItem:
       type: object
       properties:
@@ -1433,6 +1990,8 @@ components:
             accountStatementInfo.lastStatement.statementPenaltyAmount 
             accountStatementInfo.lastStatement.statementTotalDue 
             accountStatementInfo.lastStatement.statementMinDue
+      x-class: StatementBalanceItem
+      x-qualified-name: StatementBalanceItem
     StatementCurrencyItem:
       type: object
       properties:
@@ -1441,6 +2000,8 @@ components:
           description: Currency Code
           example: PHP
           x-sor-field: accountStatementInfo.currencyCode
+      x-class: StatementCurrencyItem
+      x-qualified-name: StatementCurrencyItem
     Status:
       type: object
       properties:
@@ -1451,7 +2012,9 @@ components:
       x-used-by:
       - cardIssuedDeviceInitiate
       - cardIssuedDeviceUpdate
-    StatusForCardCancel:
+      x-class: Status
+      x-qualified-name: Status
+    Status__CardCancel:
       type: object
       properties:
         statusEffectiveDate:
@@ -1464,6 +2027,9 @@ components:
           type: string
           description: The time when the card status was changed
           x-sor-field: statusTime
+      x-class: Status
+      x-context: CardCancel
+      x-qualified-name: Status~CardCancel
     statementAccountBalanceItem:
       type: object
       properties:
@@ -1478,17 +2044,21 @@ components:
           x-sor-field: accountStatementInfo.accountCurrentBalance 
             accountStatementInfo.accountCurrentMPBalance 
             accountStatementInfo.accountOutstandingMinDue accountStatementInfo.accountOverdueAmount
+      x-class: statementAccountBalanceItem
+      x-qualified-name: statementAccountBalanceItem
     FinancialStatusTrackingRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile1'
         CurrencyCode:
           type: string
           maxLength: 3
           description: Currency Code
           example: PHP
           x-sor-field: currencyCode
+      x-class: FinancialStatusTrackingRequest
+      x-qualified-name: FinancialStatusTrackingRequest
     FinancialStatusTrackingResponse:
       type: object
       properties:
@@ -1503,6 +2073,8 @@ components:
           items:
             $ref: '#/components/schemas/AccountInformationItem'
           description: Account details.
+      x-class: FinancialStatusTrackingResponse
+      x-qualified-name: FinancialStatusTrackingResponse
     CardTransactionAdjustmentRequest:
       type: object
       properties:
@@ -1523,6 +2095,8 @@ components:
       - userIdentification
       - accountCurrencyCode
       description: Request parent object
+      x-class: CardTransactionAdjustmentRequest
+      x-qualified-name: CardTransactionAdjustmentRequest
     CardTransactionAdjustmentResponse:
       type: object
       properties:
@@ -1532,7 +2106,7 @@ components:
           example: '123459878232'
           x-sor-field: reference
         IssuedDeviceStatus:
-          $ref: '#/components/schemas/IssuedDeviceStatusForTransactionAdjustmentInitiate'
+          $ref: '#/components/schemas/IssuedDeviceStatus__TransactionAdjustmentInitiate'
         AccountStatus:
           $ref: '#/components/schemas/AccountStatus'
         systemEffectiveDate:
@@ -1542,11 +2116,13 @@ components:
             be a combination of postingDate and postingTime in DateTime format."
           example: 2021-08-01 14:20:10:95
           x-sor-field: postingDate postingTime
+      x-class: CardTransactionAdjustmentResponse
+      x-qualified-name: CardTransactionAdjustmentResponse
     MobileRecencyRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile1'
         currencyCode:
           type: string
           maxLength: 3
@@ -1567,6 +2143,8 @@ components:
       required:
       - auditType
       - fieldType
+      x-class: MobileRecencyRequest
+      x-qualified-name: MobileRecencyRequest
     MobileRecencyResponse:
       type: object
       properties:
@@ -1587,27 +2165,33 @@ components:
             days).
           example: '5'
           x-sor-field: age
+      x-class: MobileRecencyResponse
+      x-qualified-name: MobileRecencyResponse
     BillingRequest:
       type: object
       properties:
         Accountidentifier:
           $ref: '#/components/schemas/Accountidentifier'
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile2'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile2'
         currencyCode:
           type: string
           maxLength: 3
           description: Currency Code.
           example: PHP
           x-sor-field: currencyCode
+      x-class: BillingRequest
+      x-qualified-name: BillingRequest
     BillingResponse:
       type: object
       properties:
         BillingStatementReference:
           $ref: '#/components/schemas/BillingStatementReference'
-    CardTransactionRequestForTransactionDetails:
+      x-class: BillingResponse
+      x-qualified-name: BillingResponse
+    CardTransactionRequest__TransactionDetails:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - $ref: '#/components/schemas/CardTransactionRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1636,9 +2220,12 @@ components:
       x-sor-endpoint: v1/account/search/trans
       x-variant: '01'
       x-variant-name: Transaction Details
-    CardTransactionRequestForAuthorizationTransactions:
+      x-class: CardTransactionRequest
+      x-context: TransactionDetails
+      x-qualified-name: CardTransactionRequest~TransactionDetails
+    CardTransactionRequest__AuthorizationTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - $ref: '#/components/schemas/CardTransactionRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1656,9 +2243,12 @@ components:
       x-sor-endpoint: v1/account/search/auth
       x-variant: '02'
       x-variant-name: Authorization Transactions
-    CardTransactionRequestForInstallmentTransactions:
+      x-class: CardTransactionRequest
+      x-context: AuthorizationTransactions
+      x-qualified-name: CardTransactionRequest~AuthorizationTransactions
+    CardTransactionRequest__InstallmentTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - $ref: '#/components/schemas/CardTransactionRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1678,11 +2268,14 @@ components:
       x-sor-endpoint: /v1/account/search/mps
       x-variant: '03'
       x-variant-name: Installment Transactions
-    CardTransactionRequestBase:
+      x-class: CardTransactionRequest
+      x-context: InstallmentTransactions
+      x-qualified-name: CardTransactionRequest~InstallmentTransactions
+    CardTransactionRequest__Base:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile1'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile1'
         currencyCode:
           type: string
           maxLength: 3
@@ -1711,20 +2304,25 @@ components:
             be used in the next request as the sequenceIndex parameter.
           x-sor-field: sequenceIndex
       description: Attributes common to every variant of CardTransactionRequest.
+      x-class: CardTransactionRequest
+      x-context: Base
+      x-qualified-name: CardTransactionRequest~Base
     CardTransactionRequest:
       oneOf:
-      - $ref: '#/components/schemas/CardTransactionRequestForTransactionDetails'
-      - $ref: '#/components/schemas/CardTransactionRequestForAuthorizationTransactions'
-      - $ref: '#/components/schemas/CardTransactionRequestForInstallmentTransactions'
+      - $ref: '#/components/schemas/CardTransactionRequest__TransactionDetails'
+      - $ref: '#/components/schemas/CardTransactionRequest__AuthorizationTransactions'
+      - $ref: '#/components/schemas/CardTransactionRequest__InstallmentTransactions'
       discriminator:
         propertyName: requestVariant
         mapping:
-          '01': '#/components/schemas/CardTransactionRequestForTransactionDetails'
-          '02': '#/components/schemas/CardTransactionRequestForAuthorizationTransactions'
-          '03': '#/components/schemas/CardTransactionRequestForInstallmentTransactions'
-    CardTransactionResponseForTransactionDetails:
+          '01': '#/components/schemas/CardTransactionRequest__TransactionDetails'
+          '02': '#/components/schemas/CardTransactionRequest__AuthorizationTransactions'
+          '03': '#/components/schemas/CardTransactionRequest__InstallmentTransactions'
+      x-class: CardTransactionRequest
+      x-qualified-name: CardTransactionRequest
+    CardTransactionResponse__TransactionDetails:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - $ref: '#/components/schemas/CardTransactionResponse__Base'
       - type: object
         properties:
           AccountTransaction:
@@ -1736,37 +2334,46 @@ components:
       x-sor-endpoint: v1/account/search/trans
       x-variant: '01'
       x-variant-name: Transaction Details
-    CardTransactionResponseForAuthorizationTransactions:
+      x-class: CardTransactionResponse
+      x-context: TransactionDetails
+      x-qualified-name: CardTransactionResponse~TransactionDetails
+    CardTransactionResponse__AuthorizationTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - $ref: '#/components/schemas/CardTransactionResponse__Base'
       - type: object
         properties:
           AccountTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve'
+              $ref: '#/components/schemas/AccountTransactionItem__CardTransactionRetrieve'
             description: Account Details
             x-sor-field: acccountAuthorizations
       description: CardTransactionResponse as served by v1/account/search/auth.
       x-sor-endpoint: v1/account/search/auth
       x-variant: '02'
       x-variant-name: Authorization Transactions
-    CardTransactionResponseForInstallmentTransactions:
+      x-class: CardTransactionResponse
+      x-context: AuthorizationTransactions
+      x-qualified-name: CardTransactionResponse~AuthorizationTransactions
+    CardTransactionResponse__InstallmentTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - $ref: '#/components/schemas/CardTransactionResponse__Base'
       - type: object
         properties:
           AccountTransaction:
             type: array
             items:
-              $ref: '#/components/schemas/AccountTransactionItemForCardTransactionRetrieve2'
+              $ref: '#/components/schemas/AccountTransactionItem__CardTransactionRetrieve2'
             description: Account Details
             x-sor-field: accountMps
       description: CardTransactionResponse as served by /v1/account/search/mps.
       x-sor-endpoint: /v1/account/search/mps
       x-variant: '03'
       x-variant-name: Installment Transactions
-    CardTransactionResponseBase:
+      x-class: CardTransactionResponse
+      x-context: InstallmentTransactions
+      x-qualified-name: CardTransactionResponse~InstallmentTransactions
+    CardTransactionResponse__Base:
       type: object
       properties:
         sequenceIndex:
@@ -1775,18 +2382,23 @@ components:
             be used in the next request as the sequenceIndex parameter.
           x-sor-field: sequenceIndex
       description: Attributes common to every variant of CardTransactionResponse.
+      x-class: CardTransactionResponse
+      x-context: Base
+      x-qualified-name: CardTransactionResponse~Base
     CardTransactionResponse:
       oneOf:
-      - $ref: '#/components/schemas/CardTransactionResponseForTransactionDetails'
-      - $ref: '#/components/schemas/CardTransactionResponseForAuthorizationTransactions'
-      - $ref: '#/components/schemas/CardTransactionResponseForInstallmentTransactions'
+      - $ref: '#/components/schemas/CardTransactionResponse__TransactionDetails'
+      - $ref: '#/components/schemas/CardTransactionResponse__AuthorizationTransactions'
+      - $ref: '#/components/schemas/CardTransactionResponse__InstallmentTransactions'
       x-selected-by: requestVariant
       description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
         cannot express a response discriminator that depends on a request property, so the 
         dependency is recorded here.
-    CreditCardAccountRetrieveRequestForAccountContactDetails:
+      x-class: CardTransactionResponse
+      x-qualified-name: CardTransactionResponse
+    CreditCardAccountRetrieveRequest__AccountContactDetails:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1795,7 +2407,7 @@ components:
             - '01'
             description: 01. Account Contact Details
           AccountIdentifier:
-            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+            $ref: '#/components/schemas/AccountIdentifier__CardDetailsRetrieve'
           accountCurrencyCode:
             type: string
             maxLength: 3
@@ -1817,9 +2429,12 @@ components:
       x-sor-endpoint: /v1/account/contact
       x-variant: '01'
       x-variant-name: Account Contact Details
-    CreditCardAccountRetrieveRequestForAccuntDeliquency:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountContactDetails
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountContactDetails
+    CreditCardAccountRetrieveRequest__AccuntDeliquency:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1828,7 +2443,7 @@ components:
             - '02'
             description: 02. Accunt Deliquency
           AccountIdentifier:
-            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+            $ref: '#/components/schemas/AccountIdentifier__CardDetailsRetrieve'
           accountCurrencyCode:
             type: string
             maxLength: 3
@@ -1840,9 +2455,12 @@ components:
       x-sor-endpoint: /v1/account/delinquency
       x-variant: '02'
       x-variant-name: Accunt Deliquency
-    CreditCardAccountRetrieveRequestForAccountInformation:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccuntDeliquency
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccuntDeliquency
+    CreditCardAccountRetrieveRequest__AccountInformation:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1851,7 +2469,7 @@ components:
             - '03'
             description: 03. Account Information
           AccountIdentifier:
-            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+            $ref: '#/components/schemas/AccountIdentifier__CardDetailsRetrieve'
           accountCurrencyCode:
             type: string
             maxLength: 3
@@ -1863,9 +2481,12 @@ components:
       x-sor-endpoint: /v1/account/info
       x-variant: '03'
       x-variant-name: Account Information
-    CreditCardAccountRetrieveRequestForAccountHistoryIndicators:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountInformation
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountInformation
+    CreditCardAccountRetrieveRequest__AccountHistoryIndicators:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1874,7 +2495,7 @@ components:
             - '04'
             description: 04. Account History Indicators
           AccountIdentifier:
-            $ref: '#/components/schemas/AccountIdentifierForCardDetailsRetrieve'
+            $ref: '#/components/schemas/AccountIdentifier__CardDetailsRetrieve'
           accountCurrencyCode:
             type: string
             maxLength: 3
@@ -1886,9 +2507,12 @@ components:
       x-sor-endpoint: /v1/account/historyIndicators
       x-variant: '04'
       x-variant-name: Account History Indicators
-    CreditCardAccountRetrieveRequestForAccountCardList:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountHistoryIndicators
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountHistoryIndicators
+    CreditCardAccountRetrieveRequest__AccountCardList:
       allOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestBase'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -1902,52 +2526,66 @@ components:
       x-sor-endpoint: /v1/card/account/list
       x-variant: '05'
       x-variant-name: Account Card List
-    CreditCardAccountRetrieveRequestBase:
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: AccountCardList
+      x-qualified-name: CreditCardAccountRetrieveRequest~AccountCardList
+    CreditCardAccountRetrieveRequest__Base:
       type: object
       properties:
         IssuedDeviceIdentifier:
           $ref: '#/components/schemas/IssuedDeviceIdentifier'
       description: Attributes common to every variant of CreditCardAccountRetrieveRequest.
+      x-class: CreditCardAccountRetrieveRequest
+      x-context: Base
+      x-qualified-name: CreditCardAccountRetrieveRequest~Base
     CreditCardAccountRetrieveRequest:
       oneOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveRequest__AccountCardList'
       discriminator:
         propertyName: requestVariant
         mapping:
-          '01': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountContactDetails'
-          '02': '#/components/schemas/CreditCardAccountRetrieveRequestForAccuntDeliquency'
-          '03': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountInformation'
-          '04': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountHistoryIndicators'
-          '05': '#/components/schemas/CreditCardAccountRetrieveRequestForAccountCardList'
-    CreditCardAccountRetrieveResponseForAccountContactDetails:
+          '01': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountContactDetails'
+          '02': '#/components/schemas/CreditCardAccountRetrieveRequest__AccuntDeliquency'
+          '03': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountInformation'
+          '04': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountHistoryIndicators'
+          '05': '#/components/schemas/CreditCardAccountRetrieveRequest__AccountCardList'
+      x-class: CreditCardAccountRetrieveRequest
+      x-qualified-name: CreditCardAccountRetrieveRequest
+    CreditCardAccountRetrieveResponse__AccountContactDetails:
       type: object
       properties:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve'
+            $ref: '#/components/schemas/AccountDetialsItem__CardDetailsRetrieve'
           x-sor-field: accountContact
       description: CreditCardAccountRetrieveResponse as served by /v1/account/contact.
       x-sor-endpoint: /v1/account/contact
       x-variant: '01'
       x-variant-name: Account Contact Details
-    CreditCardAccountRetrieveResponseForAccuntDeliquency:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountContactDetails
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountContactDetails
+    CreditCardAccountRetrieveResponse__AccuntDeliquency:
       type: object
       properties:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve3'
+            $ref: '#/components/schemas/AccountDetialsItem__CardDetailsRetrieve3'
           x-sor-field: accountDeliquency
       description: CreditCardAccountRetrieveResponse as served by /v1/account/delinquency.
       x-sor-endpoint: /v1/account/delinquency
       x-variant: '02'
       x-variant-name: Accunt Deliquency
-    CreditCardAccountRetrieveResponseForAccountInformation:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccuntDeliquency
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccuntDeliquency
+    CreditCardAccountRetrieveResponse__AccountInformation:
       type: object
       properties:
         AccountDetials:
@@ -1959,70 +2597,89 @@ components:
       x-sor-endpoint: /v1/account/info
       x-variant: '03'
       x-variant-name: Account Information
-    CreditCardAccountRetrieveResponseForAccountHistoryIndicators:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountInformation
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountInformation
+    CreditCardAccountRetrieveResponse__AccountHistoryIndicators:
       type: object
       properties:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve4'
+            $ref: '#/components/schemas/AccountDetialsItem__CardDetailsRetrieve4'
           x-sor-field: accountHistoryInd
       description: CreditCardAccountRetrieveResponse as served by /v1/account/historyIndicators.
       x-sor-endpoint: /v1/account/historyIndicators
       x-variant: '04'
       x-variant-name: Account History Indicators
-    CreditCardAccountRetrieveResponseForAccountCardList:
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountHistoryIndicators
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountHistoryIndicators
+    CreditCardAccountRetrieveResponse__AccountCardList:
       type: object
       properties:
         AccountDetials:
           type: array
           items:
-            $ref: '#/components/schemas/AccountDetialsItemForCardDetailsRetrieve2'
+            $ref: '#/components/schemas/AccountDetialsItem__CardDetailsRetrieve2'
           x-sor-field: cardAccounts
       description: CreditCardAccountRetrieveResponse as served by /v1/card/account/list.
       x-sor-endpoint: /v1/card/account/list
       x-variant: '05'
       x-variant-name: Account Card List
+      x-class: CreditCardAccountRetrieveResponse
+      x-context: AccountCardList
+      x-qualified-name: CreditCardAccountRetrieveResponse~AccountCardList
     CreditCardAccountRetrieveResponse:
       oneOf:
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountContactDetails'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccuntDeliquency'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountInformation'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountHistoryIndicators'
-      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponseForAccountCardList'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountContactDetails'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccuntDeliquency'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountInformation'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountHistoryIndicators'
+      - $ref: '#/components/schemas/CreditCardAccountRetrieveResponse__AccountCardList'
       x-selected-by: requestVariant
       description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
         cannot express a response discriminator that depends on a request property, so the 
         dependency is recorded here.
+      x-class: CreditCardAccountRetrieveResponse
+      x-qualified-name: CreditCardAccountRetrieveResponse
     IssuedDeviceInstanceInitiateRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
           $ref: '#/components/schemas/IssuedDeviceIdentifier'
+      x-class: IssuedDeviceInstanceInitiateRequest
+      x-qualified-name: IssuedDeviceInstanceInitiateRequest
     IssuedDeviceInstanceInitiateResponse:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile3'
         Status:
           $ref: '#/components/schemas/Status'
+      x-class: IssuedDeviceInstanceInitiateResponse
+      x-qualified-name: IssuedDeviceInstanceInitiateResponse
     IssuedDeviceInstanceUpdateRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
           $ref: '#/components/schemas/IssuedDeviceIdentifier'
+      x-class: IssuedDeviceInstanceUpdateRequest
+      x-qualified-name: IssuedDeviceInstanceUpdateRequest
     IssuedDeviceInstanceUpdateResponse:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile3'
         Status:
           $ref: '#/components/schemas/Status'
+      x-class: IssuedDeviceInstanceUpdateResponse
+      x-qualified-name: IssuedDeviceInstanceUpdateResponse
     CreditCardCancelRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile4'
         cancelCode:
           type: string
           maxLength: 1
@@ -2041,13 +2698,15 @@ components:
       - cancelCode
       - cancelNotes
       description: The details of the card cancellation request
+      x-class: CreditCardCancelRequest
+      x-qualified-name: CreditCardCancelRequest
     CreditCardCancelResponse:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile3'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile3'
         Status:
-          $ref: '#/components/schemas/StatusForCardCancel'
+          $ref: '#/components/schemas/Status__CardCancel'
         referenceNumber:
           type: string
           description: Unique reference number generated by the system. Only returned in the 
@@ -2056,13 +2715,15 @@ components:
             require a reference.
           example: '0001234'
           x-sor-field: referenceNbr
+      x-class: CreditCardCancelResponse
+      x-qualified-name: CreditCardCancelResponse
     CardCustomerAdditionalDataRequest:
       type: object
       properties:
         PartyIdentifier:
           $ref: '#/components/schemas/PartyIdentifier'
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierProfile4'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__Profile4'
         searchCodes:
           type: string
           description: Search filter - array of 4 digit codes or use code [ALL] to request for all 
@@ -2071,6 +2732,8 @@ components:
           x-sor-field: codes
       required:
       - searchCodes
+      x-class: CardCustomerAdditionalDataRequest
+      x-qualified-name: CardCustomerAdditionalDataRequest
     CardCustomerAdditionalDataResponse:
       type: object
       properties:
@@ -2080,8 +2743,261 @@ components:
             $ref: '#/components/schemas/CustomerAdditionalDataItem'
           description: It specifies the customer additional data
           x-sor-field: customerData
+      x-class: CardCustomerAdditionalDataResponse
+      x-qualified-name: CardCustomerAdditionalDataResponse
     IssuedDeviceCardEncryptedRequest:
       type: object
       properties:
         IssuedDeviceIdentifier:
-          $ref: '#/components/schemas/IssuedDeviceIdentifierForCardRSAEncrypted'
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__CardRSAEncrypted'
+      x-class: IssuedDeviceCardEncryptedRequest
+      x-qualified-name: IssuedDeviceCardEncryptedRequest
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help 
+        remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error 
+                  originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated 
+                  with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went 
+                  wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        status: '400'
+        title: Bad Request
+        timestamp: '2026-07-14T08:16:49.876Z'
+        errors:
+        - realm: Apigee
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+      x-class: ErrorResponse
+      x-qualified-name: ErrorResponse
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferable uuidv4) provided by the client for a specific HTTP 
+        request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace 
+        represents a single request or transaction as it flows through multiple services in a 
+        distributed system.
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: Uniquely identifies a single span within a trace. A span represents one unit of 
+        work, for example an HTTP request or a database query.
+  responses:
+    BadRequest:
+      description: "Bad Request\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: "Unauthorized\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: "Forbidden\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: "Not Found\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: "Method Not Allowed\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: "Conflict\n\nDisclaimer: The error message is Apigee error only and not mapped to the
+        System API error. Consumers should not rely on the exact error text as it may change depends on
+        the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: "Unprocessable Entity\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: "Too Many Requests\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: "Internal Server Error\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: "Bad Gateway\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: "Service Unavailable\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: "Gateway Timeout\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

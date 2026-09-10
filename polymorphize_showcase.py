@@ -1,7 +1,7 @@
 """
 polymorphize_showcase — the HTML report that shows what was eliminated.
 
-Version 6.4.
+Version 6.6.
 
 This is the validation instrument. It exists so a business analyst can open one
 file and answer, for every class in the generated specification and every
@@ -48,7 +48,7 @@ import polymorphize_sor as sormod
 import polymorphize_workbook as wbk
 from polymorphize_workbook import VARIANT_PROPERTY, cell_ref, text
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 PUBLISHED = "published"
 NO_FIELD = "no-field"
@@ -262,6 +262,22 @@ def _published_leaf_paths(spec):
     return {p[-1:] and p for p in out}
 
 
+def disposition_of(node, endpoints, verification, published_paths, path):
+    """The decision made about one element, as a :class:`Row`.
+
+    Public because the field mapping exporter needs the same verdict the
+    showcase draws, and the two must never disagree. Computing it twice by two
+    routes is how a report and a spreadsheet end up telling an analyst
+    different things about the same cell.
+    """
+    return _classify(node, endpoints, verification, published_paths, path)
+
+
+def published_leaf_paths(spec):
+    """Every leaf path a generated specification actually publishes."""
+    return _published_leaf_paths(spec)
+
+
 def _collect_classes(root, endpoints, verification, published, message):
     """The classes of one message, in the order the workbook declares them."""
     if root is None:
@@ -303,7 +319,8 @@ def build_views(out):
         if result is None:
             continue
         view = EndpointView(result, spec)
-        view.endpoints = [c.endpoint for c in result.layout.sor_cols]
+        view.endpoints = ([c.endpoint for c in result.layout.sor_cols]
+                          if result.layout is not None else [])
         view.variants = spec.variants or []
         view.verification = out.verifications.get(spec.sheet)
         published = _published_leaf_paths(spec)
@@ -323,10 +340,25 @@ _RESULT_CACHE = {}
 
 
 def _results_of(out):
-    """The sheet results behind a run, cached on the run object."""
+    """The sheet results behind a run.
+
+    The run carries the results it actually read, so this is normally a
+    lookup. Until 6.6 it re-read the workbook with the Level reader whatever
+    the input format was, which meant that for a field mapping document every
+    sheet came back empty and the showcase reported no elements at all. The
+    re-read survives only for a caller that builds a ``RunResult`` by hand,
+    and it now dispatches on the format.
+    """
+    carried = getattr(out, "results", None)
+    if carried:
+        return carried
     cached = getattr(out, "_showcase_results", None)
     if cached is None:
-        cached = wbk.read_workbook(out.workbook)
+        if getattr(out, "input_format", "level") == "mapping":
+            import polymorphize_mapping as mapfmt
+            cached = mapfmt.read_workbook(out.workbook)
+        else:
+            cached = wbk.read_workbook(out.workbook)
         # Re-apply verification so the trees match what generation saw.
         if out.sor_index is not None and not out.sor_index.empty:
             sormod.verify_workbook(cached, out.sor_index)
@@ -1043,5 +1075,7 @@ def write(out, path, *, title=None):
 
 
 __all__ = ["ClassView", "EndpointView", "MessageView", "Row", "build_views",
-           "render", "write", "PUBLISHED", "NO_FIELD", "NOT_IN_SOR",
+           "render", "write", "disposition_of", "published_leaf_paths",
+           "DISPOSITION_LABEL", "DISPOSITION_NOTE",
+           "PUBLISHED", "NO_FIELD", "NOT_IN_SOR",
            "VARIANT_ONLY", "CONTAINER", "LOST"]

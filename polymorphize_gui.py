@@ -1,7 +1,7 @@
 """
 polymorphize_gui — the desktop front end.
 
-Version 6.4.
+Version 6.6.
 
 One window, three tabs, and one rule: a failed endpoint is impossible to
 miss. Every failure appears three times over, in the banner across the top of
@@ -23,7 +23,7 @@ import polymorphize_generate as gen
 import polymorphize_template as tmpl
 import polymorphize_validate as val
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 # --------------------------------------------------------------------------- #
 # Drag and drop
@@ -104,8 +104,14 @@ class App(ttk.Frame):
         self.v_outdir = tk.StringVar()
         self.v_level = tk.StringVar(value="lenient")
         self.v_format = tk.StringVar(value="yaml")
+        #: The classifier's verdict on the chosen workbook.
+        self.v_verdict = tk.StringVar(value="")
         self.v_output_mode = tk.StringVar(value="merged")
         self.v_api_version = tk.StringVar(value="1.0.0")
+        # On by default. The whole point of writing it from the run is that
+        # the document and the specification cannot drift apart, and that only
+        # holds if it is written every time.
+        self.v_export = tk.BooleanVar(value=True)
         self.v_status = tk.StringVar(value="Choose a mapping workbook to begin.")
 
         self.reports = []
@@ -306,14 +312,22 @@ class App(ttk.Frame):
         form.columnconfigure(1, weight=0)
         self._file_row(form, 0, "Mapping workbook",
                        self.v_workbook,
-                       "The .xlsx holding one sheet per endpoint.")
-        self._file_row(form, 2, "System of Record specification",
+                       "A Level format workbook or a field mapping document. "
+                       "The format is detected when you choose the file.")
+        # The verdict on the chosen file. Classification only: it says what the
+        # file is and how much of it, never whether it is good.
+        self.lbl_format = ttk.Label(form, textvariable=self.v_verdict,
+                                    style="Muted.TLabel",
+                                    font=("Segoe UI", 9), anchor="w")
+        self.lbl_format.grid(row=2, column=0, columnspan=3, sticky="ew",
+                             pady=(2, 6))
+        self._file_row(form, 3, "System of Record specification",
                        self.v_sor,
                        "The SOR swagger, or a folder of them. Separate several "
                        "with a semicolon. Optional, and without it every SOR "
                        "field name is taken on trust.",
                        kind="sor")
-        self._file_row(form, 4, "Output folder", self.v_outdir,
+        self._file_row(form, 6, "Output folder", self.v_outdir,
                        "Where the generated specification is written.",
                        folder=True)
 
@@ -331,7 +345,7 @@ class App(ttk.Frame):
             row=2, column=0, sticky="w")
 
         mode = ttk.Frame(parent)
-        mode.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(14, 0))
+        mode.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(14, 0))
         ttk.Label(mode, text="Output", style="H2.TLabel").grid(
             row=0, column=0, sticky="w", columnspan=3)
         ttk.Radiobutton(mode, text="One specification for the whole workbook",
@@ -346,8 +360,23 @@ class App(ttk.Frame):
                        "namespace.").grid(
             row=3, column=0, sticky="w", columnspan=3, pady=(2, 0))
 
+        doc = ttk.Frame(parent)
+        doc.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(14, 0))
+        ttk.Label(doc, text="Documentation", style="H2.TLabel").grid(
+            row=0, column=0, sticky="w", columnspan=3)
+        ttk.Checkbutton(
+            doc, variable=self.v_export,
+            text="Also write the field mapping document, in the API COE "
+                 "format").grid(row=1, column=0, sticky="w", pady=(4, 0))
+        ttk.Label(doc, style="Muted.TLabel", font=("Segoe UI", 9),
+                  text="One sheet per SOR endpoint, with three columns saying "
+                       "what reached the interface and what did not. It is "
+                       "itself a valid input, so corrections can be made in "
+                       "it and fed straight back in.").grid(
+            row=2, column=0, sticky="w", columnspan=3, pady=(2, 0))
+
         line2 = ttk.Frame(parent)
-        line2.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(14, 0))
+        line2.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(14, 0))
         ttk.Label(line2, text="Output format").grid(row=0, column=0, sticky="w")
         ttk.Radiobutton(line2, text="YAML", variable=self.v_format,
                         value="yaml").grid(row=0, column=1, padx=(10, 4))
@@ -513,9 +542,45 @@ class App(ttk.Frame):
     def _on_workbook_chosen(self, path):
         if not self.v_outdir.get():
             self.v_outdir.set(os.path.join(os.path.dirname(path), "openapi"))
-        self._banner_set("Neutral.TLabel",
-                         "Ready. Check the workbook, or go straight to "
-                         "generating.")
+        self._classify(path)
+
+    def _classify(self, path):
+        """Say what the chosen file is, and let that drive the interface.
+
+        Bounded and read-only, so this stays well under a third of a second
+        even on an 8.7 MB workbook. Opening such a file the ordinary way to
+        read its header takes about 76 seconds and would look like a hang.
+        """
+        try:
+            import polymorphize_classify as cls
+            verdict = cls.classify(path)
+        except Exception as exc:                               # noqa: BLE001
+            self.v_verdict.set("Could not read this file yet: %s" % exc)
+            return None
+
+        self.v_verdict.set(verdict.line())
+        if not verdict.readable:
+            self._banner_set("Neutral.TLabel",
+                             "That file cannot be read yet. It may be open in "
+                             "Excel.")
+            return verdict
+        if verdict.fmt == cls.UNKNOWN:
+            self._banner_set("Bad.TLabel",
+                             "Neither input format: no Level columns and no "
+                             "Parameter Type column found.")
+            return verdict
+        if verdict.needs_specification:
+            # A field mapping document describes an interface against a System
+            # of Record, so the specification field earns its place here.
+            self._banner_set("Neutral.TLabel",
+                             "Field mapping document. Supply the System of "
+                             "Record specification below, or every field name "
+                             "in it is taken on trust.")
+        else:
+            self._banner_set("Neutral.TLabel",
+                             "Ready. Check the workbook, or go straight to "
+                             "generating.")
+        return verdict
 
     def _run_off_thread(self, work):
         if self._busy:
@@ -573,6 +638,7 @@ class App(ttk.Frame):
         split = self.v_output_mode.get() == "split"
         sor = self._sor_list()
         api_version = self.v_api_version.get().strip() or "1.0.0"
+        export = bool(self.v_export.get())
 
         def work(wb):
             self._say("Checking %s before generating" % wb)
@@ -584,7 +650,8 @@ class App(ttk.Frame):
                 return
             self._say("Writing to %s" % out_dir)
             out = gen.run(wb, out_dir, strict=strict, version=api_version,
-                          fmt=fmt, split=split, sor=sor or None, log=self._say)
+                          fmt=fmt, split=split, sor=sor or None,
+                          export=export, log=self._say)
             self._queue.put(("reports", (reports, out)))
         self._run_off_thread(work)
 
@@ -678,7 +745,11 @@ class App(ttk.Frame):
                     "groups hoisted, %d specialised across operations.%s%s"
                     % (m["operations"], m["schemas"], m["hoisted_groups"],
                        m["split_groups"],
-                       "  Showcase report written." if out.showcase_path else "",
+                       ("  Showcase report and field mapping document written."
+                        if out.showcase_path and out.export_path
+                        else "  Showcase report written." if out.showcase_path
+                        else "  Field mapping document written."
+                        if out.export_path else ""),
                        "  %d endpoint(s) FAILED and are not in it."
                        % len(out.failed) if out.failed else ""))
                 if out.failed:

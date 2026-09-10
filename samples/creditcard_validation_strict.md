@@ -4,11 +4,13 @@ Workbook: `creditcard_v2.0.0.xlsx`
 
 Level: **strict**
 
+Input format: **Level format**
+
 SOR specification: **none supplied**, so every SOR field name in the workbook was taken on trust.
 
 12 operation sheets, **11 would generate**, **1 would fail**. 1 support sheet skipped.
 
-1 error, 152 warnings.
+1 error, 134 warnings.
 
 ## Endpoints that would fail
 
@@ -25,17 +27,17 @@ Each of these needs a correction in the workbook before a specification can be g
 
 | Sheet | Pattern | Warnings |
 |---|---|---|
-| Available Funds_Retrieve | P1 | 14 |
+| Available Funds_Retrieve | P1 | 12 |
 | Transaction Adjustment_Initiate | P1 | 23 |
 | Recency Check_Retrieve | P1 | 4 |
 | Account Statement_Retrieve | P1 | 6 |
-| Card Transaction_Retrieve | P2 | 36 |
-| Card Details_Retrieve | P2 | 21 |
+| Card Transaction_Retrieve | P2 | 30 |
+| Card Details_Retrieve | P2 | 13 |
 | Card issuedDevice_Initiate | P1 | 12 |
-| Card issuedDevice_Update | P1 | 13 |
+| Card issuedDevice_Update | P1 | 12 |
 | Card Cancel | P1 | 8 |
 | Customer Addl Data | P1 | 3 |
-| Card RSAEncrypted | P1 | 8 |
+| Card RSAEncrypted | P1 | 7 |
 
 ## Warnings
 
@@ -44,8 +46,6 @@ Each of these needs a correction in the workbook before a specification can be g
 | T002 | `Available Funds_Retrieve!G10` | 'issuedDeviceIdentificationType' has no Data Type and no nested rows, so it was treated as a string | set the Data Type of 'issuedDeviceIdentificationType', for example String (35) or Number(12) |
 | T002 | `Available Funds_Retrieve!G19` | 'partyIdentificationType' has no Data Type and no nested rows, so it was treated as a string | set the Data Type of 'partyIdentificationType', for example String (35) or Number(12) |
 | T002 | `Available Funds_Retrieve!G27` | 'primaryCardTag' has no Data Type and no nested rows, so it was treated as a string | set the Data Type of 'primaryCardTag', for example String (35) or Number(12) |
-| R010 | `Available Funds_Retrieve!J25` | 'limitCurrencyCode' names the SOR field 'customerLimitCurrency', but no element called 'customerLimitCurrency' exists in the response of GET /v1/card/availableFunds, so the element was removed from the interface | correct the field name in cell J25, or clear the cell if the SOR genuinely does not supply 'limitCurrencyCode'. If the field does exist, check that the sheet names the right SOR endpoint. |
-| R021 | `Available Funds_Retrieve` | 1 of 14 SOR field names on this sheet do not exist in the SOR endpoint, so 1 element was removed from the interface | the R010 findings name each one with its cell. Correct them in the workbook, or accept the removals if the SOR really has changed. |
 | G001 | `Available Funds_Retrieve` | the sheet name implies GET but the Request Body section declares a schema, and GET cannot carry a body, so the operation was emitted as POST | confirm POST for this operation, or move the request attributes into a Request Parameter section so they become query parameters |
 | B001 | `Available Funds_Retrieve!A2` | Equivalent BIAN API Endpoint is missing or empty | add a row in column A labelled 'Equivalent BIAN API Endpoint:' with the value in the next column |
 | D001 | `Available Funds_Retrieve!I9` | 'IssuedDeviceIdentifier' has no description | describe what 'IssuedDeviceIdentifier' means to a consumer of the API |
@@ -88,12 +88,6 @@ Each of these needs a correction in the workbook before a specification can be g
 | D001 | `Account Statement_Retrieve!J11` | 'accountIdentificationType' has no description | describe what 'accountIdentificationType' means to a consumer of the API |
 | D001 | `Account Statement_Retrieve!J13` | 'IssuedDeviceIdentifier' has no description | describe what 'IssuedDeviceIdentifier' means to a consumer of the API |
 | D001 | `Account Statement_Retrieve!J16` | 'issuedDeviceIdentificationMasked' has no description | describe what 'issuedDeviceIdentificationMasked' means to a consumer of the API |
-| R011 | `Card Transaction_Retrieve!K33` | 'accountCurrencyCode' matched the SOR field 'currencyCode' in 2 different places in the response of GET /v1/account/search/trans: accountTransactions.currencyCode, accountTransactions.transactions.transactionAmount.currencyCode | write the fuller path in cell K33 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Transaction_Retrieve!L33` | 'accountCurrencyCode' matched the SOR field 'currencyCode' in 2 different places in the response of GET /v1/account/search/auth: acccountAuthorizations.authorizations.transactionAmount.currencyCode, acccountAuthorizations.currencyCode | write the fuller path in cell L33 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Transaction_Retrieve!M33` | 'accountCurrencyCode' matched the SOR field 'currencyCode' in 2 different places in the response of GET /v1/account/search/mps: accountMps.currencyCode, accountMps.mps.transactionAmount.currencyCode | write the fuller path in cell M33 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Transaction_Retrieve!K58` | 'amountCurrencyCode' matched the SOR field 'currencyCode' in 2 different places in the response of GET /v1/account/search/trans: accountTransactions.currencyCode, accountTransactions.transactions.transactionAmount.currencyCode | write the fuller path in cell K58 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Transaction_Retrieve!L58` | 'amountCurrencyCode' matched the SOR field 'currencyCode' in 2 different places in the response of GET /v1/account/search/auth: acccountAuthorizations.authorizations.transactionAmount.currencyCode, acccountAuthorizations.currencyCode | write the fuller path in cell L58 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Transaction_Retrieve!M58` | 'amountCurrencyCode' matched the SOR field 'currencyCode' in 2 different places in the response of GET /v1/account/search/mps: accountMps.currencyCode, accountMps.mps.transactionAmount.currencyCode | write the fuller path in cell M58 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
 | V003 | `Card Transaction_Retrieve!L1` | variant 02 'Authorization Transactions' was paired with SOR column 'SOR v1/account/search/auth' by position, but the two names have nothing in common | reorder the SOR columns to match the order of the requestVariant values, or reword one of them so the pairing is obvious |
 | V003 | `Card Transaction_Retrieve!M1` | variant 03 'Installment Transactions' was paired with SOR column 'SOR /v1/account/search/mps' by position, but the two names have nothing in common | reorder the SOR columns to match the order of the requestVariant values, or reword one of them so the pairing is obvious |
 | G001 | `Card Transaction_Retrieve` | the sheet name implies GET but the Request Body section declares a schema, and GET cannot carry a body, so the operation was emitted as POST | confirm POST for this operation, or move the request attributes into a Request Parameter section so they become query parameters |
@@ -124,17 +118,9 @@ Each of these needs a correction in the workbook before a specification can be g
 | D001 | `Card Transaction_Retrieve!J75` | 'pOSConditionCode' has no description | describe what 'pOSConditionCode' means to a consumer of the API |
 | D001 | `Card Transaction_Retrieve!J77` | 'pointOfServiceLocationReference' has no description | describe what 'pointOfServiceLocationReference' means to a consumer of the API |
 | D001 | `Card Transaction_Retrieve!J80` | 'cardAcceptorClassification' has no description | describe what 'cardAcceptorClassification' means to a consumer of the API |
-| A006 | `Card Details_Retrieve!I53` | 'AvailabilityType' is declared object but has no nested rows beneath it | add the attributes of 'AvailabilityType' one Level deeper, or change its Data Type to a scalar |
-| A006 | `Card Details_Retrieve!I59` | 'AddressLine' is declared object but has no nested rows beneath it | add the attributes of 'AddressLine' one Level deeper, or change its Data Type to a scalar |
-| A006 | `Card Details_Retrieve!I71` | 'Country' is declared object but has no nested rows beneath it | add the attributes of 'Country' one Level deeper, or change its Data Type to a scalar |
-| R010 | `Card Details_Retrieve!M29` | 'accountName' names the SOR field 'accounts.accountName', but no element called 'accountName' exists in the response of GET /v1/account/info, so the element was removed from the interface | correct the field name in cell M29, or clear the cell if the SOR genuinely does not supply 'accountName'. If the field does exist, check that the sheet names the right SOR endpoint. |
-| R011 | `Card Details_Retrieve!M87` | 'productIdentification' matched the SOR field 'value' in 3 different places in the response of GET /v1/account/info: accounts.accountProduct.value, accounts.reclassification.value, accounts.repayment.value | write the fuller path in cell M87 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Details_Retrieve!M88` | 'productDescription' matched the SOR field 'description' in 3 different places in the response of GET /v1/account/info: accounts.accountProduct.description, accounts.reclassification.description, accounts.repayment.description | write the fuller path in cell M88 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Details_Retrieve!M90` | 'accountReclassificationValue' matched the SOR field 'value' in 3 different places in the response of GET /v1/account/info: accounts.accountProduct.value, accounts.reclassification.value, accounts.repayment.value | write the fuller path in cell M90 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Details_Retrieve!M91` | 'accountReclassificationDescription' matched the SOR field 'description' in 3 different places in the response of GET /v1/account/info: accounts.accountProduct.description, accounts.reclassification.description, accounts.repayment.description | write the fuller path in cell M91 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Details_Retrieve!M93` | 'repaymentValue' matched the SOR field 'value' in 3 different places in the response of GET /v1/account/info: accounts.accountProduct.value, accounts.reclassification.value, accounts.repayment.value | write the fuller path in cell M93 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R011 | `Card Details_Retrieve!M94` | 'repaymentDescription' matched the SOR field 'description' in 3 different places in the response of GET /v1/account/info: accounts.accountProduct.description, accounts.reclassification.description, accounts.repayment.description | write the fuller path in cell M94 so it is clear which one is meant. Matching is on the last segment, so the element was kept, but a reader cannot tell which SOR field feeds it. |
-| R021 | `Card Details_Retrieve` | 1 of 73 SOR field names on this sheet do not exist in the SOR endpoint, so 1 element was removed from the interface | the R010 findings name each one with its cell. Correct them in the workbook, or accept the removals if the SOR really has changed. |
+| A006 | `Card Details_Retrieve!I53` | 'AvailabilityType' is declared object but has no nested rows beneath it, so there is no shape to publish and the element was removed from the interface | add the attributes of 'AvailabilityType' one Level deeper, or change its Data Type to a scalar |
+| A006 | `Card Details_Retrieve!I59` | 'AddressLine' is declared object but has no nested rows beneath it, so there is no shape to publish and the element was removed from the interface | add the attributes of 'AddressLine' one Level deeper, or change its Data Type to a scalar |
+| A006 | `Card Details_Retrieve!I71` | 'Country' is declared object but has no nested rows beneath it, so there is no shape to publish and the element was removed from the interface | add the attributes of 'Country' one Level deeper, or change its Data Type to a scalar |
 | V003 | `Card Details_Retrieve!L1` | variant 02 'Accunt Deliquency' was paired with SOR column 'SOR /v1/account/delinquency' by position, but the two names have nothing in common | reorder the SOR columns to match the order of the requestVariant values, or reword one of them so the pairing is obvious |
 | G001 | `Card Details_Retrieve` | the sheet name implies GET but the Request Body section declares a schema, and GET cannot carry a body, so the operation was emitted as POST | confirm POST for this operation, or move the request attributes into a Request Parameter section so they become query parameters |
 | L003 | `Card Details_Retrieve!H1` | there is no Dummy Value column | add a Dummy Value header to the right of the Level columns |
@@ -157,7 +143,6 @@ Each of these needs a correction in the workbook before a specification can be g
 | D001 | `Card issuedDevice_Initiate!I20` | 'statusCode' has no description | describe what 'statusCode' means to a consumer of the API |
 | D001 | `Card issuedDevice_Initiate!I21` | 'statusDescription' has no description | describe what 'statusDescription' means to a consumer of the API |
 | D001 | `Card issuedDevice_Initiate!I22` | 'statusEffectiveDate' has no description | describe what 'statusEffectiveDate' means to a consumer of the API |
-| R005 | `Card issuedDevice_Update!H1` | the workbook states DELETE for '/v1/card/cancel' but the SOR specification defines only PUT, so PUT was used | correct the method in the SOR API Endpoint cell, or confirm that PUT is the operation intended |
 | L003 | `Card issuedDevice_Update!F1` | there is no Dummy Value column | add a Dummy Value header to the right of the Level columns |
 | D001 | `Card issuedDevice_Update!I9` | 'IssuedDeviceIdentifier' has no description | describe what 'IssuedDeviceIdentifier' means to a consumer of the API |
 | D001 | `Card issuedDevice_Update!I11` | 'issueddeviceIdentification' has no description | describe what 'issueddeviceIdentification' means to a consumer of the API |
@@ -185,7 +170,6 @@ Each of these needs a correction in the workbook before a specification can be g
 | G001 | `Customer Addl Data` | the sheet name implies GET but the Request Body section declares a schema, and GET cannot carry a body, so the operation was emitted as POST | confirm POST for this operation, or move the request attributes into a Request Parameter section so they become query parameters |
 | D001 | `Customer Addl Data!I9` | 'PartyIdentifier' has no description | describe what 'PartyIdentifier' means to a consumer of the API |
 | D001 | `Customer Addl Data!I13` | 'IssuedDeviceIdentifier' has no description | describe what 'IssuedDeviceIdentifier' means to a consumer of the API |
-| R001 | `Card RSAEncrypted!H1` | the column header names '/v1/card/cancel' but the SOR API Endpoint banner names '/v1/card/{}/cardRSAEncrypted' for this column, and the banner is definitive, so '/v1/card/{}/cardRSAEncrypted' was used | correct the column header to 'SOR /v1/card/{}/cardRSAEncrypted', or correct the banner. Only the banner is read, so the interface is unaffected either way, but a reader of the workbook will be misled. |
 | E001 | `Card RSAEncrypted!H17` | the Response Body section declares 3 attributes and not one of them names an SOR field, so no payload was published for it | fill in the SOR column for the attributes this message carries. If it carries none, delete the rows and leave the Response Body label in place. |
 | G001 | `Card RSAEncrypted` | the sheet name implies GET but the Request Body section declares a schema, and GET cannot carry a body, so the operation was emitted as POST | confirm POST for this operation, or move the request attributes into a Request Parameter section so they become query parameters |
 | L003 | `Card RSAEncrypted!F1` | there is no Dummy Value column | add a Dummy Value header to the right of the Level columns |
@@ -205,11 +189,6 @@ Each of these needs a correction in the workbook before a specification can be g
 | E001 | 1 |
 | G001 | 7 |
 | L003 | 6 |
-| R001 | 1 |
-| R005 | 1 |
-| R010 | 2 |
-| R011 | 12 |
-| R021 | 2 |
 | S001 | 1 |
 | T002 | 5 |
 | V001 | 1 |

@@ -1,18 +1,22 @@
 # Notes for the deferred documentation pass
 
-> **Status: the documentation pass was carried out at release 6.3.**
-> `SOR_Polymorphizer_User_Manual.docx` and
+> **Status: the documentation pass was carried out at release 6.3 and has not
+> been repeated since.** `SOR_Polymorphizer_User_Manual.docx` and
 > `SOR_Polymorphizer_Technical_Guide.docx` were rewritten from nothing against
-> items 1 to 37 below. See "What the pass covered, and what it did not" at the
-> end of this file. The items are kept because they are the record of why each
-> decision was made, and because three of them remain open.
+> items 1 to 37 below. See "What the pass covered, and what it did not" in the
+> middle of this file, and "Still open after 6.5" at the end. Items 38 to 47
+> came in after that pass, so the two documents do not yet describe the second
+> input format, classification, the error set, class and context, the field
+> mapping export or the lifecycle stage. The items are kept because they are
+> the record of why each decision was made.
 
 This file records everything
 the pass must cover. Items 1 to 7 were carried over from v5.3; items 8 to 18
 came in with the Level-format contract in v6.0; items 19 to 25 came with the
 single merged specification in v6.1; items 26 to 32 came with verification
-against the System of Record and the HTML showcase in v6.2; items 33 to 36 are
-new in v6.3.
+against the System of Record and the HTML showcase in v6.2; items 33 to 37 came
+with v6.3; item 38 with v6.4; items 39 to 47 with the two-format build in 6.5;
+items 48 to 55 with the field mapping export in 6.6.
 
 The two Word documents (`SOR_Polymorphizer_Technical_Guide.docx`,
 `SOR_Polymorphizer_User_Manual.docx`) and the presentation
@@ -41,8 +45,8 @@ by a `requestVariant` value. See item 10.
 Slides 12 and 13 of the presentation still teach the v5.2 position.
 
 ### 3. Test counts
-39 → 49 → 62 → 93 → 271 → 343 → 486 → **499** across three suites
-(279 + 156 + 64). `tests/run_all.py` runs all three.
+39 → 49 → 62 → 93 → 271 → 343 → 486 → 499 → 501 → 736 → **787** across
+three suites (556 + 156 + 75). `tests/run_all.py` runs all three.
 
 ### 4. The workbook read is bounded
 Sheets declare enormous dimensions because of stray formatting far below the
@@ -603,3 +607,480 @@ published shape. Test count 499 to **501**.
 ### Still open from earlier releases
 Items 7, 18 and the presentation slides are unaffected by this change and
 remain as recorded above.
+
+
+---
+
+## Rules for the next build, set by Colin. Implemented in 6.5.
+
+Recorded ahead of the work so they survive the conversation. The rules stand as
+written below; what each one became in the code, and how the eight outstanding
+decisions were settled, is recorded under **New in 6.5** at the end of this
+file.
+
+### R1. Build in support for the field mapping format
+The dotted-path field mapping document, evidenced by
+`apicoeissueddeviceadministrationfieldmappingv1.0.7.xlsx`: 22 sheets, one per
+operation, banner in rows 1 to 9, header on row 10, columns Parameter Type,
+Reusable API Field Name, Usage, Schema, SOR API Field Name (with the endpoint
+appended to the header), Example, Description, Remarks, Required in Swagger.
+Hierarchy is a dotted path up to eight segments deep. `core.load_mapping`
+already reads it with no configuration: 22 layouts, 898 rows, 761 attributes,
+137 section rows, 278 mapped, 483 unmapped.
+
+### R2. Open in the most efficient way to peek
+Measured, and this is an acceptance criterion rather than a preference. A
+bounded read-only peek at the top rows of a few sheets costs 88 ms on the
+field mapping workbook, 179 ms on the credit card workbook and 284 ms on the
+8.7 MB CASA mapping. An ordinary `load_workbook` on that last file takes
+**75.7 seconds**, a factor of 266, and would present as the window hanging on
+file drop. So: `read_only=True`, bounded rows, bounded sheets, and a test that
+holds the peek under a stated budget.
+
+### R3. Classify the content, do not validate it
+The check says what the file is and how much of it, never whether it is good.
+No pass indicator, because a correctly classified workbook can still be full
+of defects and a green tick would be read as a promise the check cannot keep.
+Validation stays where it is. Classification must not block a run on content
+grounds, and where it routes a run it says so rather than acting silently.
+
+### R4. Drive the interface where required
+Permission rather than obligation. On recognising a field mapping document the
+window may reveal the field for the specification to trim, and hide it for a
+Level workbook, so the detection lands while the user can still act on it. The
+command line equivalent is a pre-flight that names the format and exits
+non-zero when it cannot proceed, which also closes the defect below.
+
+### The defect this closes
+Today the tool run against a field mapping workbook classifies all 22 sheets as
+support sheets, because the Level reader searches only the first six rows for a
+header and this format's header is on row 10. It reports nought operation
+sheets, nought errors, nought warnings, and **exits zero**. A build step would
+go green having produced nothing. That is the worst available failure mode and
+it argues for R4 independently of R1.
+
+### Decisions still outstanding before this can be built
+*All eight were settled before the 6.5 build. The rulings are recorded under
+**New in 6.5**, item 40.*
+1. **Which codebase.** Polymorphizer 6.4 or Substantiate 7.0. Building a second
+   reader twice is waste, and the two lines have diverged.
+2. **Depth of support.** Route the format to the trim engine only, or generate a
+   new specification from it as the Level format does, or both.
+3. **The variant axis.** This format carries one SOR field column on all 22
+   sheets, so everything generated from it is pattern P1: no `requestVariant`,
+   no `oneOf`, no discriminator. Accept that, or define how the format would
+   express several SOR endpoints behind one operation.
+4. **Parameter Type against the section banner.** The format carries both a
+   per-row Parameter Type and section banner rows. Which is authoritative.
+5. **`N/A` against blank** in the SOR field column, 216 and 289 rows
+   respectively. Identical meaning, or `N/A` as decided and blank as unfinished.
+6. **`Required in Swagger`**, blank on 607 of 783 rows, `Yes` on 132, `No` on 22.
+   An instruction that overrides the mapping, or advisory.
+7. **Findings.** Roughly half the codes are phrased in Level terms. Same codes
+   with format-aware fix text, or a parallel family.
+8. **Arrays.** Ten rows only, typed `array` in the Schema column with no item
+   structure visible in the path. Needs one confirmed example.
+
+### Working context, set by Colin
+Unless Substantiate is named explicitly, every question, answer and build in
+this workstream concerns the **SOR Polymorphizer** (6.4 line). Substantiate 7.0
+remains a separate tree and is only in scope when called out by name. Recorded
+here because this session has already crossed one context boundary and the
+instruction must survive the next one.
+
+### R5. Emit the full Apigee error set
+Set by Colin against `apicoeissueddeviceadministrationswaggerv1.0.8.yaml`
+(OpenAPI 3.0.3, 22 paths, 79 schemas). This closes review observation four,
+and it supersedes the earlier proposal to adopt BIAN's six-response set: the
+house standard is twelve, and it is evidenced.
+
+**All twelve are Apigee errors.** Each response description carries the same
+sentence, so no judgement is needed about which layer raises them: *"Disclaimer:
+The error message is Apigee error only and not mapped to the System API error.
+Consumers should not rely on the exact error text as it may change depends on
+the format of the System API its calling."*
+
+| Component | Code | Reason phrase |
+|---|---|---|
+| `BadRequest` | 400 | Bad Request |
+| `Unauthorized` | 401 | Unauthorized |
+| `Forbidden` | 403 | Forbidden |
+| `NotFound` | 404 | Not Found |
+| `MethodNotAllowed` | 405 | Method Not Allowed |
+| `Conflict` | 409 | Conflict |
+| `UnprocessableEntity` | 422 | Unprocessable Entity |
+| `TooManyRequests` | 429 | Too Many Requests |
+| `InternalServerError` | 500 | Internal Server Error |
+| `BadGateway` | 502 | Bad Gateway |
+| `ServiceUnavailable` | 503 | Service Unavailable |
+| `GatewayTimeout` | 504 | Gateway Timeout |
+
+Structurally all twelve are identical, verified: the same three response
+headers, the same `ErrorResponse` schema, the same disclaimer. Every one of the
+264 error entries across the 22 operations is a `$ref` into
+`components/responses`, none inlined, which is the shape to reproduce.
+
+**`ErrorResponse`**, to sit in `components/schemas`: `status` (string),
+`title` (string), `timestamp` (string, date-time) and `errors`, an **array** of
+objects carrying `realm`, `code`, `errordesc`, `detail` and `instance`.
+
+**The three headers are not error-specific.** `x-BDO-Client-Request-Id`,
+`x-BDO-Client-Request-Trace-Id` and `x-BDO-Client-Request-Span-Id` appear on the
+200 responses too, so they belong in `components/headers` and on every response
+the tool emits, not only on the failures.
+
+**Do not copy the sample's example verbatim.** It does not conform to its own
+schema: the schema declares `errors` as an array and the example provides
+`error` as a single object, it omits `status` and `realm`, and its `title` reads
+"The request was successful, but there is no content in the response", which is
+a 204 message pasted into an error example. Write a conforming example, or emit
+none. Raise this with the API COE as a defect in their sample rather than
+silently correcting it.
+
+**Open, and needs Colin's ruling.** The sample also declares four
+`securitySchemes` (BasicAuth, BearerAuth, ApiKeyAuth, OAuth2) applied at root
+level with no per-operation override. Whether the tool should emit those as well
+is a separate question from the errors and has not been asked for.
+
+---
+
+## New in 6.5
+
+The build that carried out R1 to R6. Test count 501 to **736** across the three
+suites (516 + 156 + 64), with four new groups: W18 classification, W19 the
+field mapping format, W20 the Apigee error set and W21 class and context
+naming.
+
+### 39. Two input formats, and the file decides which
+
+`polymorphize_classify.py` is new and it runs before any reader. It answers one
+question, which format is this, and it answers it on a bounded peek:
+`read_only=True`, fourteen rows, thirty columns, at most six worksheets, under
+a budget a test enforces. Measured on the reference workbooks that peek costs
+284 ms where an ordinary open of the largest of them costs 75.7 seconds, so
+classification is cheap enough to run on every entry point including the moment
+a filename is typed into the desktop window.
+
+A sheet showing `Level 1` in its header row is the Level format; a sheet showing
+a `Parameter Type` column beneath the banner block is a field mapping document.
+A workbook holding both resolves to the Level format and reports the mixture
+rather than choosing quietly.
+
+Three properties of the classifier are deliberate and each answers a rule:
+
+- **It classifies, it does not validate** (R3). Its report says what the file is
+  and how much of it, never whether it is any good. There is no pass indicator,
+  because a correctly classified workbook can still be full of defects and a
+  green tick would be read as a promise the check cannot keep.
+- **It never raises.** An unreadable file, a corrupt archive or a password
+  produce a classification carrying `readable=False` and the reason. Failing
+  soft matters because this runs on the typing path in the window.
+- **It drives the interface where it is useful** (R4). The desktop window shows
+  the verdict under the workbook field and, on recognising a field mapping
+  document, asks for the specification to trim. The command line equivalent is
+  a pre-flight in `polymorphize_cli._preflight`, shared by `check` and
+  `generate`.
+
+### 40. The eight outstanding decisions, as settled
+
+| | Question | Ruling |
+|---|---|---|
+| 1 | Which codebase | The Polymorphizer line, per the working context recorded above. Substantiate 7.0 is untouched |
+| 2 | Depth of support | Full generation, not trim only. The format produces a specification exactly as the Level format does |
+| 3 | The variant axis | Accepted as absent. One SOR column means every sheet is P1, and a sheet that looks as though it wants variants is told so once, as `F005` |
+| 4 | Parameter Type against the banner | Parameter Type is authoritative and the banner corroborates it. A disagreement is reported as `F001`, never resolved silently |
+| 5 | `N/A` against blank | Both unmapped, but not merged. `N/A` is a decision recorded and passes silently; a blank is a decision not yet stated and is reported at strict level as `F004` |
+| 6 | `Required in Swagger` | Advisory. Blank on 607 of 783 rows, so it cannot carry an include or exclude instruction. Recorded as `x-required-in-swagger` and nothing else |
+| 7 | Findings | One catalogue with format-aware fix text, plus a new `F` family for what only this format can get wrong. Not a parallel set: an analyst should not have to learn two vocabularies |
+| 8 | Arrays | A container mapped but holding no published member is removed and reported as `A006`, rather than emitted as `properties: {}`. This was found by running the format, not by inspection: three sheets produced an empty schema until `supported()` was corrected to judge a container by its descendants |
+
+### 41. The full Apigee error set (R5)
+
+`polymorphize_errors.py` is new and holds the twelve responses, the
+`ErrorResponse` schema, the three standard headers and the disclaimer, quoted
+verbatim from the API COE specification. `attach()` is idempotent, adds the
+twelve to every operation that does not already declare that status, puts the
+three headers on success responses as well as errors, and creates the shared
+components once.
+
+Two departures from the sample were taken deliberately and both are argued in
+the module docstring: the headers go on every response because the sample
+carries them on its 200s, and the sample's `ErrorResponse` example is not
+copied because it does not conform to its own schema. A conforming example is
+written instead. The defect stands as a note for the API COE.
+
+One ordering defect surfaced here and is worth recording, because it would
+recur in any future addition to `components/schemas`: `attach()` has to run
+**before** the `identify()` loop that stamps `x-class` and `x-context`, in both
+`generate` and `merge`, or `ErrorResponse` ships without them. It did, in the
+first cut.
+
+### 42. Class and context are separate, and parseable
+
+Colin asked for the class to be separated from its context by a `~` so that a
+following process could parse the two apart. The separator shipped is `__` and
+the reason is narrow rather than a matter of taste:
+
+- The OpenAPI component key regex is `^[a-zA-Z0-9\.\-_]+$`, which does not
+  admit `~`.
+- RFC 6901 makes `~` the escape character in a JSON Pointer, so a `~` in a key
+  must be written `~0` in every `$ref` that reaches it. `#/components/schemas/
+  Account~CardDetailsRetrieve` does not point at `Account~CardDetailsRetrieve`.
+- `openapi-spec-validator` accepts the unescaped form regardless, which is
+  worse than a rejection, because the defect would ship silently and surface
+  in whichever generator handles pointers correctly.
+
+So `__` is the separator in the key, and the requirement, that a following
+process can parse the two apart without a heuristic, is met by three extensions
+on every schema: `x-class`, `x-context` and `x-qualified-name`, the last
+carrying the `~` form for a consumer that prefers a single readable string.
+Colin accepted this in preference to a literal `~` in the key.
+
+### 43. The base class is present, verified rather than asserted
+
+Colin asked for confirmation that the base class is emitted and not only the
+subsidiary shapes, earlier versions having dropped it. Checked on the reference
+workbook: 10 of 10 families that split carry a `<Class>__Base`. Seven families
+carry no base, and the split is 4 legitimate, being families of one shape where
+a base would be a duplicate, against 3 reported through `P001`.
+
+Two of my own measurements in this area were wrong and were corrected to Colin
+in the same session, which is recorded here so the corrected figures are the
+ones that survive: 23 of 68 schemas carry a context suffix, 34%, not the 36 of
+68 and 53% first stated. The first error assumed the plain name went to the most
+*referenced* shape where the code orders by places seen; the second counted
+array item schemas such as `AccountDetialsItem` as suffixed.
+
+### 44. Exit code 3, and the failure mode it closes
+
+A field mapping workbook handed to 6.4 classified all 22 sheets as support
+sheets, because the Level reader searches only the first six rows for a header
+and this format's header is on row 10. It reported nought operations, nought
+errors, nought warnings, and **exited zero**: a build step would have gone
+green having produced nothing. `EXIT_UNRECOGNISED = 3` closes it. A file the
+tool cannot place is now refused, by name, with a non-zero code, in `check`,
+`generate` and the batch runner, which gained an `unrecognised` status.
+
+### 45. What the build produces on the field mapping reference
+
+All 22 operations generate: 99 schemas, 35 groups hoisted, 13 specialised
+across operations, valid OpenAPI 3.0.3. Every component key sits inside
+`^[a-zA-Z0-9.\-_]+$` with no tilde anywhere, every schema carries `x-class`,
+and all twelve error codes are present on all 22 operations. The credit card
+baseline is unchanged at 11 of 12 with 123 schemas, which is the point of
+running it: the second format was added without moving the first.
+
+### 46. The specialisation figures are now reproducible
+
+The figures the README quoted for what specialisation prevents were measured
+once by a script that was not kept, so they could not be checked against this
+build. `tools/measure_specialisation.py` is new, it counts from the workbook
+tree so that the two figures differ in one respect only, and it runs on any
+workbook. Current figures, from that script: the reference workbook 228 against
+275, 47 occurrences prevented, 21% more; the field mapping reference 354 against
+372.
+
+The earlier 137 against 188 is not carried forward, because it cannot be
+reproduced and a number that cannot be reproduced should not be quoted.
+
+### 47. Output from 5.3 has been archived rather than left in place
+
+`samples/casa_*_v53.*` predated the naming convention, the plain-name rule and
+the error set, so read as a baseline they contradict 6.5. They now sit in
+`samples/archive_v5.3/` behind a note saying what they are and what they
+predate. Nothing in the tool or the tests reads them, and the workbook they
+came from is not part of the sample set, so they cannot be regenerated.
+
+### Still open after 6.5
+*Items 3 and 5 were closed in 6.6. See item 55.*
+
+1. **Item 7**, the cheque field names on slide 11, still unverified because no
+   cheque mapping workbook has been supplied.
+2. **Item 18**, unchanged.
+3. **The two Word documents** describe 6.3 behaviour. They do not cover the
+   second input format, classification, the error set or class and context, so
+   they need a pass rather than an edit.
+4. **The presentations** still show the pre-composition mechanism.
+5. **Security schemes.** The API COE sample declares four `securitySchemes`
+   applied at root with no per-operation override. Whether the tool should emit
+   them is a separate question from the errors and has not been asked.
+
+---
+
+## Rules for 6.6, set by Colin
+
+Four instructions, each recorded with what it became.
+
+**Batch and window only, not the command line.** The export is written by
+`polymorphize_batch` and by the desktop window. `gen.run` takes an `export`
+flag that defaults off, the command line never sets it, and
+`generate --help` carries an epilog saying where the export lives rather than
+leaving its absence to be discovered.
+
+**The version to create the spreadsheet from is determined, so the
+spreadsheet matches the swagger.** The document is written by the run that
+wrote the specification, from the same trees, and its provenance sheet names
+the specification file and carries its SHA-256 fingerprint. A later reader can
+tell whether the specification has been regenerated since.
+
+**Show the differences between what was requested and what the swagger
+contains.** Three columns beyond the format's nine.
+
+**Round tripping, bringing all of the original spreadsheet along.** The export
+is a valid input and carries every row of the source, including the rows the
+tool does not read.
+
+**Each SOR endpoint is a separate sheet.**
+
+**The description of each operation should read
+`**<u>API Lifecycle Status - Design</u>**`.**
+
+---
+
+## New in 6.6
+
+Test count 736 to **787** across the three suites (556 + 156 + 75), with three
+new groups and three new regression sections: W22 the lifecycle status, W23
+the export, W24 the round trip, D12 the showcase reader, D13 a failed sheet
+carried, D14 a correction reaching the next specification.
+
+### 48. The field mapping document, written back out
+
+`polymorphize_export.py` is new. It writes the API COE's own format from the
+run that produced the specification, so the two cannot drift: there is no
+second read of the workbook and no second interpretation of it. The verdict in
+the Publication Status column is the same verdict the showcase draws, taken
+from the same function, because computing it twice by two routes is how a
+report and a spreadsheet come to tell an analyst different things about the
+same cell.
+
+The nine columns of the format are unchanged and the header stays on row 10,
+so the document opens as the format the API COE circulates. The three added
+columns are Publication Status, Why and Analyst Action, and a row that did not
+reach the interface is shaded so the rows worth attention are the ones the eye
+lands on.
+
+### 49. Why the round trip needed the whole document, not the parts we read
+
+The tool reads Request Body and Response Body and nothing else. An export
+composed only from what it reads would drop every header row, every parameter
+row and every column beyond the nine, so an analyst who corrected a flagged
+row and fed the workbook back would lose a third of their document on each
+pass. That is a worse failure than the one the export exists to fix.
+
+So the field mapping reader now keeps the rows it read, on
+`SheetResult.source_rows`, and the exporter writes them back **verbatim**. The
+same list, not a copy, so it costs nothing. Verbatim also means the tool does
+not rewrite an analyst's `String (10)` into its own `string(10)`: a comparison
+between two rounds shows what actually changed and nothing else.
+
+Two consequences worth stating:
+
+* **A failed sheet is still exported**, marked `Not generated` with the
+  finding and its correction against it. Losing an operation on the round trip
+  would be worse than any finding it carries. `D13` holds this.
+* **The export is a fixed point.** Exporting an export changes not one cell.
+  `W24` holds this, and it caught the defect it was written for: the three
+  added columns were being carried as unknown extra columns on the way back
+  in, so a document on its fifth pass would have been fifteen columns wider
+  than the format allows.
+
+### 50. Where the format cannot carry what the Level format holds
+
+A Level workbook has no Remarks column, no Required in Swagger column, no API
+Name and no SOR Name, and no header rows at all. Exporting one is a
+**conversion**, not a round trip, and the provenance sheet says so in those
+words and lists the three losses. API Name is derived from the sheet name
+rather than left blank, and recorded as derived. SOR Name is left empty
+because there is nothing to derive it from.
+
+A Level sheet that failed to read is not exported at all, because there is no
+tree to compose from and nothing to carry. The provenance sheet names it.
+
+### 51. The standard header block, and an inconsistency it settles
+
+The 220 header rows across the reference document's 22 sheets are seven
+distinct headers repeated, so the block is a constant taken from that
+document and supplied where the source had none.
+
+Those seven are not declared consistently in the source, which is worth
+raising with the API COE: `x-BDO-Application-Id` appears as both `string` and
+`string(10)`, three of them appear once with a length and a Usage and once
+with neither, and three rows carry `CVV`, `auxiliaryPan` and
+`auxiliaryExpiry` in the Required in Swagger column, which is paste drift from
+the neighbouring column. The constant takes the most complete declaration of
+each, so an exported document is tidier than the hand maintained one.
+
+### 52. One sheet per SOR endpoint, and what that exposed
+
+The format has one SOR API Field Name column, so a Level sheet naming several
+SOR endpoints becomes several sheets. The reference workbook's eleven
+generated operations become seventeen sheets, `Card Details_Retrieve` alone
+becoming five.
+
+Writing the banner for each of those sheets exposed a rule worth recording.
+The first cut took the endpoint from the SOR column header, and on one sheet
+of the reference field mapping document the column header and the banner name
+different endpoints. The banner is the definitive statement and the column
+header is a label, a rule 6.3 already established for reading, so rewriting
+the banner from the column would have changed which SOR the next round
+verified against. A mapping sheet's banner is now reproduced exactly as
+written. A Level banner naming several endpoints pairs them with the columns
+in order, so sheet *n* takes fragment *n*, keeping the analyst's own method
+prefix and spelling.
+
+### 53. The API lifecycle stage
+
+Every operation now carries:
+
+```yaml
+description: '**<u>API Lifecycle Status - Design</u>**'
+x-api-lifecycle-status: Design
+```
+
+The description is the statement and nothing else, as instructed, so it
+renders as one line. The use case is not displaced: it was already the
+summary, and `x-use-case` now carries it untruncated, so nothing is lost to
+make room. `Design` is a module constant rather than an option, because the
+tool generates a design and an operation at a later stage is not something it
+produced. The bold-and-underline is markdown emphasis around raw HTML, which
+CommonMark permits and which Swagger UI and Redoc both render.
+
+This closes review observation five.
+
+### 54. A defect in 6.5 that the export uncovered
+
+The showcase re-read the workbook rather than using the run's own results, and
+it re-read it with the **Level** reader whatever the format was. For a field
+mapping document every sheet came back as a support sheet, so the showcase
+listed no elements at all: the 6.5 sample report ran to 40 KB against the
+credit card report's 323 KB and that went unnoticed, because nothing checked
+that a report had content.
+
+The run now carries the results it read, on `RunResult.results`, and the
+showcase and the export both use them. The re-read survives only for a caller
+that builds a `RunResult` by hand, and it dispatches on the format. `D12`
+holds it, and asserts a floor on the number of elements the report sees rather
+than merely that it was written.
+
+### 55. What this closes from the client review
+
+Observation two, generated field mapping documentation, and observation five,
+the API Lifecycle Design status. Both were listed as not implemented in the
+response sent to the client.
+
+### Still open after 6.6
+
+1. **Item 7**, the cheque field names on slide 11, still unverified because no
+   cheque mapping workbook has been supplied.
+2. **Item 18**, unchanged.
+3. **The two Word documents** describe 6.3 behaviour and now trail by three
+   releases. They cover neither input-format classification, nor the error
+   set, nor class and context, nor the export and its round trip. They need a
+   pass rather than an edit.
+4. **The presentations** still show the pre-composition mechanism.
+5. **Security schemes.** The API COE sample declares four `securitySchemes`
+   applied at root with no per-operation override. Still not asked for.
+6. **A later lifecycle stage.** `Design` is fixed. If a specification ever has
+   to be published at Build or Live, the constant becomes an option and the
+   question of who is entitled to set it has to be answered first.

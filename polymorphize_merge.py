@@ -1,7 +1,7 @@
 """
 polymorphize_merge — one specification for the whole workbook.
 
-Version 6.4.
+Version 6.6.
 
 Why one document
 ================
@@ -73,13 +73,54 @@ import re
 from collections import OrderedDict, defaultdict
 from dataclasses import dataclass, field
 
+import polymorphize_errors as errs
 import polymorphize_generate as gen
 import polymorphize_workbook as wbk
 from polymorphize_workbook import Finding, VARIANT_PROPERTY, cell_ref, key, text
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 OPENAPI_VERSION = gen.OPENAPI_VERSION
+
+#: Separates a class from the context that qualifies it, in a component name.
+#: Double underscore rather than a tilde: the OpenAPI component-key set is
+#: ``^[a-zA-Z0-9\.\-_]+$``, which excludes ``~``, and ``~`` is additionally
+#: the JSON Pointer escape character, so a ``$ref`` to a tilde-named schema is
+#: a malformed pointer that lenient resolvers accept and strict ones reject.
+#: ``__`` is inside the permitted set, has no pointer meaning, and survives a
+#: code generator where ``.`` is read as a namespace and ``-`` is mangled.
+SEP = "__"
+
+#: The separator a following process was asked for. It appears only as a
+#: **value**, in ``x-qualified-name``, where any character is legal.
+QUALIFIED_SEP = "~"
+
+
+def qualified(cls, ctx=None):
+    """The component name for a class, optionally qualified by a context."""
+    return "%s%s%s" % (cls, SEP, ctx) if ctx else cls
+
+
+def split_qualified(name):
+    """``(class, context or None)`` for a component name."""
+    cls, sep, ctx = name.partition(SEP)
+    return (cls, ctx) if sep else (name, None)
+
+
+def identify(schema, name):
+    """Record the class and its context on a schema, for a parsing consumer.
+
+    Three fields rather than one delimiter, so a following process reads
+    ``x-class`` and ``x-context`` instead of splitting a string, and
+    ``x-qualified-name`` carries the tilde form verbatim.
+    """
+    cls, ctx = split_qualified(name)
+    schema["x-class"] = cls
+    if ctx:
+        schema["x-context"] = ctx
+    schema["x-qualified-name"] = (
+        "%s%s%s" % (cls, QUALIFIED_SEP, ctx) if ctx else cls)
+    return schema
 
 
 # --------------------------------------------------------------------------- #
@@ -275,17 +316,17 @@ class Registry:
             # Claim the plain name for the commonest shape first, so the base
             # cannot take it, then name the remaining shapes.
             self.assigned[(name, ordered[0])] = self._unique(name)
-            self.base_names[name] = self._unique("%sBase" % name)
+            self.base_names[name] = self._unique(qualified(name, "Base"))
             profile = 0
             for sig in ordered[1:]:
                 operations = OrderedDict(
                     (c.operation_id, None) for c, _n in sigs[sig])
                 if len(operations) == 1:
                     only = next(iter(operations))
-                    candidate = "%sFor%s" % (name, gen.pascal(only))
+                    candidate = qualified(name, gen.pascal(only))
                 else:
                     profile += 1
-                    candidate = "%sProfile%d" % (name, profile)
+                    candidate = qualified(name, "Profile%d" % profile)
                 self.assigned[(name, sig)] = self._unique(candidate)
 
     def _unique(self, candidate):
@@ -847,13 +888,13 @@ def merge(results, specs, *, title=None, version="1.0.0", description=None,
             for v in variants:
                 ctx = Context(result.sheet, _op_id(spec), message, [v.endpoint],
                               v, root)
-                component = "%sFor%s" % (root.name, v.name_fragment)
+                component = qualified(root.name, v.name_fragment)
                 component = registry._unique(component)
                 bodies[component] = emit_body(root, ctx, registry)
                 if is_request:
                     gen._narrow_variant_description(bodies[component], v)
 
-            base_name = registry._unique("%sBase" % root.name)
+            base_name = registry._unique(qualified(root.name, "Base"))
             base, deltas = split_shapes(
                 bodies,
                 (root.description + " " if root.description else "") +
@@ -939,6 +980,13 @@ def merge(results, specs, *, title=None, version="1.0.0", description=None,
     ])
     if domains:
         document["info"]["x-bian-service-domains"] = domains
+
+    errs.attach(document)
+
+    # After the error set, so its schema is identified like every other.
+    for name, schema in document["components"]["schemas"].items():
+        if isinstance(schema, dict):
+            identify(schema, name)
 
     leftovers = gen.empty_schemas(document)
     if leftovers:

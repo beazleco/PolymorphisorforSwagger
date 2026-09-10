@@ -1,7 +1,7 @@
 """
 polymorphize_validate — workbook validation against the Level-format contract.
 
-Version 6.4.
+Version 6.6.
 
 Validation runs the real reader and the real generator rather than a parallel
 set of rules, so a workbook that validates clean is a workbook that generates,
@@ -51,7 +51,7 @@ import polymorphize_generate as gen
 import polymorphize_workbook as wbk
 from polymorphize_workbook import Finding, cell_ref, text
 
-__version__ = "6.4"
+__version__ = "6.6"
 
 #: Banner labels a strict workbook is expected to fill in.
 REQUIRED_BANNER = OrderedDict([
@@ -215,7 +215,13 @@ def validate_workbook(path, strict=False, sor=None):
     entry.
     """
     reports = []
-    results = wbk.read_workbook(path)
+    import polymorphize_classify as cls
+    verdict = cls.classify(path)
+    if verdict.fmt == cls.MAPPING:
+        import polymorphize_mapping as mapfmt
+        results = mapfmt.read_workbook(path)
+    else:
+        results = wbk.read_workbook(path)
     index = None
     if sor:
         import polymorphize_sor as sormod
@@ -246,7 +252,11 @@ def validate_workbook(path, strict=False, sor=None):
 
         if strict and result.layout is not None:
             _banner_checks(result, rep.findings)
-            _column_checks(result, rep.findings)
+            # The column checks name Level headings, so they apply to the
+            # Level format only. The field mapping reader raises its own
+            # column findings, F002 and F004, at read time.
+            if verdict.fmt != cls.MAPPING:
+                _column_checks(result, rep.findings)
             _documentation_checks(result, rep.findings)
 
         reports.append(rep)
@@ -283,14 +293,16 @@ def findings_rows(reports):
     return rows
 
 
-def format_report(path, reports, strict, sor=None):
+def format_report(path, reports, strict, sor=None, input_format=None):
     """The validation report, failures first."""
     s = summarise(reports)
-    L = ["# Workbook validation report", "",
+    L = [x for x in ["# Workbook validation report", "",
          "Workbook: `%s`" % os.path.basename(path),
          "",
          "Level: **%s**" % ("strict" if strict else "lenient"),
          "",
+         ("Input format: **%s**" % input_format) if input_format else "",
+         "" if input_format else None,
          ("SOR specification: **%s**" % ", ".join(
              os.path.basename(x) for x in sor)) if sor else
          "SOR specification: **none supplied**, so every SOR field name in the "
@@ -305,7 +317,7 @@ def format_report(path, reports, strict, sor=None):
          "%d error%s, %d warning%s."
          % (s["errors"], "" if s["errors"] == 1 else "s",
             s["warnings"], "" if s["warnings"] == 1 else "s"),
-         ""]
+         ""] if x is not None]
 
     failed = [r for r in reports if r.status == "failed"]
     if failed:

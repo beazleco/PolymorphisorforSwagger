@@ -1,0 +1,3506 @@
+openapi: 3.0.3
+info:
+  title: Issued Device Administration
+  version: 1.0.0
+  description: Generated from the SOR mapping workbook. 22 operations across Issued Device 
+    Administration. Only attributes mapped to a System of Record field are published; shared groups 
+    that differ between operations are specialised with allOf, and operations served by several SOR 
+    endpoints carry a requestVariant discriminator.
+  x-generated-by: SOR Polymorphizer 6.6
+  x-generated-at: '2026-09-09T23:59:49+00:00'
+  x-source-sheets:
+  - Token_Search
+  - Token_Get Credentials
+  - Token_Details
+  - Token_Resume
+  - Token_Delete
+  - Token_Suspend
+  - Token_Get Operation
+  - Token_Get All Operations
+  - CiamBlackList_Delete
+  - CiamBlackList_Add
+  - Card Renew
+  - Card Register
+  - Card Create
+  - Card Suspend
+  - Card Replace
+  - Card Resume
+  - Get Card Credentials
+  - Verify Card Credentials
+  - Card Delete
+  - Get Card Details
+  - Get Operation
+  - Get All Operations
+  x-bian-service-domains:
+  - Issued Device Administration
+tags:
+- name: Issued Device Administration
+paths:
+  /issued-device-administration/token-assignment/search:
+    post:
+      operationId: tokenSearch
+      summary: This request is used by the issuer backend to search for digital cards in D1 using 
+        digital PAN as lookup and retrieve ca
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCardDetailsRetrieveResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCardDetailsRetrieveRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by the issuer backend to search for digital cards in D1 using
+        digital PAN as lookup and retrieve card & end user related details
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /issuers/{issuerId}/digitalCards:Search'
+  /issued-device-administration/token-assignment/credentials/retrieve:
+    post:
+      operationId: tokenGetCredentials
+      summary: This request is used by D1 to provide details about the token credentials of a 
+        digital card (PAN, expiry date) given the
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCredentialsResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCredentialsRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by D1 to provide details about the token credentials of a 
+        digital card (PAN, expiry date) given the card identifier.
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'GET: /issuers/{issuerId}/digitalCards/{digitalCardId}/credentials'
+  /issued-device-administration/token-assignment/token-details/retrieve:
+    post:
+      operationId: tokenDetails
+      summary: This request provides detailed information about the digital card given its card 
+        identifier
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenDetailsRetrieveResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenDetailsRetrieveRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request provides detailed information about the digital card given its card 
+        identifier
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'GET: /issuers/{issuerId}/digitalCards/{digitalCardId}'
+  /issued-device-administration/token-assignment/resume:
+    post:
+      operationId: tokenResume
+      summary: The API will be used by the issuer backend to request activation of a new digital 
+        card or reactivate a suspended digital
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResumeResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenResumeRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the issuer backend to request activation of a new digital 
+        card or reactivate a suspended digital card.
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /issuers/{issuerId}/digitalCards/{digitalCardId}/operations:resume'
+  /issued-device-administration/token-assignment/delete:
+    post:
+      operationId: tokenDelete
+      summary: The API will be used by the issuer backend to request the deletion of the digital 
+        card
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenDeleteResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenDeleteRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the issuer backend to request the deletion of the digital 
+        card
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /issuers/{issuerId}/digitalCards/{digitalCardId}/operations:delete'
+  /issued-device-administration/token-assignment/suspend:
+    post:
+      operationId: tokenSuspend
+      summary: The API will be used by the issuer backend to request the suspension of the digital 
+        card if the digital card is active
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenSuspendResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenSuspendRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the issuer backend to request the suspension of the 
+        digital card if the digital card is active
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /issuers/{issuerId}/digitalCards/{digitalCardId}/operations:suspend'
+  /issued-device-administration/token-assignment/get-operation:
+    post:
+      operationId: tokenGetOperation
+      summary: The API will be used to retrieve information related to an operation for a digital 
+        card
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenGetServicingEventResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenGetServicingEventRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used to retrieve information related to an operation for a digital
+        card
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: GET:/issuers/{issuerId}/digitalCards/{digitalCardId}/operations/{operationId}
+  /issued-device-administration/token-assignment/get-all-operations:
+    post:
+      operationId: tokenGetAllOperations
+      summary: The API will be used to retrieve all the operations related to a digital card
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenGetAllServicingEventResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenGetAllServicingEventRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used to retrieve all the operations related to a digital card
+      x-bian-behaviour-qualifier: Token Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'GET: /issuers/{issuerId}/digitalCards/{digitalCardId}/operations'
+  /issued-device-administration/device-assignment/black-list/delete:
+    post:
+      operationId: ciamBlackListDelete
+      summary: This API will be used to removes a device from the blacklist.
+      tags:
+      - Issued Device Administration
+      responses:
+        '204':
+          description: 'Successful. This operation returns no content: the Response Body section of the
+            mapping workbook carries no attribute mapped to an SOR field.'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceBlackListDeleteRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to removes a device from the blacklist.
+      x-bian-behaviour-qualifier: Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'DELETE: /ciam/blacklisted-device'
+  /issued-device-administration/device-assignment/black-list/add:
+    post:
+      operationId: ciamBlackListAdd
+      summary: This API will be used to Adds a device to the blacklist
+      tags:
+      - Issued Device Administration
+      responses:
+        '204':
+          description: 'Successful. This operation returns no content: the Response Body section of the
+            mapping workbook carries no attribute mapped to an SOR field.'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceBlackListAddRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to Adds a device to the blacklist
+      x-bian-behaviour-qualifier: Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /ciam/blacklisted-device'
+  /issued-device-administration/card-device-assignment/renew:
+    post:
+      operationId: cardRenew
+      summary: The API will be used to renew the card where a new card is provided to end-user. The 
+        new card has new expiry date, but c
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardRenewResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRenewRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used to renew the card where a new card is provided to end-user. 
+        The new card has new expiry date, but cardId and PAN are remaining the same.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /v2/issuers/{issuerId}/cards/{cardId}/operations:renew'
+  /issued-device-administration/card-device-assignment/register-card:
+    post:
+      operationId: cardRegister
+      summary: This request is used to register a card with corresponding card credentials.
+      tags:
+      - Issued Device Administration
+      responses:
+        '204':
+          description: 'Successful. This operation returns no content: the Response Body section of the
+            mapping workbook carries no attribute mapped to an SOR field.'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRegisterRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used to register a card with corresponding card credentials.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'PUT: /v2/issuers/{issuerId}/cards/{cardId}'
+  /issued-device-administration/card-device-assignment/create:
+    post:
+      operationId: cardCreate
+      summary: The API will be used by the bank backend to request the creation of a card(Virtual or
+        Physical) with the processor.
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardCreateResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardCreateRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the bank backend to request the creation of a card(Virtual
+        or Physical) with the processor.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /v2/issuers/{issuerId}/cards'
+  /issued-device-administration/card-device-assignment/suspend:
+    post:
+      operationId: cardSuspend
+      summary: The API will be used by the bank backend to request the suspension of a card.
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardSuspendResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardSuspendRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the bank backend to request the suspension of a card.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /v2/issuers/{issuerId}/cards/{cardId}/operations:suspend'
+  /issued-device-administration/card-device-assignment/replace:
+    post:
+      operationId: cardReplace
+      summary: 'End user can request the bank a replacement of an existing card because the card has been
+        lost or damaged. The replaced '
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardReplaceResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardReplaceRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: End user can request the bank a replacement of an existing card because the card 
+        has been lost or damaged. The replaced card is blocked until the new card is activated.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /v2/issuers/{issuerId}/cards/{cardId}/operations:replace'
+  /issued-device-administration/card-device-assignment/resume:
+    post:
+      operationId: cardResume
+      summary: The API will be used by the bank backend to request the reactivation of a card that 
+        has been suspended
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResumeResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardResumeRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the bank backend to request the reactivation of a card 
+        that has been suspended
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /v2/issuers/{issuerId}/cards/{cardId}/operations:resume'
+  /issued-device-administration/card-device-assignment/get-card-credentials:
+    post:
+      operationId: getCardCredentials
+      summary: This request is used by the bank backend to retrieve the card credentials
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCardCredentialsResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCardCredentialsRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by the bank backend to retrieve the card credentials
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'GET: /banking/v2/issuers/{issuerId}/cards/{cardId}/credentials'
+  /issued-device-administration/card-device-assignment/verify-card-credentials:
+    post:
+      operationId: verifyCardCredentials
+      summary: This request is used by the bank backend to verify the card credentials.
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyCardCredentialsResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyCardCredentialsRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by the bank backend to verify the card credentials.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /banking/v2/issuers/{issuerId}/cards/credentials'
+  /issued-device-administration/card-device-assignment/delete:
+    post:
+      operationId: cardDelete
+      summary: The API will be used by the bank backend to request the deletion of a card
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDeleteResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardDeleteRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: The API will be used by the bank backend to request the deletion of a card
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'POST: /v2/issuers/{issuerId}/cards/{cardId}/operations:delete'
+  /issued-device-administration/card-device-assignment/get-card-details:
+    post:
+      operationId: getCardDetails
+      summary: This request is used by the bank backend to request card details.
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCardDetailsResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCardDetailsRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by the bank backend to request card details.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'GET: /banking/v2/issuers/{issuerId}/cards/{cardId}'
+  /issued-device-administration/card-device-assignment/get-operation:
+    post:
+      operationId: getOperation
+      summary: This request is used by the issuer backend to retrieve the information related to an 
+        operation on a card.
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardGetServicingEventResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardGetServicingEventRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by the issuer backend to retrieve the information related to 
+        an operation on a card.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: GET:/banking/v1/issuers/{issuerId}/cards/{cardId}/operations/{operationId}
+  /issued-device-administration/card-device-assignment/get-all-operations:
+    post:
+      operationId: getAllOperations
+      summary: This request is used by the issuer backend to retrieve all operations related to a 
+        card.
+      tags:
+      - Issued Device Administration
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardGetAllServicingEventResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardGetAllServicingEventRequest'
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This request is used by the issuer backend to retrieve all operations related to a
+        card.
+      x-bian-behaviour-qualifier: Card Device Assignment
+      x-bian-equivalent-endpoint: N/A
+      x-sor-endpoints: 'GET: /banking/v1/issuers/{issuerId}/cards/{cardId}/operations'
+components:
+  schemas:
+    AccountIdentifier__Base:
+      type: object
+      properties:
+        accountIdentificationType:
+          type: string
+          description: "Type of the account.By default if not provided, it is a checking account\nPossible
+            Values:\nChecking,\nSavings"
+          example: Checking
+          x-sor-field: accountList.type
+      description: Attributes of AccountIdentifier common to every operation that uses it.
+      x-class: AccountIdentifier
+      x-context: Base
+      x-qualified-name: AccountIdentifier~Base
+    AccountIdentifier:
+      allOf:
+      - $ref: '#/components/schemas/AccountIdentifier__Base'
+      - type: object
+        properties:
+          accountIdentification:
+            type: string
+            maxLength: 24
+            description: Account number used for posting to core banking system
+            example: 8oYwZq3VZDaq9i
+            x-sor-field: accountList.number
+        required:
+        - accountIdentification
+      x-used-by:
+      - cardCreate
+      x-class: AccountIdentifier
+      x-qualified-name: AccountIdentifier
+    AccountIdentifier__GetCardDetails:
+      allOf:
+      - $ref: '#/components/schemas/AccountIdentifier__Base'
+      - type: object
+        properties:
+          accountIdentification:
+            type: string
+            description: Account number used for posting to core banking system
+            x-sor-field: accountList.number
+      x-used-by:
+      - getCardDetails
+      x-class: AccountIdentifier
+      x-context: GetCardDetails
+      x-qualified-name: AccountIdentifier~GetCardDetails
+    AccountListItem__Base:
+      type: object
+      properties:
+        accountDefaultFlag:
+          type: boolean
+          description: True if the account is the default consumer account
+          example: 'True'
+          x-sor-field: accountList.default
+      description: Attributes of AccountListItem common to every operation that uses it.
+      x-class: AccountListItem
+      x-context: Base
+      x-qualified-name: AccountListItem~Base
+    AccountListItem:
+      allOf:
+      - $ref: '#/components/schemas/AccountListItem__Base'
+      - type: object
+        properties:
+          AccountIdentifier:
+            $ref: '#/components/schemas/AccountIdentifier'
+          accountCurrencyCode:
+            type: string
+            maxLength: 3
+            description: Currency Code
+            example: PHP
+            x-sor-field: accountList.currencyCode
+        required:
+        - accountDefaultFlag
+        - accountCurrencyCode
+      x-used-by:
+      - cardCreate
+      x-class: AccountListItem
+      x-qualified-name: AccountListItem
+    AccountListItem__GetCardDetails:
+      allOf:
+      - $ref: '#/components/schemas/AccountListItem__Base'
+      - type: object
+        properties:
+          AccountIdentifier:
+            $ref: '#/components/schemas/AccountIdentifier__GetCardDetails'
+          accountCurrencyCode:
+            type: string
+            description: Currency Code
+            example: PHP
+            x-sor-field: accountList.currencyCode
+      x-used-by:
+      - getCardDetails
+      x-class: AccountListItem
+      x-context: GetCardDetails
+      x-qualified-name: AccountListItem~GetCardDetails
+    BindingInformation:
+      type: object
+      properties:
+        Checks:
+          $ref: '#/components/schemas/Checks'
+        Result:
+          $ref: '#/components/schemas/Result'
+        tokenDeviceReference:
+          type: string
+          description: The index number from TSP where the deviceID is stored. This field is 
+            required for digital card device binding.
+          x-sor-field-by-operation:
+            tokenGetOperation: details.bindingInformation.deviceReference
+            tokenGetAllOperations: operations.details.bindingInformation.deviceReference
+        tokenDeviceName:
+          type: string
+          description: A readable name for the device. Ideally, the end user enters this name. It 
+            can be used to identify the device in customer support calls.
+          x-sor-field-by-operation:
+            tokenGetOperation: details.bindingInformation.deviceName
+            tokenGetAllOperations: operations.details.bindingInformation.deviceName
+      description: "\nProvides details about the binding operation whatever the result (i.e. successful,
+        pending or cancelled)"
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: BindingInformation
+      x-qualified-name: BindingInformation
+    Card:
+      type: object
+      properties:
+        IssuedDevice:
+          $ref: '#/components/schemas/IssuedDevice__GetCardDetails'
+      description: the type object is IssuedDevice
+      x-class: Card
+      x-qualified-name: Card
+    CardIdentifier__Profile1:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          description: Identifier representing the issued device.
+          example: yI
+          x-sor-field-by-operation:
+            tokenDetails: parentCardId
+            cardCreate: cardId
+            verifyCardCredentials: cardId
+      description: The type is issued device admin
+      x-used-by:
+      - cardCreate
+      - tokenDetails
+      - verifyCardCredentials
+      x-class: CardIdentifier
+      x-context: Profile1
+      x-qualified-name: CardIdentifier~Profile1
+    CardIdentifier:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 48
+          description: The id of the card
+          x-sor-field: cardId
+      required:
+      - issuedDeviceIdentification
+      description: Type is Issued Device Admin
+      x-used-by:
+      - cardDelete
+      - cardRegister
+      - cardReplace
+      - cardResume
+      - cardSuspend
+      - getAllOperations
+      - getCardCredentials
+      - getCardDetails
+      - getOperation
+      x-class: CardIdentifier
+      x-qualified-name: CardIdentifier
+    CardIdentifier__VerifyCardCredentials:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 48
+          description: Unique Identifier of the card
+          x-sor-field: cardId
+      description: The type is issued device admin
+      x-class: CardIdentifier
+      x-context: VerifyCardCredentials
+      x-qualified-name: CardIdentifier~VerifyCardCredentials
+    CardServicingEventSummaryItem:
+      type: object
+      properties:
+        servicingEventHistoryIdentifier:
+          type: string
+          description: Unique identifier of the operation
+          example: IZnoxmANoRWWE5WnCIgeq2WZW5nQbIc6VKAPd7sKlcQp
+          x-sor-field-by-operation:
+            getOperation: operationId
+            getAllOperations: operations.operationId
+        servicingEventHistoryName:
+          type: string
+          description: "The operation type\nPossible Values:\nActivate,\nClick To Pay Enrolment,\nClick
+            To Pay Update,\nClick To Pay Optout,\nCreate,\nDelete,\nDigitize,\nDisplay,\nD1 Pay Enrolment,\n\
+            Pin Change,\nPin Display,\nProduce,\nPush,\nRegister,\nRenew,\nReplace,\nResume,\nSuspend,\n\
+            Update Order,\nVerify"
+          example: Activate
+          x-sor-field-by-operation:
+            getOperation: operation
+            getAllOperations: operations.operation
+        eventHistoryItemStartDateTime:
+          type: string
+          format: date-time
+          description: The time the request has been processed
+          example: '2022-02-16T06:28:02.492Z'
+          x-sor-field-by-operation:
+            getOperation: startTime
+            getAllOperations: operations.startTime
+        eventHistoryItemEndDateTime:
+          type: string
+          format: date-time
+          description: The time the operation has been completed.This is an optional field and might
+            not be returned for synchronous operations
+          example: '2022-02-16T06:28:02.492Z'
+          x-sor-field-by-operation:
+            getOperation: endTime
+            getAllOperations: operations.endTime
+        RequestorDetails:
+          $ref: '#/components/schemas/RequestorDetails'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: Customer was contacted on June 28
+          x-sor-field-by-operation:
+            getOperation: reason
+            getAllOperations: operations.reason
+        status:
+          type: string
+          description: "Status of the operation\nPossible Values:\nSuccessful,\nPending,\nFailed"
+          example: Successful
+          x-sor-field-by-operation:
+            getOperation: status
+            getAllOperations: operations.status
+        statusReason:
+          type: string
+          description: "Possible Values:\nClosed Account,\nClosed Card,\nCard Expired,\nCard Lost,\nCard
+            Found,\nCard Stolen,\nCard Broken,\nCard Not Received,\nDevice Found,\nDevice Lost,\nDevice
+            Stolen,\nFraud,\nUser_Decision,\nIssuer_Decision,\nCVV2_Locked,\nExpiry Date Locked,\nPin
+            Locked"
+          example: Closed Account
+          x-sor-field-by-operation:
+            getOperation: reasonCode
+            getAllOperations: operations.reasonCode
+        IssuedDeviceServiceEventDetails:
+          $ref: '#/components/schemas/IssuedDeviceServiceEventDetails'
+      x-used-by:
+      - getAllOperations
+      - getOperation
+      x-class: CardServicingEventSummaryItem
+      x-qualified-name: CardServicingEventSummaryItem
+    CardServicingSummary__Base:
+      type: object
+      properties:
+        CardServicingEventSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardServicingEventSummaryItem'
+          description: Operation details related to a specific operationId
+          x-sor-field: operations
+      description: Attributes of CardServicingSummary common to every operation that uses it.
+      x-class: CardServicingSummary
+      x-context: Base
+      x-qualified-name: CardServicingSummary~Base
+    CardServicingSummary__GetOperation:
+      allOf:
+      - $ref: '#/components/schemas/CardServicingSummary__Base'
+      - type: object
+      x-used-by:
+      - getOperation
+      x-class: CardServicingSummary
+      x-context: GetOperation
+      x-qualified-name: CardServicingSummary~GetOperation
+    CardServicingSummary:
+      allOf:
+      - $ref: '#/components/schemas/CardServicingSummary__Base'
+      - type: object
+        properties:
+          remainingOperations:
+            type: integer
+            description: Remaining operations
+            x-sor-field: remaining operations
+      x-used-by:
+      - getAllOperations
+      x-class: CardServicingSummary
+      x-qualified-name: CardServicingSummary
+    Checks:
+      type: object
+      properties:
+        TypeNotSupported:
+          $ref: '#/components/schemas/TypeNotSupported'
+        ManufacturerNotSupported:
+          $ref: '#/components/schemas/ManufacturerNotSupported'
+        OsVersionNotSupported:
+          $ref: '#/components/schemas/OsVersionNotSupported'
+        OsBuildVersionNotSupported:
+          $ref: '#/components/schemas/OsBuildVersionNotSupported'
+      description: Container holding the results of all binding validation checks
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: Checks
+      x-qualified-name: Checks
+    DeviceIdentifier__Base:
+      type: object
+      properties:
+        deviceIdentification:
+          type: string
+          description: Identifier representing the issued device.
+          example: EkcZuzvEc
+          x-sor-field-by-operation:
+            tokenSearch: deviceId
+            tokenDetails: deviceInformation.deviceId
+            (unattributed): deviceId
+      description: Attributes of DeviceIdentifier common to every operation that uses it.
+      x-class: DeviceIdentifier
+      x-context: Base
+      x-qualified-name: DeviceIdentifier~Base
+    DeviceIdentifier__Profile1:
+      allOf:
+      - $ref: '#/components/schemas/DeviceIdentifier__Base'
+      - type: object
+      x-used-by:
+      - tokenDetails
+      - tokenSearch
+      x-class: DeviceIdentifier
+      x-context: Profile1
+      x-qualified-name: DeviceIdentifier~Profile1
+    DeviceIdentifier:
+      allOf:
+      - $ref: '#/components/schemas/DeviceIdentifier__Base'
+      - type: object
+        required:
+        - deviceIdentification
+      x-used-by:
+      - ciamBlackListAdd
+      - ciamBlackListDelete
+      x-class: DeviceIdentifier
+      x-qualified-name: DeviceIdentifier
+    DeviceInformation:
+      type: object
+      properties:
+        DeviceIdentifier:
+          $ref: '#/components/schemas/DeviceIdentifier__Profile1'
+        PhoneAddress:
+          $ref: '#/components/schemas/PhoneAddress'
+        manufacturer:
+          type: string
+          description: Device manufacturer name
+          x-sor-field: deviceInformation.manufacturer
+        brand:
+          type: string
+          description: Device brand
+          x-sor-field: deviceInformation.brand
+        model:
+          type: string
+          description: Device model
+          x-sor-field: deviceInformation.model
+        operatingSystemVersion:
+          type: string
+          description: Device OS version
+          x-sor-field: deviceInformation.osVersion
+        firmwareVersion:
+          type: string
+          description: Device firmware version
+          x-sor-field: deviceInformation.firmwareVersion
+        deviceName:
+          type: string
+          description: Device name set by the consumer
+          x-sor-field: deviceInformation.deviceName
+        deviceParentIdentification:
+          type: string
+          description: ID of parent device. Applies to wearable
+          x-sor-field: deviceInformation.deviceParentId
+        language:
+          type: string
+          description: Language set on the device in ISO 639-3
+          x-sor-field: deviceInformation.language
+        serialNumber:
+          type: string
+          description: Device serial number
+          x-sor-field: deviceInformation.serialNumber
+        timeZone:
+          type: string
+          description: 'Device time zone abbreviation. Example: PST, GMT, etc…'
+          x-sor-field: deviceInformation.timeZone
+        timeZoneSetting:
+          type: string
+          description: "Who has set the timezone.\nPossible values:\nNetwork Set,\nConsumer Set"
+          example: Network Set
+          x-sor-field: deviceInformation.timeZoneSetting
+        sIMSerialNumber:
+          type: string
+          description: Secure Element serial number
+          x-sor-field: deviceInformation.simSerialNumber
+        iMEI:
+          type: string
+          description: IMEI number of device
+          x-sor-field: deviceInformation.IMEI
+        networkType:
+          type: string
+          description: "Network Type Possible Values:\nCellular,\nWifi"
+          example: Cellular
+          x-sor-field: deviceInformation.networkType
+        networkOperator:
+          type: string
+          description: Network operator name
+          x-sor-field: deviceInformation.networkOperator
+      description: It specifies Device information
+      x-class: DeviceInformation
+      x-qualified-name: DeviceInformation
+    EncryptedDataCriteria:
+      type: object
+      properties:
+        encryptedCardData:
+          type: string
+          maxLength: 8192
+          description: Ciphered digital PAN, it is encrypted using JWE. The digital pan value has a 
+            length up to 19
+          example: 9GszhPm1Afe6vvCyrvopAS2=
+          x-sor-field: encryptedData
+        searchType:
+          type: string
+          description: "Possible Values:\nEncrypted Data"
+          example: encryptedData
+          x-sor-field: searchType
+      required:
+      - encryptedCardData
+      description: Encrypted Data Criteria
+      x-class: EncryptedDataCriteria
+      x-qualified-name: EncryptedDataCriteria
+    IssuedDevice:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifier__CardRenew'
+        revisedDeviceValidToDate:
+          type: string
+          format: date
+          description: New Expiry date of the card in MMYY format
+          example: '1024'
+          x-sor-field: newExp
+        revisedAuxiliaryValidToDate:
+          type: string
+          format: date
+          description: New Expiry date of the card in MMYY format
+          example: '1024'
+          x-sor-field: newAuxiliaryExp
+      description: It specifies the issued device details
+      x-class: IssuedDevice
+      x-qualified-name: IssuedDevice
+    IssuedDevice__GetCardDetails:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifier'
+        scheme:
+          type: string
+          description: The card scheme
+          example: VISA
+          x-sor-field: scheme
+        auxiliaryScheme:
+          type: string
+          description: The card auxiliary scheme
+          example: DANKORT
+          x-sor-field: auxiliaryScheme
+        pANSuffix:
+          type: string
+          description: Last 4 digits of the PAN
+          example: '1234'
+          x-sor-field: panSuffix
+        deviceValidToDate:
+          type: string
+          format: date
+          description: Expiry date of the card in MMYY format
+          example: '1024'
+          x-sor-field: exp
+        creationDateTime:
+          type: string
+          format: date-time
+          description: The time the resource has been created
+          example: '2022-02-16T06:28:02.492Z'
+          x-sor-field: creationTime
+        lastUpdateDateTime:
+          type: string
+          format: date-time
+          description: The time the resource has been last created
+          example: '2022-02-16T06:28:02.492Z'
+          x-sor-field: lastUpdateTime
+      description: IT specifies the issued device details
+      x-class: IssuedDevice
+      x-context: GetCardDetails
+      x-qualified-name: IssuedDevice~GetCardDetails
+    IssuedDevice__GetCardDetails2:
+      type: object
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifier'
+        revisedDeviceValidToDate:
+          type: string
+          format: date
+          description: New expiry date of the card in MMYY format.Provide in case of ongoing RENEWAL
+            operation
+          example: '928'
+          x-sor-field: newExp
+      description: IT specifies the issued device details
+      x-class: IssuedDevice
+      x-context: GetCardDetails2
+      x-qualified-name: IssuedDevice~GetCardDetails2
+    IssuedDeviceIdentifier__CardRenew:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 48
+          description: The id of the card
+          x-sor-field: cardId
+      required:
+      - issuedDeviceIdentification
+      description: Type is Issued Device Admin
+      x-class: IssuedDeviceIdentifier
+      x-context: CardRenew
+      x-qualified-name: IssuedDeviceIdentifier~CardRenew
+    IssuedDeviceIdentifier:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          description: "\nUnique Identifier of the new card.provided in case the card is in REPLACED state"
+          x-sor-field: newCardId
+      description: Type is Issued Device Admin
+      x-class: IssuedDeviceIdentifier
+      x-qualified-name: IssuedDeviceIdentifier
+    IssuedDeviceServiceEventDetails:
+      type: object
+      properties:
+        sdkType:
+          type: string
+          description: "The type SDK which is used\nPossible Values:\nApp,\nNone,\nWeb"
+          x-sor-field: details.sdkType
+      description: "One of ACTIVATE operation\nContainer to hold detailed information of ACTIVATE operation\n\
+        Possible Values:\nActivate Operation,\nRegister,Suspend,Resume,Delete Operations,\nRenew, Replace
+        Operations,\nD1 Pay Enrollment Operation,\nDigitize Operation,\nPin Change Operation,\nPin Display
+        Operation,\nProduce Operation,\nPush Operations,\nUpdate Order Operation,\nVerify Operation"
+      x-used-by:
+      - getAllOperations
+      - getOperation
+      x-class: IssuedDeviceServiceEventDetails
+      x-qualified-name: IssuedDeviceServiceEventDetails
+    ManufacturerNotSupported:
+      type: object
+      properties:
+        result:
+          type: string
+          description: "Possible Values:\nYes,\nNo,\nNot Applicable"
+          example: Yes
+          x-sor-field: operations.details.bindingInformation.checks.manufacturerNotSupported.result
+      description: Provides information about the manufacturer support validation check
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: ManufacturerNotSupported
+      x-qualified-name: ManufacturerNotSupported
+    NewCard:
+      type: object
+      properties:
+        IssuedDevice:
+          $ref: '#/components/schemas/IssuedDevice__GetCardDetails2'
+      description: the type object is IssuedDevice
+      x-class: NewCard
+      x-qualified-name: NewCard
+    NewCardIdentifier:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 48
+          description: Unique identifier of the new card. Provided in case the card is in REPLACED 
+            state
+          x-sor-field: newCardId
+      description: Type issued device admin
+      x-class: NewCardIdentifier
+      x-qualified-name: NewCardIdentifier
+    NewCardIdentifier__CardReplace:
+      type: object
+      properties:
+        issuedDeviceIdentification:
+          type: string
+          description: The id of the card
+          x-sor-field: newCardId
+      description: Type is issued device admin
+      x-class: NewCardIdentifier
+      x-context: CardReplace
+      x-qualified-name: NewCardIdentifier~CardReplace
+    OffSetPagination__Base:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: 'Index from which the query starts returning operations( default value: 0)'
+          x-sor-field: offset
+      description: Attributes of OffSetPagination common to every operation that uses it.
+      x-class: OffSetPagination
+      x-context: Base
+      x-qualified-name: OffSetPagination~Base
+    OffSetPagination:
+      allOf:
+      - $ref: '#/components/schemas/OffSetPagination__Base'
+      - type: object
+        properties:
+          limit:
+            type: string
+            maxLength: 50
+            description: "Upper limit of the query,\nDefault Value: 10"
+            example: '10'
+            x-sor-field: limit
+      x-used-by:
+      - tokenGetAllOperations
+      x-class: OffSetPagination
+      x-qualified-name: OffSetPagination
+    OffSetPagination__GetAllOperations:
+      allOf:
+      - $ref: '#/components/schemas/OffSetPagination__Base'
+      - type: object
+        properties:
+          limit:
+            type: integer
+            description: Upper limit of the query
+            x-sor-field: limit
+      x-used-by:
+      - getAllOperations
+      x-class: OffSetPagination
+      x-context: GetAllOperations
+      x-qualified-name: OffSetPagination~GetAllOperations
+    OsBuildVersionNotSupported:
+      type: object
+      properties:
+        result:
+          type: string
+          description: "Possible Values:\nYes,\nNo,\nNot Applicable"
+          example: Yes
+          x-sor-field: 
+            operations.details.bindingInformation.checks.osBuildVersionNotSupported.result
+      description: Provides information about the operating system build version validation check.
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: OsBuildVersionNotSupported
+      x-qualified-name: OsBuildVersionNotSupported
+    OsVersionNotSupported:
+      type: object
+      properties:
+        result:
+          type: string
+          description: "Possible Values:\nYes,\nNo,\nNot Applicable"
+          example: Yes
+          x-sor-field: operations.details.bindingInformation.checks.osVersionNotSupported.result
+      description: Provides information about the operating system version validation check.
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: OsVersionNotSupported
+      x-qualified-name: OsVersionNotSupported
+    PartyIdentifier:
+      type: object
+      properties:
+        partyIdentification:
+          type: string
+          maxLength: 10
+          description: The id of the issuer
+          example: BDO_PH_001
+          x-sor-field: issuerId
+      required:
+      - partyIdentification
+      description: A unique identifier used to distinguish the party within the organization or 
+        external systems.
+      x-used-by:
+      - cardDelete
+      - cardRenew
+      - cardReplace
+      - cardResume
+      - cardSuspend
+      - getAllOperations
+      - getCardCredentials
+      - getCardDetails
+      - getOperation
+      - tokenDelete
+      - tokenDetails
+      - tokenGetAllOperations
+      - tokenGetCredentials
+      - tokenGetOperation
+      - tokenResume
+      - tokenSearch
+      - tokenSuspend
+      - verifyCardCredentials
+      x-class: PartyIdentifier
+      x-qualified-name: PartyIdentifier
+    PartyIdentifier__Profile2:
+      type: object
+      properties:
+        partyIdentification:
+          type: string
+          description: Unique identifier of the consumer
+          example: D7IGeiLWfDGxKZbE3ZOz
+          x-sor-field: consumerId
+      description: A unique identifier used to distinguish the party within the organization or 
+        external systems.
+      x-used-by:
+      - getCardDetails
+      - tokenSearch
+      x-class: PartyIdentifier
+      x-context: Profile2
+      x-qualified-name: PartyIdentifier~Profile2
+    PartyIdentifier__Profile1:
+      type: object
+      properties:
+        partyIdentification:
+          type: string
+          maxLength: 64
+          description: The id of the party
+          example: BDO_PH_001
+          x-sor-field: issuerId, consumerId
+      required:
+      - partyIdentification
+      description: A unique identifier used to distinguish the party within the organization or 
+        external systems.
+      x-used-by:
+      - cardCreate
+      - cardRegister
+      x-class: PartyIdentifier
+      x-context: Profile1
+      x-qualified-name: PartyIdentifier~Profile1
+    PhoneAddress:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: Device phone number
+          x-sor-field: deviceInformation.phoneNumber
+        fourLastDigitPhoneNumber:
+          type: string
+          description: Last four digits of device phone number
+          x-sor-field: deviceInformation.fourLastDigitPhoneNumber
+      description: it specifies the phone number details
+      x-class: PhoneAddress
+      x-qualified-name: PhoneAddress
+    RequestorDetails:
+      type: object
+      properties:
+        requestorType:
+          type: string
+          description: "Possible Values:\nIssuer,\nUser,\nTSP,\nCCI,\nD1"
+          example: Issuer
+          x-sor-field-by-operation:
+            tokenGetOperation: requestorType
+            tokenGetAllOperations: operations.requestorType
+            getOperation: requestorType
+            getAllOperations: operations.requestorType
+        requestorIdentification:
+          type: string
+          description: "Identifier of the principal who initiates the operation\nconsumerId if requestorType
+            is USER\nissuerId if requestorType is ISSUER\ncci user id if requestorType is CCI\nD1 if it's
+            an operation automatically triggered by D1 (can be card suspended due to several authorisation
+            with invalid cvv)"
+          x-sor-field-by-operation:
+            tokenGetOperation: requestorId
+            tokenGetAllOperations: operations.requestorId
+            getOperation: requestorId
+            getAllOperations: operations.requestorId
+      description: It specifies the requestor details
+      x-used-by:
+      - getAllOperations
+      - getOperation
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: RequestorDetails
+      x-qualified-name: RequestorDetails
+    Result:
+      type: object
+      properties:
+        flow:
+          type: string
+          description: "Indicates the overall binding eligibility flow outcome.\nPossible Values:\nRed,\n\
+            Green,\nYellow"
+          example: Red
+          x-sor-field-by-operation:
+            tokenGetOperation: details.bindingInformation.result.flow
+            tokenGetAllOperations: operations.details.bindingInformation.result.flow
+        TokenIdentificationAndVerificationMethods:
+          $ref: '#/components/schemas/TokenIdentificationAndVerificationMethods'
+      description: Container holding the final result of the binding evaluation.
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: Result
+      x-qualified-name: Result
+    Status:
+      type: object
+      properties:
+        statusDescription:
+          type: string
+          description: "Status of the Operation\nPossible Values:\nPending,\nSuccessful,\nFailed"
+          example: Pending
+          x-sor-field: status
+      description: It specifies the status details
+      x-used-by:
+      - tokenDelete
+      - tokenResume
+      - tokenSuspend
+      x-class: Status
+      x-qualified-name: Status
+    Token:
+      type: object
+      properties:
+        tokenType:
+          type: string
+          description: "The type of the token. Following values are supported:\nPossible Values:\nSE,\n\
+            HCE,\nCOF,\nECOM,\nQRC"
+          x-sor-field: type
+        tokenStatus:
+          type: string
+          description: "The state of the digital card (Token)\nPossible Values:\nActive,\nInactive,\n\
+            Deleted,\nDeployment_Ongoing,\nPending_Activation"
+          example: Active
+          x-sor-field: state
+      description: It specifies the token details
+      x-class: Token
+      x-qualified-name: Token
+    TokenDeviceServiceEventDetails:
+      type: object
+      properties:
+        BindingInformation:
+          $ref: '#/components/schemas/BindingInformation'
+      description: "\nContainer to hold any detailed information regarding the executed operation"
+      x-class: TokenDeviceServiceEventDetails
+      x-qualified-name: TokenDeviceServiceEventDetails
+    TokenIdentificationAndVerificationMethods:
+      type: object
+      properties:
+        selected:
+          type: string
+          description: "Possible Values:\nOTP By Sms,\nOTP By Email,\nBank App,\nCustomer Service"
+          example: OTP By SMS
+          x-sor-field-by-operation:
+            tokenGetOperation: details.bindingInformation.result.idAndVMethods.selected
+            tokenGetAllOperations: 
+              operations.details.bindingInformation.result.idAndVMethods.selected
+      description: Contains information about available identification and verification methods.
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: TokenIdentificationAndVerificationMethods
+      x-qualified-name: TokenIdentificationAndVerificationMethods
+    TokenIdentifier__Profile1:
+      type: object
+      properties:
+        tokenIdentification:
+          type: string
+          description: Unique identifier of the token specified by the TSP
+          example: 2cjc
+          x-sor-field: digitalCardId
+      description: It specifies the token identification
+      x-used-by:
+      - tokenDetails
+      - tokenSearch
+      x-class: TokenIdentifier
+      x-context: Profile1
+      x-qualified-name: TokenIdentifier~Profile1
+    TokenIdentifier:
+      type: object
+      properties:
+        tokenIdentification:
+          type: string
+          maxLength: 64
+          description: The id of the digital card
+          x-sor-field: digitalCardId
+      required:
+      - tokenIdentification
+      description: It specifies the token identification
+      x-used-by:
+      - tokenDelete
+      - tokenDetails
+      - tokenGetAllOperations
+      - tokenGetCredentials
+      - tokenGetOperation
+      - tokenResume
+      - tokenSuspend
+      x-class: TokenIdentifier
+      x-qualified-name: TokenIdentifier
+    TokenItem:
+      type: object
+      properties:
+        tokenIdentificationCode:
+          type: string
+          description: Unique identifier of the digital card
+          x-sor-field: digitalCards.id
+        tokenStatus:
+          type: string
+          description: "The state of the digital card(Token)\nPossible Values:\nActive,\nInactive,\nDeleted,\n\
+            Deployment Ongoing,\nPending Activation"
+          example: Active
+          x-sor-field: digitalCards.state
+        tokenRequestColour:
+          type: string
+          description: "Wallet/Digital Card requestor colour recommended during the card tokenization
+            request\nPossible Values:\nNot Applicable,\nGreen,\nYellow,\nOrange,\nRed"
+          example: Green
+          x-sor-field: digitalCards.recommendation
+      x-class: TokenItem
+      x-qualified-name: TokenItem
+    TokenRequestorInformation:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: Digital Card requestor identifier. This is provided by the TSP itself.
+          x-sor-field: digitalCardRequestorInformation.id
+        walletIdentification:
+          type: string
+          description: Mastercard ONLY. Wallet application identifier
+          x-sor-field: digitalCardRequestorInformation.walletId
+        name:
+          type: string
+          description: Wallet or Merchant human readable name
+          x-sor-field: digitalCardRequestorInformation.name
+        tspId:
+          type: string
+          description: VISA ONLY. Identifiers of the couple Token Requestor - Token Service Provider
+          x-sor-field: digitalCardRequestorInformation.tspid
+        originalTokenRequestorIdentification:
+          type: string
+          description: Applied only to VISA in case of token for token provisioning
+          x-sor-field: digitalCardRequestorInformation.originalDigitalCardRequestorId
+      description: It provides token requestor information
+      x-class: TokenRequestorInformation
+      x-qualified-name: TokenRequestorInformation
+    TokenServiceEventDetails:
+      type: object
+      properties:
+        BindingInformation:
+          $ref: '#/components/schemas/BindingInformation'
+      description: "\nContainer to hold any detailed information regarding the executed operation"
+      x-class: TokenServiceEventDetails
+      x-qualified-name: TokenServiceEventDetails
+    TokenServicingEventSummaryItem__Base:
+      type: object
+      properties:
+        servicingEventHistoryIdentifier:
+          type: string
+          description: Unique identifier of the operation
+          example: 2rNqzOpmCpLX-_FUX9YVdwkIvfn4jSD
+          x-sor-fields:
+          - operationId
+          - operations.operationId
+        servicingEventHistoryName:
+          type: string
+          description: "The operation type\nPossible Values:\nActivate,\nSuspend,\nResume,\nDelete,\n\
+            Renew,\nBind,\nUnbind"
+          example: Activate
+          x-sor-fields:
+          - operation
+          - operations.operation
+        eventHistoryItemEndDateTime:
+          type: string
+          format: date-time
+          description: The time the operation has been completed.This is an optional field and might
+            not be returned for synchronous operations
+          x-sor-fields:
+          - endTime
+          - operations.endTime
+        RequestorDetails:
+          $ref: '#/components/schemas/RequestorDetails'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          x-sor-fields:
+          - operations.reason
+          - reason
+        status:
+          type: string
+          description: "Status of the operation\nPossible Values:\nSuccessful,\nPending,\nFailed"
+          example: Successful
+          x-sor-fields:
+          - operations.status
+          - status
+        statusReason:
+          type: string
+          description: "Possible Values:\nUser Decision,\nIssuer Decision,\nDevice Lost,\nDevice Stolen,\n\
+            Card Lost,\nCard Stolen,\nCard Broken"
+          example: User Decision
+          x-sor-fields:
+          - operations.reasonCode
+          - reasonCode
+        error:
+          type: string
+          description: Human readable string representing the error, only present in case of 
+            operation failure
+          x-sor-fields:
+          - error
+          - operations.error
+      description: Attributes of TokenServicingEventSummaryItem common to every operation that uses 
+        it.
+      x-class: TokenServicingEventSummaryItem
+      x-context: Base
+      x-qualified-name: TokenServicingEventSummaryItem~Base
+    TokenServicingEventSummaryItem__TokenGetOperation:
+      allOf:
+      - $ref: '#/components/schemas/TokenServicingEventSummaryItem__Base'
+      - type: object
+        properties:
+          eventHistoryItemstartDateTime:
+            type: string
+            format: date-time
+            description: The time the request has been processed
+            x-sor-field: startTime
+          TokenServiceEventDetails:
+            $ref: '#/components/schemas/TokenServiceEventDetails'
+      x-used-by:
+      - tokenGetOperation
+      x-class: TokenServicingEventSummaryItem
+      x-context: TokenGetOperation
+      x-qualified-name: TokenServicingEventSummaryItem~TokenGetOperation
+    TokenServicingEventSummaryItem:
+      allOf:
+      - $ref: '#/components/schemas/TokenServicingEventSummaryItem__Base'
+      - type: object
+        properties:
+          eventHistoryItemStartDateTime:
+            type: string
+            format: date-time
+            description: The time the request has been processed
+            x-sor-field: operations.startTime
+          TokenDeviceServiceEventDetails:
+            $ref: '#/components/schemas/TokenDeviceServiceEventDetails'
+      x-used-by:
+      - tokenGetAllOperations
+      x-class: TokenServicingEventSummaryItem
+      x-qualified-name: TokenServicingEventSummaryItem
+    TokenServicingSummary__TokenGetOperation:
+      type: object
+      properties:
+        TokenServicingEventSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenServicingEventSummaryItem__TokenGetOperation'
+          description: Operation details related to a specific operationId
+      description: List of operations associated to the cardId.
+      x-class: TokenServicingSummary
+      x-context: TokenGetOperation
+      x-qualified-name: TokenServicingSummary~TokenGetOperation
+    TokenServicingSummary:
+      type: object
+      properties:
+        TokenServicingEventSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenServicingEventSummaryItem'
+          description: Operation details related to a specific operationId
+          x-sor-field: operations
+        remainingOperations:
+          type: integer
+          description: Remaining operations
+          example: '0'
+          x-sor-field: remaining operations
+      description: List of operations associated to the cardId.
+      x-class: TokenServicingSummary
+      x-qualified-name: TokenServicingSummary
+    TypeNotSupported:
+      type: object
+      properties:
+        result:
+          type: string
+          description: "Possible Values:\nYes,\nNo,\nNot Applicable"
+          example: Yes
+          x-sor-field: operations.details.bindingInformation.checks.typeNotSupported.result
+      description: Provides information about the device type support validation check
+      x-used-by:
+      - tokenGetAllOperations
+      - tokenGetOperation
+      x-class: TypeNotSupported
+      x-qualified-name: TypeNotSupported
+    TokenCardDetailsRetrieveRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from
+            using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlation-Id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        EncryptedDataCriteria:
+          $ref: '#/components/schemas/EncryptedDataCriteria'
+      x-class: TokenCardDetailsRetrieveRequest
+      x-qualified-name: TokenCardDetailsRetrieveRequest
+    TokenCardDetailsRetrieveResponse:
+      type: object
+      properties:
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier__Profile2'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier__Profile1'
+        DeviceIdentifier:
+          $ref: '#/components/schemas/DeviceIdentifier__Profile1'
+      x-class: TokenCardDetailsRetrieveResponse
+      x-qualified-name: TokenCardDetailsRetrieveResponse
+    TokenCredentialsRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from
+            using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+      x-class: TokenCredentialsRequest
+      x-qualified-name: TokenCredentialsRequest
+    TokenCredentialsResponse:
+      type: object
+      properties:
+        tokenCredentials:
+          type: string
+          description: "The field is the json (cf http://www.json.org/ ) representation of the DIGITAL
+            card. JWE encryption is used to secure the field (please refer to the Encrypt sensitive data
+            for more details) Details:\n{\n\"pan\":\"...\",\n\"exp\":\"...\"\n}\nThe PAN is Mandatory,
+            up to 19 digits.\nThe expiry date in the format MMYY. It is not provided for UPI scheme."
+          x-sor-field: credentials
+      x-class: TokenCredentialsResponse
+      x-qualified-name: TokenCredentialsResponse
+    TokenDetailsRetrieveRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+      x-class: TokenDetailsRetrieveRequest
+      x-qualified-name: TokenDetailsRetrieveRequest
+    TokenDetailsRetrieveResponse:
+      type: object
+      properties:
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier__Profile1'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier__Profile1'
+        pANSuffix:
+          type: string
+          description: Last four digits of the token
+          x-sor-field: panSuffix
+        Token:
+          $ref: '#/components/schemas/Token'
+        lastUpdateDateTime:
+          type: string
+          format: date-time
+          description: The last time the token status has been changed. Format ISO 8601 
+            YYYY-MM-DDThh:mm:ssTZD
+          x-sor-field: lastStateChangeTime
+        provisioningDateTime:
+          type: string
+          format: date-time
+          description: The provisioning time of the token. Format ISO 8601 YYYY-MM-DDThh:mm:ssTZD
+          x-sor-field: provisioningTime
+        lastReplenishDateTime:
+          type: string
+          format: date-time
+          description: The last time the token keys have been reset. Format ISO 8601 
+            YYYY-MM-DDThh:mm:ssTZD
+          x-sor-field: lastReplenishTime
+        TokenRequestorInformation:
+          $ref: '#/components/schemas/TokenRequestorInformation'
+        DeviceInformation:
+          $ref: '#/components/schemas/DeviceInformation'
+      description: Provides information about the token. Note that this data is available only if 
+        the tokenization is successful or pending.
+      x-class: TokenDetailsRetrieveResponse
+      x-qualified-name: TokenDetailsRetrieveResponse
+    TokenResumeRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from
+            using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlationId
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+        actionReason:
+          type: string
+          maxLength: 64
+          description: The reason why the action is performed
+          example: CEuIn8gcNdbvFtVFhiuQtgEdDrCWSd2fKmCu2
+          x-sor-field: reason
+        reasonCode:
+          type: string
+          maxLength: 64
+          description: "The reason code why the action is performed.\nIf not provided ,\nDefault reason
+            code is: Issuer Decision\nPossible Values:\nUser Decision,\nIssuer Decision"
+          example: Issuer_Decision
+          x-sor-field: reasonCode
+      x-class: TokenResumeRequest
+      x-qualified-name: TokenResumeRequest
+    TokenResumeResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          example: Ex8bq
+          x-sor-field: operationId
+        Status:
+          $ref: '#/components/schemas/Status'
+      x-class: TokenResumeResponse
+      x-qualified-name: TokenResumeResponse
+    TokenDeleteRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from
+            using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlationId
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+        actionReason:
+          type: string
+          maxLength: 64
+          description: The reason why the action is performed
+          example: KIVchTaL9Iw 4MU1bcOvhVtvxPnBjJjOwHMg6EqdL8uWMKw4BSn
+          x-sor-field: reason
+        reasonCode:
+          type: string
+          maxLength: 64
+          description: "The reason code why the action is performed.\nIf not provided ,\nDefault reason
+            code is: Issuer Decision\nPossible Values:\nUser Decision,\nIssuer Decision,\nDevice Lost,\n\
+            Device Stolen,\nCard Lost,\nCard Stolen"
+          example: Issuer_Decision
+          x-sor-field: reasonCode
+      x-class: TokenDeleteRequest
+      x-qualified-name: TokenDeleteRequest
+    TokenDeleteResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          example: o
+          x-sor-field: operationId
+        Status:
+          $ref: '#/components/schemas/Status'
+      x-class: TokenDeleteResponse
+      x-qualified-name: TokenDeleteResponse
+    TokenSuspendRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from
+            using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlationId
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+        actionReason:
+          type: string
+          maxLength: 64
+          description: The reason why the action is performed
+          example: jIAJ
+          x-sor-field: reason
+        reasonCode:
+          type: string
+          maxLength: 64
+          description: "The reason code why the action is performed.\nIf not provided ,\nDefault reason
+            code is: Issuer Decision\nPossible Values:\nUser Decision,\nIssuer Decision,\nDevice Lost,\n\
+            Device Stolen,\nCard Lost,\nCard Stolen"
+          example: Issuer_Decision
+          x-sor-field: reasonCode
+      x-class: TokenSuspendRequest
+      x-qualified-name: TokenSuspendRequest
+    TokenSuspendResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          example: Wko3cCq
+          x-sor-field: operationId
+        Status:
+          $ref: '#/components/schemas/Status'
+      x-class: TokenSuspendResponse
+      x-qualified-name: TokenSuspendResponse
+    TokenGetServicingEventRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            \nWarning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\n\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlationID
+        operationIdentification:
+          type: string
+          maxLength: 64
+          description: It specifies the operations id
+          x-sor-field: operationId
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+      required:
+      - operationIdentification
+      x-class: TokenGetServicingEventRequest
+      x-qualified-name: TokenGetServicingEventRequest
+    TokenGetServicingEventResponse:
+      type: object
+      properties:
+        TokenServicingSummary:
+          $ref: '#/components/schemas/TokenServicingSummary__TokenGetOperation'
+      x-class: TokenGetServicingEventResponse
+      x-qualified-name: TokenGetServicingEventResponse
+    TokenGetAllServicingEventRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            \nWarning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\n\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x-correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+        OffSetPagination:
+          $ref: '#/components/schemas/OffSetPagination'
+      x-class: TokenGetAllServicingEventRequest
+      x-qualified-name: TokenGetAllServicingEventRequest
+    TokenGetAllServicingEventResponse:
+      type: object
+      properties:
+        TokenServicingSummary:
+          $ref: '#/components/schemas/TokenServicingSummary'
+      x-class: TokenGetAllServicingEventResponse
+      x-qualified-name: TokenGetAllServicingEventResponse
+    DeviceBlackListDeleteRequest:
+      type: object
+      properties:
+        applicationIdCIAM:
+          type: string
+          description: It specifies the channel details
+          x-sor-field: x-Channel
+        DeviceIdentifier:
+          $ref: '#/components/schemas/DeviceIdentifier'
+      required:
+      - applicationIdCIAM
+      x-class: DeviceBlackListDeleteRequest
+      x-qualified-name: DeviceBlackListDeleteRequest
+    DeviceBlackListAddRequest:
+      type: object
+      properties:
+        applicationIdCIAM:
+          type: string
+          description: It specifies the channel details
+          x-sor-field: x-Channel
+        DeviceIdentifier:
+          $ref: '#/components/schemas/DeviceIdentifier'
+      required:
+      - applicationIdCIAM
+      x-class: DeviceBlackListAddRequest
+      x-qualified-name: DeviceBlackListAddRequest
+    CardRenewRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        IssuedDevice:
+          $ref: '#/components/schemas/IssuedDevice'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+          x-sor-field: reason
+        statusReason:
+          type: string
+          description: "The reason why the action has performed,if not provided,default reason code is
+            ISSUER_DECISION\nPossible Values:\nIssuer Decision,\nUser Decision,\nCard Expired"
+          example: Issuer Decision
+          x-sor-field: statusReason
+      x-class: CardRenewRequest
+      x-qualified-name: CardRenewRequest
+    CardRenewResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          x-sor-field: operationId
+      x-class: CardRenewResponse
+      x-qualified-name: CardRenewResponse
+    CardRegisterRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier__Profile1'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        cardProductIdentification:
+          type: string
+          maxLength: 48
+          description: Unique identifier of the type of card
+          example: ryl7aOkqMbONoWJHawS08hbx2M
+          x-sor-field: cardProductId
+        status:
+          type: string
+          description: "The state of the card,If not provided the card is considered as ACTIVE\nPossible
+            Values:\nActive,\nInactive"
+          example: Active
+          x-sor-field: state
+        embossedName:
+          type: string
+          maxLength: 26
+          description: "Name of the card holder as it will be printed/embossed on the card.\nFor virtual
+            card this value will be used exclusively for card display.\nEmpty string supported"
+          example: lo.Jnw
+          x-sor-field: name
+        embossedName2:
+          type: string
+          maxLength: 26
+          description: "Optional second card holder name as it will be printed/embossed on the card under
+            the first card holder name.\nNot used in case of virtual card."
+          example: xfGjmrFX
+          x-sor-field: secondname
+        encryptedData:
+          type: string
+          description: The encrypted data is the encrypted json representation of the card 
+            information. This value is encrypted using the JWE encryption
+          x-sor-field: encryptedData
+      required:
+      - cardProductIdentification
+      - embossedName
+      - encryptedData
+      x-class: CardRegisterRequest
+      x-qualified-name: CardRegisterRequest
+    CardCreateRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier__Profile1'
+        cardProductIdentification:
+          type: string
+          maxLength: 48
+          description: Unique identifier of the type of card
+          example: NpDJG3HASuPlR531eptnfVTSBKUaHroTKI
+          x-sor-field: cardProductId
+        status:
+          type: string
+          description: "The state of the card,If not provided the card is considered as ACTIVE\nPossible
+            Values:\nActive,\nInactive"
+          example: Active
+          x-sor-field: state
+        statusReason:
+          type: string
+          maxLength: 2
+          description: "This indicates the state of the card once its created\nDefault: IN"
+          example: IN
+          x-sor-field: statusReason
+        embossedName:
+          type: string
+          maxLength: 26
+          description: "Name of the card holder as it will be printed/embossed on the card.\nFor virtual
+            card this value will be used exclusively for card display.\nEmpty string supported"
+          example: EMzlRPKur mDTg
+          x-sor-field: name
+        embossedName2:
+          type: string
+          maxLength: 26
+          description: "Optional second card holder name as it will be printed/embossed on the card under
+            the first card holder name.\nNot used in case of virtual card."
+          example: KbyekVnNeIGk
+          x-sor-field: secondname
+        AccountList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountListItem'
+          description: "This represent the list of account the card will be attached to.\nThe list is
+            used for the posting"
+          x-sor-field: accountList
+      required:
+      - cardProductIdentification
+      - embossedName
+      - AccountList
+      x-class: CardCreateRequest
+      x-qualified-name: CardCreateRequest
+    CardCreateResponse:
+      type: object
+      properties:
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier__Profile1'
+      description: Information related to the created card
+      x-class: CardCreateResponse
+      x-qualified-name: CardCreateResponse
+    CardSuspendRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+          x-sor-field: reason
+        statusReason:
+          type: string
+          description: "The reason why the action has performed,if not provided,default reason code is
+            ISSUER_DECISION\nPossible Values:\nCard Lost,\nCard Stolen,\nCard Broken,\nFraud,\nUser Decision,\n\
+            Issuer Decision"
+          example: Issuer Decision
+          x-sor-field: stateReason
+      x-class: CardSuspendRequest
+      x-qualified-name: CardSuspendRequest
+    CardSuspendResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          x-sor-field: operationId
+      x-class: CardSuspendResponse
+      x-qualified-name: CardSuspendResponse
+    CardReplaceRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        NewCardIdentifier:
+          $ref: '#/components/schemas/NewCardIdentifier'
+        encryptedData:
+          type: string
+          description: "The encrypted data is the encrypted Json, representation of the card information,
+            The value is encrypted using the JWE encryption.\nJson field parameter name:\nPan,\nExpiry,\n\
+            Auxiliary Pan,\nAuxiliary Expiry"
+          x-sor-field: encryptedData
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+          x-sor-field: reason
+        statusReason:
+          type: string
+          description: "The reason why the action has performed,if not provided,default reason code is
+            ISSUER_DECISION\nPossible Values:\nIssuer Decision,\nCard Expired,\nCard Lost,\nCard Stolen,\n\
+            Card Broken,\nFraud,\nCard Not Received,"
+          example: Issuer Decision
+          x-sor-field: stateReason
+      required:
+      - actionReason
+      - statusReason
+      x-class: CardReplaceRequest
+      x-qualified-name: CardReplaceRequest
+    CardReplaceResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          x-sor-field: operationId
+        NewCardIdentifier:
+          $ref: '#/components/schemas/NewCardIdentifier__CardReplace'
+      x-class: CardReplaceResponse
+      x-qualified-name: CardReplaceResponse
+    CardResumeRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+          x-sor-field: reason
+        statusReason:
+          type: string
+          description: "The reason why the action has performed,if not provided,default reason code is
+            ISSUER_DECISION\nPossible Values:\nIssuer Decision,\nUser Decision,\nCard Found"
+          example: Issuer Decision
+          x-sor-field: stateReason
+      x-class: CardResumeRequest
+      x-qualified-name: CardResumeRequest
+    CardResumeResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          x-sor-field: operationId
+      x-class: CardResumeResponse
+      x-qualified-name: CardResumeResponse
+    GetCardCredentialsRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+      x-class: GetCardCredentialsRequest
+      x-qualified-name: GetCardCredentialsRequest
+    GetCardCredentialsResponse:
+      type: object
+      properties:
+        encryptedData:
+          type: string
+          description: "The encrypted data is the encrypted json representation of the card information.
+            This value is encrypted using the JWE encryption\nPan- Mandatory\nexpiry- Mandatory\nname
+            - Optional\nCVV- Mandatory"
+          x-sor-field: encryptedDate
+      x-class: GetCardCredentialsResponse
+      x-qualified-name: GetCardCredentialsResponse
+    VerifyCardCredentialsRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier__VerifyCardCredentials'
+        encryptedData:
+          type: string
+          description: "The encrypted data is the encrypted json representation of the card information.
+            This value is encrypted using the JWE encryption\nPan- Mandatory\nexpiry- Mandatory\nCVV-
+            Mandatory"
+          x-sor-field: encryptedDate
+      required:
+      - encryptedData
+      x-class: VerifyCardCredentialsRequest
+      x-qualified-name: VerifyCardCredentialsRequest
+    VerifyCardCredentialsResponse:
+      type: object
+      properties:
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier__Profile1'
+      x-class: VerifyCardCredentialsResponse
+      x-qualified-name: VerifyCardCredentialsResponse
+    CardDeleteRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+          x-sor-field: reason
+        statusReason:
+          type: string
+          description: "The reason why the action has performed,if not provided,default reason code is
+            ISSUER_DECISION\nPossible Values:\nIssuer Decision,\nCard Lost,\nCard Stolen,\nCard Broken,\n\
+            Fraud,\nCard Not Received,\nClosed Account,\nClosed Card"
+          example: Issuer Decision
+          x-sor-field: stateReason
+      x-class: CardDeleteRequest
+      x-qualified-name: CardDeleteRequest
+    CardDeleteResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          x-sor-field: operationId
+      x-class: CardDeleteResponse
+      x-qualified-name: CardDeleteResponse
+    GetCardDetailsRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+      x-class: GetCardDetailsRequest
+      x-qualified-name: GetCardDetailsRequest
+    GetCardDetailsResponse:
+      type: object
+      properties:
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier__Profile2'
+        Card:
+          $ref: '#/components/schemas/Card'
+        NewCard:
+          $ref: '#/components/schemas/NewCard'
+        cardProductIdentification:
+          type: string
+          description: Unique identifier of the type of card
+          x-sor-field: cardProductId
+        status:
+          type: string
+          description: "The state of the card\nPossible Values:\nActive,\nInactive,\nSuspended,\nDeleted,\n\
+            Replaced"
+          example: Active
+          x-sor-field: state
+        statusReason:
+          type: string
+          description: "Reason associated to the state\nPossible Values:\nClosed Account,\nClosed Card,\n\
+            Card Lost,\nCard Found,\nCard Stolen,\nCard Broken,\nCard Not Received,\nFraud,\nUser_Decision,\n\
+            Issuer_Decision,\nCVV2_Locked,\nExpiry Date Locked,\nPin Locked"
+          example: Closed Card
+          x-sor-field: stateReason
+        ongoingServicingEvent:
+          type: string
+          description: "Possible Values:\nNone,\nRenewal"
+          example: Renewal
+          x-sor-field: ongoingOperation
+        AccountList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountListItem__GetCardDetails'
+          description: "This represent the list of account the card will be attached to.\nThe list is
+            used for the posting"
+          x-sor-field: accountList
+        Token:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenItem'
+          description: "List of digital cards associated to the card,\nType is Token assignment"
+          x-sor-field: digitalCards
+      x-class: GetCardDetailsResponse
+      x-qualified-name: GetCardDetailsResponse
+    CardGetServicingEventRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        operationIdentification:
+          type: string
+          description: It specifies the operations id
+          x-sor-field: operationId
+      required:
+      - operationIdentification
+      x-class: CardGetServicingEventRequest
+      x-qualified-name: CardGetServicingEventRequest
+    CardGetServicingEventResponse:
+      type: object
+      properties:
+        CardServicingSummary:
+          $ref: '#/components/schemas/CardServicingSummary__GetOperation'
+      description: operations associated to the card Id
+      x-class: CardGetServicingEventResponse
+      x-qualified-name: CardGetServicingEventResponse
+    CardGetAllServicingEventRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued 
+            device.
+          x-sor-field: x-user-id
+        correlationIdentification:
+          type: string
+          description: "Random identifier which can be used to correlate the different API calls done
+            as part of a single use-case. This identifier will be the one primarily used for troubleshooting.\n\
+            Warning: This identifier should not be derived from sensitive personal data, as its value
+            will be logged in clear.\nThere is no strong guarantee of the uniqueness of this identifier,
+            so please refrain from using it for other purpose than logging and troubleshooting."
+          x-sor-field: x- correlation-id
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        OffSetPagination:
+          $ref: '#/components/schemas/OffSetPagination__GetAllOperations'
+      x-class: CardGetAllServicingEventRequest
+      x-qualified-name: CardGetAllServicingEventRequest
+    CardGetAllServicingEventResponse:
+      type: object
+      properties:
+        CardServicingSummary:
+          $ref: '#/components/schemas/CardServicingSummary'
+      x-class: CardGetAllServicingEventResponse
+      x-qualified-name: CardGetAllServicingEventResponse
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help 
+        remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error 
+                  originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated 
+                  with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went 
+                  wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        status: '400'
+        title: Bad Request
+        timestamp: '2026-07-14T08:16:49.876Z'
+        errors:
+        - realm: Apigee
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+      x-class: ErrorResponse
+      x-qualified-name: ErrorResponse
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferable uuidv4) provided by the client for a specific HTTP 
+        request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace 
+        represents a single request or transaction as it flows through multiple services in a 
+        distributed system.
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: Uniquely identifies a single span within a trace. A span represents one unit of 
+        work, for example an HTTP request or a database query.
+  responses:
+    BadRequest:
+      description: "Bad Request\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: "Unauthorized\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: "Forbidden\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: "Not Found\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: "Method Not Allowed\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: "Conflict\n\nDisclaimer: The error message is Apigee error only and not mapped to the
+        System API error. Consumers should not rely on the exact error text as it may change depends on
+        the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: "Unprocessable Entity\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: "Too Many Requests\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: "Internal Server Error\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: "Bad Gateway\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: "Service Unavailable\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: "Gateway Timeout\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

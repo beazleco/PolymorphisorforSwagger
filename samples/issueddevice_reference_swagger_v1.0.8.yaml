@@ -1,0 +1,4289 @@
+openapi: 3.0.3
+info:
+  title: Issued Device Administration
+  version: 1.0.8
+  description: |-
+    The issued device admin domain enables the bank to create, issue and manage cards throught their lifecycle.It supports card creation, updates, activation, status management, replacement, renewal, account association, card inquiry and didgital card operations
+servers:
+- url: https://localhost/
+paths:
+  /issued-device-administration/token-assignment/search:
+    post:
+      summary: Token Search API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by the issuer backend to search for digital cards in D1 using digital PAN as lookup and retrieve card & end user related details
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCardDetailsRetrieveRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCardDetailsRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/credentials/retrieve:
+    post:
+      summary: Token Get Credentials API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by D1 to provide details about the token credentials of a digital card (PAN, expiry date) given the card identifier.
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCredentialsRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCredentialsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/token-details/retrieve:
+    post:
+      summary: Token Details API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request provides detailed information about the digital card given its card identifier
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenDetailsRetrieveRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenDetailsRetrieveResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/resume:
+    post:
+      summary: Token Resume API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the issuer backend to request activation of a new digital card or reactivate a suspended digital card.
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenResumeRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResumeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/delete:
+    post:
+      summary: Token  Delete API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the issuer backend to request the deletion of the digital card
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenDeleteRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenDeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/suspend:
+    post:
+      summary: Token Suspend API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the issuer backend to request the suspension of the digital card if the digital card is active
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenSuspendRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenSuspendResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/get-operation:
+    post:
+      summary: Token Get Operation API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be  used to retrieve information related to an operation for a digital card
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenGetServicingEventRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenGetServicingEventResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/token-assignment/get-all-operations:
+    post:
+      summary: Token Get All Operations API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be  used to retrieve all the operations related to a digital card
+      tags:
+      - BQ - Token Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenGetAllServicingEventRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenGetAllServicingEventResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/device-assignment/black-list/delete:
+    post:
+      summary: Blacklist Device Delete API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This API will be used to removes a device from the blacklist.
+      tags:
+      - BQ - Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceBlackListDeleteRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceBlackListDeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/device-assignment/black-list/add:
+    post:
+      summary: Blacklist Device Add API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This API will be used to Adds a device to the blacklist
+      tags:
+      - BQ - Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceBlackListAddRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceBlackListAddResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/register-card:
+    post:
+      summary: Card Register API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used to register a card with corresponding card credentials.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRegisterRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardRegisterRequest'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/create:
+    post:
+      summary: Card Create API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the bank backend to request the creation of a card(Virtual or Physical) with the processor.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardCreateRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/renew:
+    post:
+      summary: Card Renew API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be  used to renew the card where a new card is provided to end-user. The new card has new expiry date, but cardId and PAN are remaining the same.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardRenewRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardRenewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/suspend:
+    post:
+      summary: Card suspend API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the bank backend to request the suspension of a card.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardSuspendRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardSuspendResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/replace:
+    post:
+      summary: Card Replace API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        End user can request the bank a replacement of an existing card because the card has been lost or damaged.
+        The replaced card is blocked until the new card is activated.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardReplaceRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardReplaceResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/resume:
+    post:
+      summary: Card Resume API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the bank backend to request the reactivation of a card that has been suspended
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardResumeRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResumeResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/get-card-credentials:
+    post:
+      summary: Get Card Credentials API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by the bank backend to retrieve the card credentials
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCardCredentialsRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCardCredentialsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/verify-card-credentials:
+    post:
+      summary: Verify Card Credentials API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by the bank backend to verify the card credentials.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyCardCredentialsRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyCardCredentialsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/delete:
+    post:
+      summary: Card Delete API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        The API will be used by the bank backend to request the deletion of a card
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardDeleteRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardDeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/get-card-details:
+    post:
+      summary: Get Card Details API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by the bank backend to request card details.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCardDetailsRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCardDetailsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/get-operation:
+    post:
+      summary: Get Operation API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by the issuer backend to retrieve the information related to an operation on a card.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardGetServicingEventRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardGetServicingEventResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+  /issued-device-administration/card-device-assignment/get-all-operations:
+    post:
+      summary: Get All Operations API
+      description: |-
+        **<u>API Lifecycle Status - Design</u>**
+
+        This request is used by the issuer backend to retrieve all operations related to a card.
+      tags:
+      - BQ - Card Device Assignment
+      parameters:
+      - $ref: '#/components/parameters/Authorization'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Trace-Id'
+      - $ref: '#/components/parameters/x-BDO-Client-Request-Span-Id'
+      - $ref: '#/components/parameters/x-BDO-API-Version'
+      - $ref: '#/components/parameters/x-BDO-End-Consumer-IP'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardGetAllServicingEventRequest'
+      responses:
+        '200':
+          description: Success
+          headers:
+            x-BDO-Client-Request-Id:
+              schema:
+                type: string
+              description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+            x-BDO-Client-Request-Trace-Id:
+              schema:
+                type: string
+              description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single\
+                \ request or transaction as it flows through multiple services in a distributed system."
+            x-BDO-Client-Request-Span-Id:
+              schema:
+                type: string
+              description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP\
+                \ Request, a database query). (e.g. 5fb397be34d26b51)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardGetAllServicingEventResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
+components:
+  schemas:
+    TokenCardDetailsRetrieveRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          $ref: '#/components/schemas/PartyIdentifier'
+        EncryptedDataCriteria:
+          $ref: '#/components/schemas/EncryptedDataCriteria'
+    PartyIdentifier:
+      type: object
+      description: A unique identifier used to distinguish the party within the organization or external systems.
+      properties:
+        partyIdentificationType:
+          type: string
+          description: It specifies the type of party
+        partyIdentification:
+          type: string
+          maxLength: 10
+          description: The ID of the issuer
+        partyIdentificationMasked:
+          type: string
+          description: Masked ID of the issuer
+      required:
+      - partyIdentification
+    EncryptedDataCriteria:
+      type: object
+      description: Encrypted Data Criteria
+      properties:
+        encryptedCardData:
+          type: string
+          maxLength: 8192
+          description: Ciphered digital PAN, it is encrypted using JWE. The digital pan value has a length up to 19
+          example: 9GszhPm1Afe6vvCyrvopAS2=
+        searchType:
+          type: string
+          description: |-
+            Possible Values:
+            Encrypted Data
+          example: encryptedData
+      required:
+      - encryptedCardData
+    TokenCardDetailsRetrieveResponse:
+      type: object
+      properties:
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: It specifies the type of identification
+            partyIdentification:
+              type: string
+              description: Unique identifier of the consumer
+              example: D7IGeiLWfDGxKZbE3ZOz
+            partyIdentificationMasked:
+              type: string
+              description: Masked ID of the consumer
+        TokenIdentifier:
+          $ref: '#/components/schemas/TokenIdentifier'
+        DeviceIdentifier:
+          $ref: '#/components/schemas/DeviceIdentifier'
+    TokenIdentifier:
+      type: object
+      description: It specifies the token identification
+      properties:
+        tokenIdentification:
+          type: string
+          description: Unique identifier of the digital card
+          example: 2cjc
+    DeviceIdentifier:
+      type: object
+      description: The type is issued device admin
+      properties:
+        deviceIdentificationType:
+          type: string
+          description: It specifies the type of device Id
+        deviceIdentification:
+          type: string
+          description: Unique identifier of the device Id
+          example: EkcZuzvEc
+    TokenCredentialsRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: It specifies the type of party
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The ID of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: Masked ID of the issuer
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: It specifies the token identification
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: Unique identifier of the digital card
+          required:
+          - tokenIdentification
+    TokenCredentialsResponse:
+      type: object
+      properties:
+        tokenCredentials:
+          type: string
+          description: |-
+            The field is the json (cf http://www.json.org/ ) representation of the DIGITAL card. JWE encryption is used to secure the field (please refer to the Encrypt sensitive data for more details) Details:
+            {
+            "pan":"...",
+            "exp":"..."
+            }
+            The PAN is Mandatory, up to 19 digits.
+            The expiry date in the format MMYY. It is not provided for UPI scheme.
+    TokenDetailsRetrieveRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: Type of issuer id identification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: It specifies the token identification
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the digital card
+          required:
+          - tokenIdentification
+    TokenDetailsRetrieveResponse:
+      type: object
+      description: Provides information about the token. Note that this data is available only if the tokenization is successful
+        or pending.
+      properties:
+        CardIdentifier:
+          $ref: '#/components/schemas/CardIdentifier'
+        TokenIdentifier:
+          type: object
+          description: It specifies the token identification
+          properties:
+            tokenIdentification:
+              type: string
+              description: Unique identifier of the token specified by the TSP
+        pANSuffix:
+          type: string
+          description: Last four digits of the token
+        Token:
+          $ref: '#/components/schemas/Token'
+        deviceBindingList:
+          type: array
+          items:
+            type: string
+          description: List of all devices bound to this token. A device is represented by its binding reference.
+        lastUpdateDateTime:
+          type: string
+          format: date-time
+          description: The last time the token status has been changed. Format ISO 8601 YYYY-MM-DDThh:mm:ssTZD
+        provisioningDateTime:
+          type: string
+          format: date-time
+          description: The provisioning time of the token. Format ISO 8601 YYYY-MM-DDThh:mm:ssTZD
+        lastReplenishDateTime:
+          type: string
+          format: date-time
+          description: The last time the token keys have been reset. Format ISO 8601 YYYY-MM-DDThh:mm:ssTZD
+        TokenRequestorInformation:
+          $ref: '#/components/schemas/TokenRequestorInformation'
+        DeviceInformation:
+          $ref: '#/components/schemas/DeviceInformation'
+    CardIdentifier:
+      type: object
+      description: The type is issued device admin
+      properties:
+        issuedDeviceIdentificationType:
+          type: string
+          description: It specifies the type of card id
+        issuedDeviceIdentification:
+          type: string
+          description: Unique identifier of the card.
+          example: yI
+        issuedDeviceIdentificationMasked:
+          type: string
+          description: Masked Id of the card
+    Token:
+      type: object
+      description: It specifies the token details
+      properties:
+        tokenIdentificationCode:
+          type: string
+          description: It specifies the token identification code
+        tokenType:
+          type: string
+          description: |-
+            The type of the token. Following values are supported:
+            Possible Values:
+            SE,
+            HCE,
+            COF,
+            ECOM,
+            QRC
+        tokenStatus:
+          type: string
+          description: |-
+            The state of the digital card (Token)
+            Possible Values:
+            Active,
+            Inactive,
+            Deleted,
+            Deployment_Ongoing,
+            Pending_Activation
+          example: Active
+        tokenRequestColour:
+          type: string
+          description: It specifies the token request color
+    TokenRequestorInformation:
+      type: object
+      description: It provides token requestor information
+      properties:
+        identifier:
+          type: string
+          description: Digital Card requestor identifier. This is provided by the TSP itself.
+        walletIdentification:
+          type: string
+          description: Mastercard ONLY. Wallet application identifier
+        name:
+          type: string
+          description: Wallet or Merchant human readable name
+        tspId:
+          type: string
+          description: VISA ONLY. Identifiers of the couple Token Requestor - Token Service Provider
+        originalTokenRequestorIdentification:
+          type: string
+          description: Applied only to VISA in case of token for token provisioning
+    PhoneAddress:
+      type: object
+      description: it specifies the phone number details
+      properties:
+        phoneAddressType:
+          type: string
+          description: |-
+            Possible Values:
+            -Home Number
+            -Phone Number
+            -Fax Number
+            -Work Number
+            Default Value: Phone Number
+          example: Phone Number
+        phoneNumber:
+          type: string
+          description: Device phone number
+        countryCode:
+          type: string
+          description: International dialing code
+        phoneExtension:
+          type: string
+          description: Phone extension
+        lastUpdateDate:
+          type: string
+          description: It specifies the last updated date of mobile number
+        fourLastDigitPhoneNumber:
+          type: string
+          description: Last four digits of device phone number
+    DeviceInformation:
+      type: object
+      description: It specifies Device information
+      properties:
+        DeviceIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            deviceIdentificationType:
+              type: string
+              description: |-
+                Type of the token storage location. Following values are possible:
+                HCE,
+                Spay Phone,
+                Spay Watch,
+                Spay Tablet,
+                Spay TV,
+                Iphone,
+                Iwatch,
+                Ipad,
+                Mac Book,
+                Android Phone,
+                Android Tablet,
+                Android Watch,
+                Mobile Phone,
+                Tablet,
+                Watch,
+                Mobile Phone or Tablet,
+                Bracelet,
+                Unknown
+              example: Watch
+            deviceIdentification:
+              type: string
+              description: Identifier of the token storage
+        PhoneAddress:
+          $ref: '#/components/schemas/PhoneAddress'
+        manufacturer:
+          type: string
+          description: Device manufacturer name
+        brand:
+          type: string
+          description: Device brand
+        model:
+          type: string
+          description: Device model
+        operatingSystemVersion:
+          type: string
+          description: Device OS version
+        firmwareVersion:
+          type: string
+          description: Device firmware version
+        deviceName:
+          type: string
+          description: Device name set by the consumer
+        deviceParentIdentification:
+          type: string
+          description: ID of parent device. Applies to wearable
+        language:
+          type: string
+          description: Language set on the device in ISO 639-3
+        serialNumber:
+          type: string
+          description: Device serial number
+        timeZone:
+          type: string
+          description: 'Device time zone abbreviation. Example: PST, GMT, etc…'
+        timeZoneSetting:
+          type: string
+          description: "Who has set the timezone. \nPossible values:\nNetwork Set,\nConsumer Set"
+          example: Network Set
+        sIMSerialNumber:
+          type: string
+          description: Secure Element serial number
+        iMEI:
+          type: string
+          description: IMEI number of device
+        networkType:
+          type: string
+          description: |-
+            Network Type Possible Values:
+            Cellular,
+            Wifi
+          example: Cellular
+        networkOperator:
+          type: string
+          description: Network operator name
+    TokenResumeRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: It specifies the token identification
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the digital card
+          required:
+          - tokenIdentification
+        actionReason:
+          type: string
+          maxLength: 64
+          description: The reason why the action is performed
+          example: CEuIn8gcNdbvFtVFhiuQtgEdDrCWSd2fKmCu2
+        reasonCode:
+          type: string
+          maxLength: 64
+          description: "The reason code why the action is performed.\nIf not provided , \nDefault reason code is: Issuer Decision\n\
+            Possible Values:\nUser Decision,\nIssuer Decision"
+          example: Issuer_Decision
+    TokenResumeResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          example: Ex8bq
+        Status:
+          $ref: '#/components/schemas/Status'
+    Status:
+      type: object
+      description: It specifies the status details
+      properties:
+        statusCode:
+          type: string
+          description: Response code from the SOR
+        statusDescription:
+          type: string
+          description: |-
+            Status of the Operation
+            Possible Values:
+            Pending,
+            Successful,
+            Failed
+          example: Pending
+    TokenDeleteRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: It specifies the token identification
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the digital card
+          required:
+          - tokenIdentification
+        actionReason:
+          type: string
+          maxLength: 64
+          description: The reason why the action is performed
+          example: KIVchTaL9Iw 4MU1bcOvhVtvxPnBjJjOwHMg6EqdL8uWMKw4BSn
+        reasonCode:
+          type: string
+          maxLength: 64
+          description: "The reason code why the action is performed.\nIf not provided , \nDefault reason code is: Issuer Decision\n\
+            Possible Values:\nUser Decision,\nIssuer Decision,\nDevice Lost,\nDevice Stolen,\nCard Lost,\nCard Stolen"
+          example: Issuer_Decision
+    TokenDeleteResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          example: o
+        Status:
+          type: object
+          description: It specifies the status details
+          properties:
+            statusCode:
+              type: string
+              description: Response code from the SOR
+            statusDescription:
+              type: string
+              description: |-
+                Status of the Operation
+                Possible Values:
+                Pending,
+                Successful,
+                Failed
+              example: Pending
+    TokenSuspendRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: It specifies the token identification
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the digital card
+          required:
+          - tokenIdentification
+        actionReason:
+          type: string
+          maxLength: 64
+          description: The reason why the action is performed
+          example: jIAJ
+        reasonCode:
+          type: string
+          maxLength: 64
+          description: "The reason code why the action is performed.\nIf not provided , \nDefault reason code is: Issuer Decision\n\
+            Possible Values:\nUser Decision,\nIssuer Decision,\nDevice Lost,\nDevice Stolen,\nCard Lost,\nCard Stolen"
+          example: Issuer_Decision
+    TokenSuspendResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+          example: Wko3cCq
+        Status:
+          type: object
+          description: It specifies the status details
+          properties:
+            statusCode:
+              type: string
+              description: Response code from the SOR
+            statusDescription:
+              type: string
+              description: |-
+                Status of the Operation
+                Possible Values:
+                Pending,
+                Successful,
+                Failed
+              example: Pending
+    TokenGetServicingEventRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        operationIdentification:
+          type: string
+          maxLength: 64
+          description: It specifies the operations id
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the card
+          required:
+          - tokenIdentification
+      required:
+      - operationIdentification
+    TokenGetServicingEventResponse:
+      type: object
+      properties:
+        TokenServicingSummary:
+          $ref: '#/components/schemas/TokenServicingSummary'
+    RequestorDetails:
+      type: object
+      description: It specifies the either party or person
+      properties:
+        requestorType:
+          type: string
+          description: |-
+            Possible Values:
+            Issuer,
+            User,
+            TSP,
+            CCI
+          example: Issuer
+        requestorIdentification:
+          type: string
+          description: Identifier of the principal who initiates the operation - consumerId if USER - issuerId if ISSUER -
+            cci user id if CCI
+    TypeNotSupported:
+      type: object
+      description: Provides information about the device type support validation check
+      properties:
+        result:
+          type: string
+          description: |-
+            Possible Values:
+            Yes,
+            No,
+            Not Applicable
+          example: 'Yes'
+    ManufacturerNotSupported:
+      type: object
+      description: Provides information about the manufacturer support validation check
+      properties:
+        result:
+          type: string
+          description: |-
+            Possible Values:
+            Yes,
+            No,
+            Not Applicable
+          example: 'Yes'
+    OsVersionNotSupported:
+      type: object
+      description: Provides information about the operating system version validation check.
+      properties:
+        result:
+          type: string
+          description: |-
+            Possible Values:
+            Yes,
+            No,
+            Not Applicable
+          example: 'Yes'
+    OsBuildVersionNotSupported:
+      type: object
+      description: Provides information about the operating system build version validation check.
+      properties:
+        result:
+          type: string
+          description: |-
+            Possible Values:
+            Yes,
+            No,
+            Not Applicable
+          example: 'Yes'
+    Checks:
+      type: object
+      description: Container holding the results of all binding validation checks
+      properties:
+        TypeNotSupported:
+          $ref: '#/components/schemas/TypeNotSupported'
+        ManufacturerNotSupported:
+          $ref: '#/components/schemas/ManufacturerNotSupported'
+        OsVersionNotSupported:
+          $ref: '#/components/schemas/OsVersionNotSupported'
+        OsBuildVersionNotSupported:
+          $ref: '#/components/schemas/OsBuildVersionNotSupported'
+    TokenIdentificationAndVerificationMethods:
+      type: object
+      description: Contains information about available identification and verification methods.
+      properties:
+        supported:
+          type: array
+          items:
+            type: string
+          description: Indicates whether identification and verification methods are supported.
+        selected:
+          type: string
+          description: |-
+            Possible Values:
+            OTP By Sms,
+            OTP By Email,
+            Bank App,
+            Customer Service
+          example: OTP By SMS
+    Result:
+      type: object
+      description: Container holding the final result of the binding evaluation.
+      properties:
+        flow:
+          type: string
+          description: |-
+            Indicates the overall binding eligibility flow outcome.
+            Possible Values:
+            Red,
+            Green,
+            Yellow
+          example: Red
+        TokenIdentificationAndVerificationMethods:
+          $ref: '#/components/schemas/TokenIdentificationAndVerificationMethods'
+    BindingInformation:
+      type: object
+      description: Provides details about the binding operation whatever the result (i.e. successful, pending or cancelled)
+      properties:
+        Checks:
+          $ref: '#/components/schemas/Checks'
+        Result:
+          $ref: '#/components/schemas/Result'
+        tokenDeviceReference:
+          type: string
+          description: The index number from TSP where the deviceID is stored. This field is required for digital card device
+            binding.
+        tokenDeviceName:
+          type: string
+          description: A readable name for the device. Ideally, the end user enters this name. It can be used to identify
+            the device in customer support calls.
+    TokenServiceEventDetails:
+      type: object
+      description: Container to hold any detailed information regarding the executed operation
+      properties:
+        BindingInformation:
+          $ref: '#/components/schemas/BindingInformation'
+    TokenServicingEventSummary:
+      type: object
+      description: Operation details related to a specific operationId
+      properties:
+        servicingEventHistoryIdentifier:
+          type: string
+          description: Unique identifier of the operation
+          example: 2rNqzOpmCpLX-_FUX9YVdwkIvfn4jSD
+        servicingEventHistoryName:
+          type: string
+          description: |-
+            The operation type
+            Possible Values:
+            Activate,
+            Suspend,
+            Resume,
+            Delete,
+            Renew,
+            Bind,
+            Unbind
+          example: Activate
+        eventHistoryItemstartDateTime:
+          type: string
+          format: date-time
+          description: The time the request has been processed
+        eventHistoryItemEndDateTime:
+          type: string
+          format: date-time
+          description: The time the operation has been completed.This is an optional field and might not be returned for synchronous
+            operations
+        RequestorDetails:
+          $ref: '#/components/schemas/RequestorDetails'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+        status:
+          type: string
+          description: "Status of the operation\nPossible Values:\nSuccessful, \nPending,\nFailed"
+          example: Successful
+        statusReason:
+          type: string
+          description: |-
+            Possible Values:
+            User Decision,
+            Issuer Decision,
+            Device Lost,
+            Device Stolen,
+            Card Lost,
+            Card Stolen,
+            Card Broken
+          example: User Decision
+        TokenServiceEventDetails:
+          $ref: '#/components/schemas/TokenServiceEventDetails'
+        error:
+          type: string
+          description: Human readable string representing the error, only present in case of operation failure
+        eventHistoryItemStartDateTime:
+          type: string
+          format: date-time
+          description: The time the request has been processed
+        TokenDeviceServiceEventDetails:
+          $ref: '#/components/schemas/TokenDeviceServiceEventDetails'
+    TokenServicingSummary:
+      type: object
+      description: List of operations associated to the cardId.
+      properties:
+        TokenServicingEventSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenServicingEventSummary'
+          description: Operation details related to a specific operationId
+    TokenGetAllServicingEventRequest:
+      type: object
+      properties:
+        correlationIdentification:
+          type: string
+          maxLength: 64
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        TokenIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            tokenIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the card
+          required:
+          - tokenIdentification
+        OffSetPagination:
+          $ref: '#/components/schemas/OffSetPagination'
+    OffSetPagination:
+      type: object
+      description: It specifies the pagination details
+      properties:
+        offset:
+          type: string
+          description: 'Index from which the query starts returning operations( default value: 0)'
+        limit:
+          type: string
+          maxLength: 50
+          description: |-
+            Upper limit of the query,
+            Default Value: 10
+          example: '10'
+        keyword:
+          type: string
+          description: Value used for searching through named fields
+        startDate:
+          type: string
+          format: date-time
+          description: Value used as a filter for Start date (when involving date-time ranges)
+        endDate:
+          type: string
+          format: date-time
+          description: Value used as a filter for End date (when involving date-time ranges)
+        sortBy:
+          type: string
+          description: A field value from the SoR or backend system, typically dates or timestamps used for filtering results.
+        page:
+          type: integer
+          description: |-
+            Value that indicates the page to be served.
+            Default value: 1
+        order:
+          type: string
+          description: Value used to determine the arrangement of data – either by most recent (descending) or oldest (ascending)
+        includeTotal:
+          type: boolean
+          description: Value used used to include the totalCount field in the response metadata.
+    TokenGetAllServicingEventResponse:
+      type: object
+      properties:
+        TokenServicingSummary:
+          type: object
+          description: List of operations associated to the cardId.
+          properties:
+            TokenServicingEventSummary:
+              type: array
+              items:
+                $ref: '#/components/schemas/TokenServicingEventSummary'
+              description: Operation details related to a specific operationId
+            remainingOperations:
+              type: integer
+              description: Remaining operations
+              example: '0'
+        OffsetPaginationResponse:
+          $ref: '#/components/schemas/OffsetPaginationResponse'
+    TokenDeviceServiceEventDetails:
+      type: object
+      description: Container to hold any detailed information regarding the executed operation
+      properties:
+        BindingInformation:
+          type: object
+          description: Provides details about the binding operation whatever the result (i.e. successful, pending or cancelled)
+          properties:
+            Checks:
+              $ref: '#/components/schemas/Checks'
+            Result:
+              $ref: '#/components/schemas/Result'
+            tokenDeviceReference:
+              type: string
+              description: The index number from TSP where the deviceID is stored. This field is required for digital card
+                device binding.
+            tokenDeviceName:
+              type: string
+              description: A readable name for the device. Ideally, the end user enters this name. It can be used to identify
+                the device in customer support calls.
+    OffsetPaginationResponse:
+      type: object
+      description: It specifies the cursor response details
+      properties:
+        totalCount:
+          type: integer
+          description: Metadata value showing the total number of records from the request
+        appliedOffset:
+          type: integer
+          description: Metadata value showing number of skipped records
+        appliedLimit:
+          type: integer
+          description: Metadata value showing the record constraint
+        currentPage:
+          type: integer
+          description: Metadata value to indicate the requested page number.
+    DeviceBlackListDeleteRequest:
+      type: object
+      properties:
+        applicationIdCIAM:
+          type: string
+          description: It specifies the channel details
+        DeviceIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            deviceIdentificationType:
+              type: string
+              description: it specifies the type of identifier
+              example: Card Number
+            deviceIdentification:
+              type: string
+              description: Identifier representing the issued device.
+          required:
+          - deviceIdentification
+      required:
+      - applicationIdCIAM
+    DeviceBlackListDeleteResponse:
+      type: object
+      properties:
+        successUrl:
+          type: string
+          example: /openam/console
+        realm:
+          type: string
+          example: /customer
+    DeviceBlackListAddRequest:
+      type: object
+      properties:
+        applicationIdCIAM:
+          type: string
+          description: It specifies the channel details
+        DeviceIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            deviceIdentificationType:
+              type: string
+              description: it specifies the type of identifier
+              example: Card Number
+            deviceIdentification:
+              type: string
+              description: Identifier representing the issued device.
+          required:
+          - deviceIdentification
+      required:
+      - applicationIdCIAM
+    DeviceBlackListAddResponse:
+      type: object
+      properties:
+        successUrl:
+          type: string
+          example: /openam/console
+        realm:
+          type: string
+          example: /customer
+    CardRegisterRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+                CustomerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the party
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the party masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: it specifies the type of identifier
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: Identifier representing the issued device.
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: Card Number masked
+          required:
+          - issuedDeviceIdentification
+        cardProductIdentification:
+          type: string
+          maxLength: 48
+          description: Unique identifier of the type of card
+          example: ryl7aOkqMbONoWJHawS08hbx2M
+        status:
+          type: string
+          description: |-
+            The state of the card,If not provided the card is considered as ACTIVE
+            Possible Values:
+            Active,
+            Inactive
+          example: Active
+        embossedName:
+          type: string
+          maxLength: 26
+          description: |-
+            Name of the card holder as it will be printed/embossed on the card.
+            For virtual card this value will be used exclusively for card display.
+            Empty string supported
+          example: lo.Jnw
+        embossedName2:
+          type: string
+          maxLength: 26
+          description: |-
+            Optional second card holder name as it will be printed/embossed on the card under the first card holder name.
+            Not used in case of virtual card.
+          example: xfGjmrFX
+        encryptedData:
+          type: string
+          description: The encrypted data is the encrypted json representation of the card information. This value is encrypted
+            using the JWE encryption
+      required:
+      - cardProductIdentification
+      - embossedName
+      - encryptedData
+    CardCreateRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+                CustomerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 64
+              description: The id of the party
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the party masked
+          required:
+          - partyIdentification
+        cardProductIdentification:
+          type: string
+          maxLength: 48
+          description: Unique identifier of the type of card
+          example: NpDJG3HASuPlR531eptnfVTSBKUaHroTKI
+        status:
+          type: string
+          description: |-
+            The state of the card,If not provided the card is considered as ACTIVE
+            Possible Values:
+            Active,
+            Inactive
+          example: Active
+        statusReason:
+          type: string
+          maxLength: 2
+          description: |-
+            This indicates the state of the card once its created
+            Default: IN
+          example: IN
+        embossedName:
+          type: string
+          maxLength: 26
+          description: |-
+            Name of the card holder as it will be printed/embossed on the card.
+            For virtual card this value will be used exclusively for card display.
+            Empty string supported
+          example: EMzlRPKur mDTg
+        embossedName2:
+          type: string
+          maxLength: 26
+          description: |-
+            Optional second card holder name as it will be printed/embossed on the card under the first card holder name.
+            Not used in case of virtual card.
+          example: KbyekVnNeIGk
+        AccountList:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountList'
+          description: |-
+            This represent the list of account the card will be attached to.
+            The list is used for the posting
+      required:
+      - cardProductIdentification
+      - embossedName
+      - AccountList
+    AccountIdentifier:
+      type: object
+      description: It specifies the account identification details
+      properties:
+        accountIdentificationType:
+          type: string
+          description: |-
+            Type of the account.By default if not provided, it is a checking account
+            Possible Values:
+            Checking,
+            Savings
+          example: Checking
+        accountIdentification:
+          type: string
+          maxLength: 24
+          description: Account number used for posting to core banking system
+          example: 8oYwZq3VZDaq9i
+      required:
+      - accountIdentification
+    AccountList:
+      type: object
+      description: |-
+        This represent the list of account the card will be attached to.
+        The list is used for the posting
+      properties:
+        accountDefaultFlag:
+          type: boolean
+          description: True if the account is the default consumer account
+          example: 'True'
+        AccountIdentifier:
+          $ref: '#/components/schemas/AccountIdentifier'
+        accountCurrencyCode:
+          type: string
+          maxLength: 3
+          description: Currency Code
+          example: PHP
+      required:
+      - accountDefaultFlag
+      - accountCurrencyCode
+    CardCreateResponse:
+      type: object
+      description: Information related to the created card
+      properties:
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: it specifies the type of identifier
+              example: Card Number
+            issuedDeviceIdentification:
+              type: string
+              description: Identifier representing the issued device.
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: Card Number masked
+    CardRenewRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        IssuedDevice:
+          $ref: '#/components/schemas/IssuedDevice'
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+        statusReason:
+          type: string
+          description: |-
+            The reason why the action has performed,if not provided,default reason code is ISSUER_DECISION
+            Possible Values:
+            Issuer Decision,
+            User Decision,
+            Card Expired
+          example: Issuer Decision
+    IssuedDeviceIdentifier:
+      type: object
+      description: Type is Issued Device Admin
+      properties:
+        issuedDeviceIdentificationType:
+          type: string
+          description: Type of the card identification
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 48
+          description: The id of the card
+        issuedDeviceIdentificationMasked:
+          type: string
+          description: The card number masked
+      required:
+      - issuedDeviceIdentification
+    IssuedDevice:
+      type: object
+      description: It specifies the issued device details
+      properties:
+        IssuedDeviceIdentifier:
+          $ref: '#/components/schemas/IssuedDeviceIdentifier'
+        scheme:
+          type: string
+          description: The card scheme
+          example: VISA
+        auxiliaryScheme:
+          type: string
+          description: The card auxiliary scheme
+          example: DANKORT
+        pANSuffix:
+          type: string
+          description: Last 4 digits of the PAN
+          example: '1234'
+        deviceValidToDate:
+          type: string
+          format: date
+          description: Expiry date of the card in MMYY format
+          example: '1024'
+        revisedDeviceValidToDate:
+          type: string
+          format: date
+          description: New Expiry date of the card in MMYY format
+          example: '1024'
+        auxiliaryValidToDate:
+          type: string
+          format: date
+          description: Expiry date of the card in MMYY format
+          example: '1024'
+        revisedAuxiliaryValidToDate:
+          type: string
+          format: date
+          description: New Expiry date of the card in MMYY format
+          example: '1024'
+        creationDateTime:
+          type: string
+          format: date-time
+          description: The time the resource has been created
+          example: '2022-02-16T06:28:02.492Z'
+        lastUpdateDateTime:
+          type: string
+          format: date-time
+          description: The time the resource has been last created
+          example: '2022-02-16T06:28:02.492Z'
+    CardRenewResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+    CardSuspendRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The card number masked
+          required:
+          - issuedDeviceIdentification
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+        statusReason:
+          type: string
+          description: |-
+            The reason why the action has performed,if not provided,default reason code is ISSUER_DECISION
+            Possible Values:
+            Card Lost,
+            Card Stolen,
+            Card Broken,
+            Fraud,
+            User Decision,
+            Issuer Decision
+          example: Issuer Decision
+    CardSuspendResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+    CardReplaceRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The id of the card masked
+          required:
+          - issuedDeviceIdentification
+        NewCardIdentifier:
+          $ref: '#/components/schemas/NewCardIdentifier'
+        encryptedData:
+          type: string
+          description: |-
+            The encrypted data is the encrypted Json, representation of the card information, The value is encrypted using the JWE encryption.
+            Json field parameter name:
+            Pan,
+            Expiry,
+            Auxiliary Pan,
+            Auxiliary Expiry
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+        statusReason:
+          type: string
+          description: |-
+            The reason why the action has performed,if not provided,default reason code is ISSUER_DECISION
+            Possible Values:
+            Issuer Decision,
+            Card Expired,
+            Card Lost,
+            Card Stolen,
+            Card Broken,
+            Fraud,
+            Card Not Received,
+          example: Issuer Decision
+      required:
+      - actionReason
+      - statusReason
+    NewCardIdentifier:
+      type: object
+      description: Type issued device admin
+      properties:
+        issuedDeviceIdentificationType:
+          type: string
+          description: Type of the card identification
+        issuedDeviceIdentification:
+          type: string
+          maxLength: 48
+          description: Unique identifier of the new card. Provided in case the card is in REPLACED state
+        issuedDeviceIdentificationMasked:
+          type: string
+          description: The id of the card masked
+    CardReplaceResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+        NewCardIdentifier:
+          type: object
+          description: Type is issued device admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The id of the card masked
+    CardResumeRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The card number masked
+          required:
+          - issuedDeviceIdentification
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+        statusReason:
+          type: string
+          description: |-
+            The reason why the action has performed,if not provided,default reason code is ISSUER_DECISION
+            Possible Values:
+            Issuer Decision,
+            User Decision,
+            Card Found
+          example: Issuer Decision
+    CardResumeResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+    GetCardCredentialsRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card id
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The id of the card masked
+          required:
+          - issuedDeviceIdentification
+    GetCardCredentialsResponse:
+      type: object
+      properties:
+        encryptedData:
+          type: string
+          description: |-
+            The encrypted data is the encrypted json representation of the card information. This value is encrypted using the JWE encryption
+            Pan- Mandatory
+            expiry- Mandatory
+            name - Optional
+            CVV- Mandatory
+    VerifyCardCredentialsRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: The type is issued device admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: Unique Identifier of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: Unique Identifier of the card masked
+        encryptedData:
+          type: string
+          description: |-
+            The encrypted data is the encrypted json representation of the card information. This value is encrypted using the JWE encryption
+            Pan- Mandatory
+            expiry- Mandatory
+            CVV- Mandatory
+      required:
+      - encryptedData
+    VerifyCardCredentialsResponse:
+      type: object
+      properties:
+        CardIdentifier:
+          type: object
+          description: The type is issued device admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              description: Unique Identifier of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: Unique Identifier of the card masked
+    CardDeleteRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: Type of the card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The id of the card masked
+          required:
+          - issuedDeviceIdentification
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: customer was contacted on June 28
+        statusReason:
+          type: string
+          description: |-
+            The reason why the action has performed,if not provided,default reason code is ISSUER_DECISION
+            Possible Values:
+            Issuer Decision,
+            Card Lost,
+            Card Stolen,
+            Card Broken,
+            Fraud,
+            Card Not Received,
+            Closed Account,
+            Closed Card
+          example: Issuer Decision
+    CardDeleteResponse:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          description: Unique Identifier of the operation
+    GetCardDetailsRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: it specifies the type of identifier
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: Identifier representing the issued device.
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: Card Number masked
+          required:
+          - issuedDeviceIdentification
+    GetCardDetailsResponse:
+      type: object
+      properties:
+        PartyIdentifier:
+          type: object
+          description: Information used to identify the customer associated with the issued device.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Possible Values:
+                Customer Identification
+            partyIdentification:
+              type: string
+              description: Unique identifier of the consumer
+            partyIdentificationMasked:
+              type: string
+              description: A masked version of the party identification value displayed for privacy and security purposes.
+        Card:
+          $ref: '#/components/schemas/Card'
+        NewCard:
+          $ref: '#/components/schemas/NewCard'
+        cardProductIdentification:
+          type: string
+          description: Unique identifier of the type of card
+        status:
+          type: string
+          description: |-
+            The state of the card
+            Possible Values:
+            Active,
+            Inactive,
+            Suspended,
+            Deleted,
+            Replaced
+          example: Active
+        statusReason:
+          type: string
+          description: |-
+            Reason associated to the state
+            Possible Values:
+            Closed Account,
+            Closed Card,
+            Card Lost,
+            Card Found,
+            Card Stolen,
+            Card Broken,
+            Card Not Received,
+            Fraud,
+            User_Decision,
+            Issuer_Decision,
+            CVV2_Locked,
+            Expiry Date Locked,
+            Pin Locked
+          example: Closed Card
+        ongoingServicingEvent:
+          type: string
+          description: |-
+            Possible Values:
+            None,
+            Renewal
+          example: Renewal
+        AccountList:
+          type: array
+          items:
+            type: object
+            description: |-
+              This represent the list of account the card will be attached to.
+              The list is used for the posting
+            properties:
+              accountDefaultFlag:
+                type: boolean
+                description: True if the account is the default consumer account
+                example: 'True'
+              AccountIdentifier:
+                $ref: '#/components/schemas/AccountIdentifier'
+              accountCurrencyCode:
+                type: string
+                description: Currency Code
+                example: PHP
+          description: |-
+            This represent the list of account the card will be attached to.
+            The list is used for the posting
+        Token:
+          type: array
+          items:
+            type: object
+            description: "List of digital cards associated to the card, \nType is Token assignment"
+            properties:
+              tokenIdentificationCode:
+                type: string
+                description: Unique identifier of the digital card
+              tokenType:
+                type: string
+                description: Type of token
+              tokenStatus:
+                type: string
+                description: |-
+                  The state of the digital card(Token)
+                  Possible Values:
+                  Active,
+                  Inactive,
+                  Deleted,
+                  Deployment Ongoing,
+                  Pending Activation
+                example: Active
+              tokenRequestColour:
+                type: string
+                description: |-
+                  Wallet/Digital Card requestor colour recommended during the card tokenization request
+                  Possible Values:
+                  Not Applicable,
+                  Green,
+                  Yellow,
+                  Orange,
+                  Red
+                example: Green
+          description: "List of digital cards associated to the card, \nType is Token assignment"
+    Card:
+      type: object
+      description: the type object is IssuedDevice
+      properties:
+        IssuedDevice:
+          type: object
+          description: IT specifies the issued device details
+          properties:
+            IssuedDeviceIdentifier:
+              $ref: '#/components/schemas/IssuedDeviceIdentifier'
+            scheme:
+              type: string
+              description: The card scheme
+              example: VISA
+            auxiliaryScheme:
+              type: string
+              description: The card auxiliary scheme
+              example: DANKORT
+            pANSuffix:
+              type: string
+              description: Last 4 digits of the PAN
+              example: '1234'
+            deviceValidToDate:
+              type: string
+              format: date
+              description: Expiry date of the card in MMYY format
+              example: '1024'
+            revisedDeviceValidToDate:
+              type: string
+              format: date
+              description: New expiry date of the card in MMYY format.Provide in case of ongoing RENEWAL operation
+              example: '928'
+            auxiliaryValidToDate:
+              type: string
+              format: date
+              description: Expiry date of the card in MMYY format
+              example: '1024'
+            revisedAuxiliaryValidToDate:
+              type: string
+              format: date
+              description: New Expiry date of the card in MMYY format
+              example: '1024'
+            creationDateTime:
+              type: string
+              format: date-time
+              description: The time the resource has been created
+              example: '2022-02-16T06:28:02.492Z'
+            lastUpdateDateTime:
+              type: string
+              format: date-time
+              description: The time the resource has been last created
+              example: '2022-02-16T06:28:02.492Z'
+    NewCard:
+      type: object
+      description: the type object is IssuedDevice
+      properties:
+        IssuedDevice:
+          type: object
+          description: IT specifies the issued device details
+          properties:
+            IssuedDeviceIdentifier:
+              $ref: '#/components/schemas/IssuedDeviceIdentifier'
+            scheme:
+              type: string
+              description: The card scheme
+              example: VISA
+            auxiliaryScheme:
+              type: string
+              description: The card auxiliary scheme
+              example: DANKORT
+            pANSuffix:
+              type: string
+              description: Last 4 digits of the PAN
+              example: '1234'
+            deviceValidToDate:
+              type: string
+              format: date
+              description: Expiry date of the card in MMYY format
+              example: '1024'
+            revisedDeviceValidToDate:
+              type: string
+              format: date
+              description: New expiry date of the card in MMYY format.Provide in case of ongoing RENEWAL operation
+              example: '928'
+            auxiliaryValidToDate:
+              type: string
+              format: date
+              description: Expiry date of the card in MMYY format
+              example: '1024'
+            revisedAuxiliaryValidToDate:
+              type: string
+              format: date
+              description: New Expiry date of the card in MMYY format
+              example: '1024'
+            creationDateTime:
+              type: string
+              format: date-time
+              description: The time the resource has been created
+              example: '2022-02-16T06:28:02.492Z'
+            lastUpdateDateTime:
+              type: string
+              format: date-time
+              description: The time the resource has been last created
+              example: '2022-02-16T06:28:02.492Z'
+    CardGetServicingEventRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: The type of card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The id of the card masked
+          required:
+          - issuedDeviceIdentification
+        operationIdentification:
+          type: string
+          description: It specifies the operations id
+      required:
+      - operationIdentification
+    CardGetServicingEventResponse:
+      type: object
+      description: operations associated to the card Id
+      properties:
+        CardServicingSummary:
+          $ref: '#/components/schemas/CardServicingSummary'
+    IssuedDeviceServiceEventDetails:
+      type: object
+      description: |-
+        One of ACTIVATE operation
+        Container to hold detailed information of ACTIVATE operation
+        Possible Values:
+        Activate Operation,
+        Register,Suspend,Resume,Delete Operations,
+        Renew, Replace Operations,
+        D1 Pay Enrollment Operation,
+        Digitize Operation,
+        Pin Change Operation,
+        Pin Display Operation,
+        Produce Operation,
+        Push Operations,
+        Update Order Operation,
+        Verify Operation
+      properties:
+        sdkType:
+          type: string
+          description: |-
+            The type SDK which is used
+            Possible Values:
+            App,
+            None,
+            Web
+    CardServicingEventSummary:
+      type: object
+      description: Operation details related to a specific operationId
+      properties:
+        servicingEventHistoryIdentifier:
+          type: string
+          description: Unique identifier of the operation
+          example: IZnoxmANoRWWE5WnCIgeq2WZW5nQbIc6VKAPd7sKlcQp
+        servicingEventHistoryName:
+          type: string
+          description: |-
+            The operation type
+            Possible Values:
+            Activate,
+            Click To Pay Enrolment,
+            Click To Pay Update,
+            Click To Pay Optout,
+            Create,
+            Delete,
+            Digitize,
+            Display,
+            D1 Pay Enrolment,
+            Pin Change,
+            Pin Display,
+            Produce,
+            Push,
+            Register,
+            Renew,
+            Replace,
+            Resume,
+            Suspend,
+            Update Order,
+            Verify
+          example: Activate
+        eventHistoryItemStartDateTime:
+          type: string
+          format: date-time
+          description: The time the request has been processed
+          example: '2022-02-16T06:28:02.492Z'
+        eventHistoryItemEndDateTime:
+          type: string
+          format: date-time
+          description: The time the operation has been completed.This is an optional field and might not be returned for synchronous
+            operations
+          example: '2022-02-16T06:28:02.492Z'
+        RequestorDetails:
+          type: object
+          description: It specifies the requestor details
+          properties:
+            requestorType:
+              type: string
+              description: |-
+                Possible Values:
+                Issuer,
+                User,
+                TSP,
+                CCI,
+                D1
+              example: Issuer
+            requestorIdentification:
+              type: string
+              description: |-
+                Identifier of the principal who initiates the operation
+                consumerId if requestorType is USER
+                issuerId if requestorType is ISSUER
+                cci user id if requestorType is CCI
+                D1 if it's an operation automatically triggered by D1 (can be card suspended due to several authorisation with invalid cvv)
+        actionReason:
+          type: string
+          description: The reason why the action is performed
+          example: Customer was contacted on June 28
+        status:
+          type: string
+          description: "Status of the operation\nPossible Values:\nSuccessful, \nPending,\nFailed"
+          example: Successful
+        statusReason:
+          type: string
+          description: |-
+            Possible Values:
+            Closed Account,
+            Closed Card,
+            Card Expired,
+            Card Lost,
+            Card Found,
+            Card Stolen,
+            Card Broken,
+            Card Not Received,
+            Device Found,
+            Device Lost,
+            Device Stolen,
+            Fraud,
+            User_Decision,
+            Issuer_Decision,
+            CVV2_Locked,
+            Expiry Date Locked,
+            Pin Locked
+          example: Closed Account
+        IssuedDeviceServiceEventDetails:
+          $ref: '#/components/schemas/IssuedDeviceServiceEventDetails'
+        errorCode:
+          type: string
+          description: External Error code
+        error:
+          type: string
+          description: Human readable string representing the error, only present in case of operation failure
+    CardServicingSummary:
+      type: object
+      properties:
+        CardServicingEventSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/CardServicingEventSummary'
+          description: Operation details related to a specific operationId
+    CardGetAllServicingEventRequest:
+      type: object
+      properties:
+        userIdentification:
+          type: string
+          description: A unique identifier used to identify the user associated with the issued device.
+        correlationIdentification:
+          type: string
+          description: |-
+            Random identifier which can be used to correlate the different API calls done as part of a single use-case. This identifier will be the one primarily used for troubleshooting.
+            Warning: This identifier should not be derived from sensitive personal data, as its value will be logged in clear.
+            There is no strong guarantee of the uniqueness of this identifier, so please refrain from using it for other purpose than logging and troubleshooting.
+        PartyIdentifier:
+          type: object
+          description: A unique identifier used to distinguish the party within the organization or external systems.
+          properties:
+            partyIdentificationType:
+              type: string
+              description: |-
+                Party can be either person or organization
+                Possible Values:
+                IssuerIdentification
+            partyIdentification:
+              type: string
+              maxLength: 10
+              description: The id of the issuer
+              example: BDO_PH_001
+            partyIdentificationMasked:
+              type: string
+              description: The id of the issuer masked
+          required:
+          - partyIdentification
+        CardIdentifier:
+          type: object
+          description: Type is Issued Device Admin
+          properties:
+            issuedDeviceIdentificationType:
+              type: string
+              description: The type of card identification
+            issuedDeviceIdentification:
+              type: string
+              maxLength: 48
+              description: The id of the card
+            issuedDeviceIdentificationMasked:
+              type: string
+              description: The id of the card masked
+          required:
+          - issuedDeviceIdentification
+        OffSetPagination:
+          type: object
+          description: It specifies the pagination details
+          properties:
+            offset:
+              type: integer
+              description: 'Index from which the query starts returning operations( default value: 0)'
+            limit:
+              type: string
+              description: Upper limit of the query
+            keyword:
+              type: string
+              description: Value used for searching through named fields
+            startDate:
+              type: string
+              format: date-time
+              description: Value used as a filter for Start date (when involving date-time ranges)
+            endDate:
+              type: string
+              format: date-time
+              description: Value used as a filter for End date (when involving date-time ranges)
+            sortBy:
+              type: string
+              description: A field value from the SoR or backend system, typically dates or timestamps used for filtering
+                results.
+            page:
+              type: integer
+              description: |-
+                Value that indicates the page to be served.
+                Default value: 1
+            order:
+              type: string
+              description: Value used to determine the arrangement of data – either by most recent (descending) or oldest
+                (ascending)
+            includeTotal:
+              type: boolean
+              description: Value used used to include the totalCount field in the response metadata.
+    CardGetAllServicingEventResponse:
+      type: object
+      properties:
+        CardServicingSummary:
+          type: object
+          description: List of operations associated to the cardId.
+          properties:
+            CardServicingEventSummary:
+              type: array
+              items:
+                $ref: '#/components/schemas/CardServicingEventSummary'
+              description: Operation details related to a specific operationId
+            remainingOperations:
+              type: integer
+              description: Remaining operations
+            OffsetPaginationResponse:
+              type: object
+              description: It specifies the cursor response details
+              properties:
+                totalCount:
+                  type: integer
+                  description: Metadata value showing the total number of records from the request
+                appliedOffset:
+                  type: integer
+                  description: Metadata value showing number of skipped records
+                appliedLimit:
+                  type: integer
+                  description: Metadata value showing the record constraint
+                currentPage:
+                  type: integer
+                  description: Metadata value to indicate the requested page number.
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        title: The request was successful, but there is no content in the response
+        timestamp: '2026-07-14T08:16:49.876Z'
+        error:
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+  parameters:
+    Authorization:
+      name: Authorization
+      in: header
+      description: |-
+        Standard header. Types can be basic, bearer, apikey etc. Consumer will set the authorization type and credentials. Apigee will handle validation against an identity service for basic authorization, OAuthV2 for bearer token authorization and apikeys policy validation.
+        Examples:
+        Basic
+        Authorization: Basic bXl1c2VyOm15cGFzc3dvcmQxMjM=
+        Bearer
+        Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        ApiKey
+        Authorization: ApiKey 1a2b3c4d5e6f7g8h9i0j
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-Client-Request-Id:
+      name: x-BDO-Client-Request-Id
+      in: header
+      description: |-
+        The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+        Channel Reference Number. This should be unique value within the channel. Required if other Otel (open telemetry) field are not provided.
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-Client-Request-Trace-Id:
+      name: x-BDO-Client-Request-Trace-Id
+      in: header
+      description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single request\
+        \ or transaction as it flows through multiple services in a distributed system. (e.g. 5b8aa5a2d2c872e8321cf37308d69df2)\n\
+        Only Mandatory if Request Id is not provided"
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-Client-Request-Span-Id:
+      name: x-BDO-Client-Request-Span-Id
+      in: header
+      description: |-
+        Uniquely identifies a single span within a trace. A span represents one unit of work (e.g. HTTP Request, DB Query)
+        Only Mandatory if Request Id is not provided
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-API-Version:
+      name: x-BDO-API-Version
+      in: header
+      description: |-
+        Denotes the Major API Version.
+        Consuming application will set the version to invoke for their request.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    x-BDO-End-Consumer-IP:
+      name: x-BDO-End-Consumer-IP
+      in: header
+      description: Consuming application to pass the end-consumer (like bank operations terminal) IP Address.
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferable uuidv4) provided by the client for a specific HTTP request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: "The unique identifier for an entire trace in OpenTelemetry (OTEL). \nA trace represents a single request\
+        \ or transaction as it flows through multiple services in a distributed system."
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: "Uniquely identifies a single span within a trace. A span represents one unit of work \n(e.g.,HTTP Request,\
+        \ a database query). (e.g. 5fb397be34d26b51)"
+  responses:
+    BadRequest:
+      description: |-
+        Bad Request
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: |-
+        Unauthorized
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: |-
+        Forbidden
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: |-
+        Not Found
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: |-
+        Method Not Allowed
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: |-
+        Conflict
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: |-
+        Unprocessable Entity
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: |-
+        Too Many Requests
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: |-
+        Internal Server Error
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: |-
+        Bad Gateway
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: |-
+        Service Unavailable
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: |-
+        Gateway Timeout
+
+        Disclaimer: The error message is Apigee error only and not mapped to the System API error. Consumers should not rely on the exact error text as it may change depends on the format of the System API its calling.
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+security:
+- BasicAuth: []
+- BearerAuth: []
+- ApiKeyAuth: []
+- OAuth2:
+  - read
+  - write

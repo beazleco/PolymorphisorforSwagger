@@ -529,6 +529,143 @@ components:
     check("the grid still exposes cell values by row and column",
           grids[0].cell(1, 1).value == "data")
 
+    print("\nD12 — the showcase reads the format the run read")
+    # Until 6.6 the showcase re-read the workbook with the Level reader
+    # whatever the input format was, so for a field mapping document every
+    # sheet came back empty and the report listed no elements at all.
+    import polymorphize_generate as gen
+    import polymorphize_showcase as show
+    sample = os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), "samples",
+        "issueddevice_fieldmapping_v1.0.7.xlsx")
+    if os.path.exists(sample):
+        run = gen.run(sample, tmp, write=False, log=lambda *_a: None)
+        check("the run carries the results it read", bool(run.results),
+              len(run.results))
+        views = show.build_views(run)
+        rows = sum(len(c.rows) for v in views for m in v.messages
+                   for c in m.classes)
+        check("the showcase sees the elements of a field mapping workbook",
+              rows > 200, rows)
+        check("and counts published ones among them",
+              sum(v.counts.get(show.PUBLISHED, 0) for v in views) > 0)
+
+        print("\nD13 — an operation that fails is still carried on the export")
+        # Losing a sheet on the round trip would be worse than any finding it
+        # carries, so a sheet that generated nothing is reproduced verbatim
+        # and flagged rather than dropped.
+        import polymorphize_export as expmod
+        import polymorphize_mapping as mapfmt
+        broken = openpyxl.load_workbook(sample)
+        ws = broken["Card Create"]
+        hit = None
+        for row in ws.iter_rows(min_row=10, max_row=200, max_col=1):
+            if str(row[0].value or "").strip() == "Response Body":
+                hit = row[0]
+                break
+        if hit is not None:
+            hit.value = "Response Footer"          # no Response Body section
+            broken_path = os.path.join(tmp, "broken.xlsx")
+            broken.save(broken_path)
+            run2 = gen.run(broken_path, tmp, write=False, log=lambda *_a: None)
+            failed = [s.sheet for s in run2.failed]
+            check("the edited sheet fails", "Card Create" in failed, failed)
+            export2 = os.path.join(tmp, "broken_export.xlsx")
+            expmod.write(run2, export2)
+            back = openpyxl.load_workbook(export2, data_only=True)
+            check("the failed sheet is still in the export",
+                  "Card Create" in back.sheetnames, back.sheetnames[:4])
+            if "Card Create" in back.sheetnames:
+                cells = [tuple(r) for r in
+                         back["Card Create"].iter_rows(values_only=True)]
+                statuses = [r[9] for r in cells if len(r) > 9 and r[9]]
+                check("and is marked as having generated nothing",
+                      expmod.NOT_GENERATED in statuses, statuses[:3])
+                paths = {r[1] for r in cells if r and r[0] == "Body"}
+                check("with its rows carried, not summarised",
+                      len(paths) > 10, len(paths))
+            back.close()
+            reread = {r.sheet for r in mapfmt.read_workbook(export2)}
+            check("so nothing is lost from the workbook on the round trip",
+                  "Card Create" in reread)
+        broken.close()
+
+    print("\nD14 — a correction made in the export reaches the next specification")
+    # The loop the export exists for: an element the tool dropped is flagged,
+    # the analyst names the SOR field in the exported workbook, and the next
+    # run publishes it. If this does not hold the export is documentation
+    # only and the iteration claim is false.
+    if os.path.exists(sample):
+        import polymorphize_export as expmod
+        run3 = gen.run(sample, tmp, write=False, log=lambda *_a: None)
+        first = os.path.join(tmp, "loop1.xlsx")
+        expmod.write(run3, first)
+
+        wb3 = openpyxl.load_workbook(first)
+        target = None
+        for name in wb3.sheetnames:
+            if name == expmod.PROVENANCE_SHEET:
+                continue
+            ws3 = wb3[name]
+            for row in ws3.iter_rows(min_row=expmod.HEADER_ROW + 1):
+                cells = list(row)
+                if len(cells) < 10:
+                    continue
+                if str(cells[9].value or "") == "No SOR field" and \
+                        str(cells[3].value or "").lower().startswith(("string",
+                                                                      "str")):
+                    target = (name, cells[1].value, cells[4])
+                    break
+            if target:
+                break
+        check("the export flags at least one unmapped element",
+              target is not None)
+        if target:
+            sheet_name, dotted, sor_cell = target
+            sor_cell.value = "correctedSorField"
+            fixed = os.path.join(tmp, "loop2.xlsx")
+            wb3.save(fixed)
+            wb3.close()
+
+            def leaf_paths(path, want_sheet):
+                run = gen.run(path, tmp, write=False, log=lambda *_a: None)
+                spec = next(s for s in run.specs if s.sheet == want_sheet)
+                out = set()
+
+                def walk(node, at, seen):
+                    if not isinstance(node, dict):
+                        return
+                    ref = node.get("$ref")
+                    if ref:
+                        nm = ref.rsplit("/", 1)[-1]
+                        if nm not in seen:
+                            walk(spec.document["components"]["schemas"]
+                                 .get(nm, {}), at, seen | {nm})
+                        return
+                    for kw in ("allOf", "oneOf", "anyOf"):
+                        for sub in node.get(kw) or []:
+                            walk(sub, at, seen)
+                    if isinstance(node.get("items"), dict):
+                        walk(node["items"], at, seen)
+                    for nm, sub in (node.get("properties") or {}).items():
+                        out.add(nm)
+                        walk(sub, at + (nm,), seen)
+                for schema_name, body in (
+                        spec.document.get("components", {})
+                        .get("schemas", {}).items()):
+                    walk(body, (), {schema_name})
+                return out
+
+            leaf = str(dotted).split(".")[-1]
+            before_leaves = leaf_paths(first, sheet_name)
+            after_leaves = leaf_paths(fixed, sheet_name)
+            check("the flagged element was absent from the interface",
+                  leaf not in before_leaves, leaf)
+            check("and naming the SOR field in the export publishes it",
+                  leaf in after_leaves, leaf)
+        else:
+            wb3.close()
+
     print(f"\n{len(PASSED)} passed, {len(FAILED)} failed")
     if FAILED:
         for f in FAILED:

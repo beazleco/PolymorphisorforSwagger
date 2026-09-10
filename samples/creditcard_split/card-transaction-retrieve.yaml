@@ -3,8 +3,8 @@ info:
   title: Credit card Card Transaction_Retrieve
   version: 1.0.0
   description: This API will be used to retrieve details about a card account transaction
-  x-generated-by: SOR Polymorphizer 6.4
-  x-generated-at: '2026-09-09T02:20:53+00:00'
+  x-generated-by: SOR Polymorphizer 6.6
+  x-generated-at: '2026-09-10T00:00:08+00:00'
   x-source-sheet: Card Transaction_Retrieve
   x-polymorphism-pattern: P2
   x-bian-service-domain: Credit card
@@ -22,19 +22,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CardTransactionResponse'
+          headers:
+            x-BDO-Client-Request-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Id'
+            x-BDO-Client-Request-Trace-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+            x-BDO-Client-Request-Span-Id:
+              $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '502':
+          $ref: '#/components/responses/BadGateway'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+        '504':
+          $ref: '#/components/responses/GatewayTimeout'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CardTransactionRequest'
-      description: This API will be used to retrieve details about a card account transaction
+      description: '**<u>API Lifecycle Status - Design</u>**'
+      x-api-lifecycle-status: Design
+      x-use-case: This API will be used to retrieve details about a card account transaction
       x-bian-behaviour-qualifier: Card Transaction
       x-bian-equivalent-endpoint: /CreditCard/CardTransaction/Retrieve
       x-sor-endpoints: 'GET: v1/account/search/trans, GET: v1/account/search/auth, GET: /v1/account/search/mps'
 components:
   schemas:
-    CardTransactionRequestBase:
+    CardTransactionRequest__Base:
       type: object
       properties:
         requestVariant:
@@ -120,9 +153,12 @@ components:
       required:
       - requestVariant
       description: Attributes common to every variant of CardTransactionRequest.
-    CardTransactionRequestForTransactionDetails:
+      x-class: CardTransactionRequest
+      x-context: Base
+      x-qualified-name: CardTransactionRequest~Base
+    CardTransactionRequest__TransactionDetails:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - $ref: '#/components/schemas/CardTransactionRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -151,9 +187,12 @@ components:
       x-sor-endpoint: v1/account/search/trans
       x-variant: '01'
       x-variant-name: Transaction Details
-    CardTransactionRequestForAuthorizationTransactions:
+      x-class: CardTransactionRequest
+      x-context: TransactionDetails
+      x-qualified-name: CardTransactionRequest~TransactionDetails
+    CardTransactionRequest__AuthorizationTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - $ref: '#/components/schemas/CardTransactionRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -171,9 +210,12 @@ components:
       x-sor-endpoint: v1/account/search/auth
       x-variant: '02'
       x-variant-name: Authorization Transactions
-    CardTransactionRequestForInstallmentTransactions:
+      x-class: CardTransactionRequest
+      x-context: AuthorizationTransactions
+      x-qualified-name: CardTransactionRequest~AuthorizationTransactions
+    CardTransactionRequest__InstallmentTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionRequestBase'
+      - $ref: '#/components/schemas/CardTransactionRequest__Base'
       - type: object
         properties:
           requestVariant:
@@ -193,18 +235,23 @@ components:
       x-sor-endpoint: /v1/account/search/mps
       x-variant: '03'
       x-variant-name: Installment Transactions
+      x-class: CardTransactionRequest
+      x-context: InstallmentTransactions
+      x-qualified-name: CardTransactionRequest~InstallmentTransactions
     CardTransactionRequest:
       oneOf:
-      - $ref: '#/components/schemas/CardTransactionRequestForTransactionDetails'
-      - $ref: '#/components/schemas/CardTransactionRequestForAuthorizationTransactions'
-      - $ref: '#/components/schemas/CardTransactionRequestForInstallmentTransactions'
+      - $ref: '#/components/schemas/CardTransactionRequest__TransactionDetails'
+      - $ref: '#/components/schemas/CardTransactionRequest__AuthorizationTransactions'
+      - $ref: '#/components/schemas/CardTransactionRequest__InstallmentTransactions'
       discriminator:
         propertyName: requestVariant
         mapping:
-          '01': '#/components/schemas/CardTransactionRequestForTransactionDetails'
-          '02': '#/components/schemas/CardTransactionRequestForAuthorizationTransactions'
-          '03': '#/components/schemas/CardTransactionRequestForInstallmentTransactions'
-    CardTransactionResponseBase:
+          '01': '#/components/schemas/CardTransactionRequest__TransactionDetails'
+          '02': '#/components/schemas/CardTransactionRequest__AuthorizationTransactions'
+          '03': '#/components/schemas/CardTransactionRequest__InstallmentTransactions'
+      x-class: CardTransactionRequest
+      x-qualified-name: CardTransactionRequest
+    CardTransactionResponse__Base:
       type: object
       properties:
         AccountTransaction:
@@ -310,9 +357,12 @@ components:
             v1/account/search/auth: sequenceIndex
             /v1/account/search/mps: sequenceIndex
       description: Attributes common to every variant of CardTransactionResponse.
-    CardTransactionResponseForTransactionDetails:
+      x-class: CardTransactionResponse
+      x-context: Base
+      x-qualified-name: CardTransactionResponse~Base
+    CardTransactionResponse__TransactionDetails:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - $ref: '#/components/schemas/CardTransactionResponse__Base'
       - type: object
         properties:
           AccountTransaction:
@@ -446,9 +496,12 @@ components:
       x-sor-endpoint: v1/account/search/trans
       x-variant: '01'
       x-variant-name: Transaction Details
-    CardTransactionResponseForAuthorizationTransactions:
+      x-class: CardTransactionResponse
+      x-context: TransactionDetails
+      x-qualified-name: CardTransactionResponse~TransactionDetails
+    CardTransactionResponse__AuthorizationTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - $ref: '#/components/schemas/CardTransactionResponse__Base'
       - type: object
         properties:
           AccountTransaction:
@@ -530,9 +583,12 @@ components:
       x-sor-endpoint: v1/account/search/auth
       x-variant: '02'
       x-variant-name: Authorization Transactions
-    CardTransactionResponseForInstallmentTransactions:
+      x-class: CardTransactionResponse
+      x-context: AuthorizationTransactions
+      x-qualified-name: CardTransactionResponse~AuthorizationTransactions
+    CardTransactionResponse__InstallmentTransactions:
       allOf:
-      - $ref: '#/components/schemas/CardTransactionResponseBase'
+      - $ref: '#/components/schemas/CardTransactionResponse__Base'
       - type: object
         properties:
           AccountTransaction:
@@ -614,12 +670,266 @@ components:
       x-sor-endpoint: /v1/account/search/mps
       x-variant: '03'
       x-variant-name: Installment Transactions
+      x-class: CardTransactionResponse
+      x-context: InstallmentTransactions
+      x-qualified-name: CardTransactionResponse~InstallmentTransactions
     CardTransactionResponse:
       oneOf:
-      - $ref: '#/components/schemas/CardTransactionResponseForTransactionDetails'
-      - $ref: '#/components/schemas/CardTransactionResponseForAuthorizationTransactions'
-      - $ref: '#/components/schemas/CardTransactionResponseForInstallmentTransactions'
+      - $ref: '#/components/schemas/CardTransactionResponse__TransactionDetails'
+      - $ref: '#/components/schemas/CardTransactionResponse__AuthorizationTransactions'
+      - $ref: '#/components/schemas/CardTransactionResponse__InstallmentTransactions'
       x-selected-by: requestVariant
       description: The subtype returned follows the requestVariant sent on the request. OpenAPI 
         cannot express a response discriminator that depends on a request property, so the 
         dependency is recorded here.
+      x-class: CardTransactionResponse
+      x-qualified-name: CardTransactionResponse
+    ErrorResponse:
+      description: An array of detail error codes, and messages, and URLs to documentation to help 
+        remediation.
+      type: object
+      properties:
+        status:
+          type: string
+          description: The HTTP status code of the response
+        title:
+          type: string
+          description: A short, human-readable summary of the error.
+        timestamp:
+          type: string
+          format: date-time
+          description: A standardized date and time format defined by the ISO 8601 standard
+        errors:
+          type: array
+          description: Array of errors within an object to provide additional information.
+          items:
+            type: object
+            properties:
+              realm:
+                type: string
+                description: Indicates the architectural layer or system component where the error 
+                  originated.
+              code:
+                type: string
+                description: Represents a unique identifier for the specific error condition.
+              errordesc:
+                type: string
+                description: Provides a short, human-readable description of the error associated 
+                  with the code.
+              detail:
+                type: string
+                description: A more comprehensive explanation of the error, including what went 
+                  wrong and how to fix it.
+              instance:
+                type: string
+                description: A URI that identifies the specific occurrence of the problem.
+      example:
+        status: '400'
+        title: Bad Request
+        timestamp: '2026-07-14T08:16:49.876Z'
+        errors:
+        - realm: Apigee
+          code: '001'
+          errordesc: QUERY_PARAMETER_FAILURE
+          detail: The input query parameters do not match the open api spec
+          instance: /v1/<resource>/<action>
+      x-class: ErrorResponse
+      x-qualified-name: ErrorResponse
+  headers:
+    x-BDO-Client-Request-Id:
+      schema:
+        type: string
+      description: The unique id (preferable uuidv4) provided by the client for a specific HTTP 
+        request.
+    x-BDO-Client-Request-Trace-Id:
+      schema:
+        type: string
+      description: The unique identifier for an entire trace in OpenTelemetry (OTEL). A trace 
+        represents a single request or transaction as it flows through multiple services in a 
+        distributed system.
+    x-BDO-Client-Request-Span-Id:
+      schema:
+        type: string
+      description: Uniquely identifies a single span within a trace. A span represents one unit of 
+        work, for example an HTTP request or a database query.
+  responses:
+    BadRequest:
+      description: "Bad Request\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: "Unauthorized\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: "Forbidden\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: "Not Found\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    MethodNotAllowed:
+      description: "Method Not Allowed\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: "Conflict\n\nDisclaimer: The error message is Apigee error only and not mapped to the
+        System API error. Consumers should not rely on the exact error text as it may change depends on
+        the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    UnprocessableEntity:
+      description: "Unprocessable Entity\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: "Too Many Requests\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: "Internal Server Error\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadGateway:
+      description: "Bad Gateway\n\nDisclaimer: The error message is Apigee error only and not mapped to
+        the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServiceUnavailable:
+      description: "Service Unavailable\n\nDisclaimer: The error message is Apigee error only and not
+        mapped to the System API error. Consumers should not rely on the exact error text as it may change
+        depends on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    GatewayTimeout:
+      description: "Gateway Timeout\n\nDisclaimer: The error message is Apigee error only and not mapped
+        to the System API error. Consumers should not rely on the exact error text as it may change depends
+        on the format of the System API its calling."
+      headers:
+        x-BDO-Client-Request-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Id'
+        x-BDO-Client-Request-Trace-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Trace-Id'
+        x-BDO-Client-Request-Span-Id:
+          $ref: '#/components/headers/x-BDO-Client-Request-Span-Id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

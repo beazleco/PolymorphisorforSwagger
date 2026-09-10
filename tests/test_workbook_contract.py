@@ -26,12 +26,21 @@ W14  the reference credit card workbook, end to end
 W15  method and path derivation
 W16  the merged document: hoisting, cross-operation profiling, collisions
 W17  drag and drop path parsing
+W18  classifying the input format
+W19  reading the field mapping format
+W20  the Apigee error set
+W21  class and context in schema names
+W22  the API lifecycle status on every operation
+W23  the field mapping export: shape, difference columns, provenance
+W24  the round trip: export, re-import, and export again
 """
 
 from __future__ import annotations
 
 import os
 import sys
+import re
+import json
 import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -562,7 +571,10 @@ def w8():
     spec = gen.generate_sheet(r)
     eq("the pattern is P1", spec.pattern, "P1")
     schemas = spec.document["components"]["schemas"]
-    eq("two schemas, one per message", len(schemas), 2)
+    eq("two message schemas plus the shared error schema",
+       sorted(n for n in schemas if n != "ErrorResponse"),
+       ["ThingRequest", "ThingResponse"])
+    check("the Apigee error schema is present", "ErrorResponse" in schemas)
     check("there is no oneOf",
           not any("oneOf" in s for s in schemas.values()))
     check("there is no allOf",
@@ -604,18 +616,18 @@ def w9():
     s = spec.document["components"]["schemas"]
 
     eq("the base holds only the common attributes",
-       sorted(s["MultiRequestBase"]["properties"]),
+       sorted(s["MultiRequest__Base"]["properties"]),
        sorted([wbk.VARIANT_PROPERTY, "common"]))
     check("the base requires the discriminator property",
-          wbk.VARIANT_PROPERTY in s["MultiRequestBase"].get("required", []))
+          wbk.VARIANT_PROPERTY in s["MultiRequest__Base"].get("required", []))
 
-    for name, own, other in (("MultiRequestForAlpha", "onlyAlpha", "onlyBeta"),
-                             ("MultiRequestForBeta", "onlyBeta", "onlyAlpha")):
+    for name, own, other in (("MultiRequest__Alpha", "onlyAlpha", "onlyBeta"),
+                             ("MultiRequest__Beta", "onlyBeta", "onlyAlpha")):
         check("%s exists" % name, name in s, sorted(s))
         entry = s[name]
         eq("%s inherits through allOf" % name,
            entry["allOf"][0]["$ref"],
-           "#/components/schemas/MultiRequestBase")
+           "#/components/schemas/MultiRequest__Base")
         delta = entry["allOf"][1]["properties"]
         check("%s declares %s" % (name, own), own in delta, sorted(delta))
         check("%s does not declare %s" % (name, other), other not in delta,
@@ -634,7 +646,7 @@ def w9():
        sorted(wrapper["discriminator"]["mapping"]), ["01", "02"])
     eq("01 maps to the alpha schema",
        wrapper["discriminator"]["mapping"]["01"],
-       "#/components/schemas/MultiRequestForAlpha")
+       "#/components/schemas/MultiRequest__Alpha")
 
     res = s["MultiResponse"]
     eq("the response is also a oneOf", len(res["oneOf"]), 2)
@@ -643,11 +655,11 @@ def w9():
        res.get("x-selected-by"), wbk.VARIANT_PROPERTY)
 
     check("the endpoint is recorded on each variant",
-          s["MultiRequestForAlpha"]["x-sor-endpoint"] == "/v1/alpha")
+          s["MultiRequest__Alpha"]["x-sor-endpoint"] == "/v1/alpha")
 
     # The tag is never dropped by pruning even though no SOR column names it.
     check("the tag survives pruning despite having no SOR field",
-          wbk.VARIANT_PROPERTY in s["MultiRequestBase"]["properties"])
+          wbk.VARIANT_PROPERTY in s["MultiRequest__Base"]["properties"])
 
     # Mismatched counts are reported.
     bad_req = list(P2_REQ)
@@ -694,8 +706,8 @@ def w10():
     check("and says why", "identifier" in wrapper.get("description", ""),
           wrapper.get("description"))
     eq("the variants still inherit through allOf",
-       s["MultiRequestForAlpha"]["allOf"][0]["$ref"],
-       "#/components/schemas/MultiRequestBase")
+       s["MultiRequest__Alpha"]["allOf"][0]["$ref"],
+       "#/components/schemas/MultiRequest__Base")
 
 
 # --------------------------------------------------------------------------- #
@@ -782,7 +794,11 @@ def w12():
           "no payload was published" in f.what, f.what)
     responses = spec.document["paths"][spec.path][spec.method]["responses"]
     eq("the response is 204 No Content rather than an empty object",
-       sorted(responses), ["204"])
+       [c for c in sorted(responses) if c.startswith("2")], ["204"])
+    eq("and the Apigee error set is attached alongside it",
+       [c for c in sorted(responses) if not c.startswith("2")],
+       ["400", "401", "403", "404", "405", "409", "422", "429",
+        "500", "502", "503", "504"])
     check("and nothing empty was published",
           gen.empty_schemas(spec.document) == [])
 
@@ -924,7 +940,8 @@ def w14():
     check("the unmapped response is now a warning on a generated endpoint",
           any(f.code == "E001" and f.severity == "warning" for f in rsa.findings))
     eq("and that endpoint returns 204",
-       sorted(rsa.document["paths"][rsa.path][rsa.method]["responses"]), ["204"])
+       [c for c in sorted(rsa.document["paths"][rsa.path][rsa.method]["responses"])
+        if c.startswith("2")], ["204"])
 
     patterns = sorted(s.pattern for s in out.ok)
     eq("two endpoints are variant driven",
@@ -934,16 +951,30 @@ def w14():
     details = next(s for s in out.ok if s.sheet == "Card Details_Retrieve")
     s = details.document["components"]["schemas"]
     eq("Card Details has five request variants",
-       sum(1 for n in s if n.startswith("CreditCardAccountRetrieveRequestFor")), 5)
+       sum(1 for n in s
+           if n.startswith("CreditCardAccountRetrieveRequest__")
+           and not n.endswith("__Base")), 5)
     disc = s["CreditCardAccountRetrieveRequest"]["discriminator"]
     eq("its discriminator is on requestVariant", disc["propertyName"],
        wbk.VARIANT_PROPERTY)
     eq("with five codes mapped", len(disc["mapping"]), 5)
 
-    # The reduction that justifies the exercise.
-    base = s["CreditCardAccountRetrieveResponseBase"]["properties"]
-    check("the response base is much smaller than the union",
-          len(base) <= 2, len(base))
+    # The reduction that justifies the exercise. In split mode the response
+    # base exists per sheet; where the five variant responses share nothing at
+    # all there is no base, and that absence is correct rather than an
+    # omission, because an empty base would be an empty object.
+    base_name = "CreditCardAccountRetrieveResponse__Base"
+    if base_name in s:
+        base = s[base_name]["properties"]
+        check("the response base is much smaller than the union",
+              len(base) <= 2, len(base))
+    else:
+        shapes = [n for n in s
+                  if n.startswith("CreditCardAccountRetrieveResponse__")]
+        common = (set.intersection(*[set(s[n].get("properties") or {})
+                                     for n in shapes]) if shapes else set())
+        check("no response base, and the variants genuinely share nothing",
+              shapes and not common, sorted(common))
 
     for spec in out.ok:
         eq("%s carries no empty object" % spec.sheet,
@@ -1060,25 +1091,30 @@ def w16():
     # the plain name, because the plain name is what a consumer meets in
     # generated code and in rendered documentation. Reserving it for a base
     # that no property references left every visible name suffixed.
-    check("the shared core takes the Base suffix", "PartyBase" in s, sorted(s))
+    check("the shared core is Party__Base", "Party__Base" in s, sorted(s))
     eq("and holds only what both operations publish",
-       sorted(s["PartyBase"]["properties"]), ["partyId"])
+       sorted(s["Party__Base"]["properties"]), ["partyId"])
+    eq("its class and context are machine readable",
+       (s["Party__Base"]["x-class"], s["Party__Base"]["x-context"],
+        s["Party__Base"]["x-qualified-name"]),
+       ("Party", "Base", "Party~Base"))
     check("the plain name is a real, usable shape", "Party" in s, sorted(s))
     check("and is a subtype of the shared core",
-          s["Party"]["allOf"][0]["$ref"] == "#/components/schemas/PartyBase",
+          s["Party"]["allOf"][0]["$ref"] == "#/components/schemas/Party__Base",
           s["Party"].get("allOf"))
 
-    shapes = [n for n in s if n == "Party" or n.startswith("PartyFor")]
+    shapes = [n for n in s if n == "Party" or
+              (n.startswith("Party" + "__") and not n.endswith("__Base"))]
     eq("two shapes are published, one of them plainly named", len(shapes), 2)
     suffixed = [n for n in shapes if n != "Party"]
     eq("exactly one carries a suffix", len(suffixed), 1)
     check("and it names the operation it serves",
-          suffixed[0] in ("PartyForAlphaRetrieve", "PartyForBetaRetrieve"),
+          suffixed[0] in ("Party__AlphaRetrieve", "Party__BetaRetrieve"),
           suffixed)
 
     for name in shapes:
         eq("%s inherits from the shared core" % name,
-           s[name]["allOf"][0]["$ref"], "#/components/schemas/PartyBase")
+           s[name]["allOf"][0]["$ref"], "#/components/schemas/Party__Base")
         delta = s[name]["allOf"][1]["properties"]
         check("%s carries exactly one of the two differing attributes" % name,
               sorted(delta) in (["alphaOnly"], ["betaOnly"]), sorted(delta))
@@ -1097,7 +1133,7 @@ def w16():
        sorted(["#/components/schemas/Party",
                "#/components/schemas/" + suffixed[0]]))
     check("neither points at the shared core directly",
-          "#/components/schemas/PartyBase" not in pointed, pointed)
+          "#/components/schemas/Party__Base" not in pointed, pointed)
     # And whichever schema they point at, the property key is unchanged, which
     # is what keeps the wire identical.
     eq("the property key is the concept name on both",
@@ -1309,9 +1345,9 @@ def w16():
         _bases = {d10["components"]["schemas"][n]["allOf"][0]["$ref"].split("/")[-1]
                   for n in d10["components"]["schemas"]
                   if "allOf" in d10["components"]["schemas"][n]}
-        check("every intersection base is named with the Base suffix",
-              all(b.endswith("Base") for b in _bases), sorted(_bases))
-        _plain = {b[:-4] for b in _bases}
+        check("every intersection base is named <Class>__Base",
+              all(b.endswith("__Base") for b in _bases), sorted(_bases))
+        _plain = {b[:-len("__Base")] for b in _bases}
         check("and the plain name it gave up is a published shape",
               _plain <= set(d10["components"]["schemas"]),
               sorted(_plain - set(d10["components"]["schemas"])))
@@ -1387,12 +1423,494 @@ def w17():
     eq("nothing dropped", f(""), [])
 
 
+
+# --------------------------------------------------------------------------- #
+# W18 the format classifier
+# --------------------------------------------------------------------------- #
+
+FIELD_MAPPING = os.path.join(ROOT, "samples",
+                             "issueddevice_fieldmapping_v1.0.7.xlsx")
+
+
+def w18():
+    group("W18 — classifying the input format")
+    import polymorphize_classify as cls
+
+    lvl = cls.classify(CREDIT_CARD)
+    eq("the credit card workbook is the Level format", lvl.fmt, cls.LEVEL)
+    check("and it is readable", lvl.readable)
+    check("it does not ask for a specification to trim",
+          not lvl.needs_specification)
+
+    tpl = cls.classify(os.path.join(ROOT, "samples", "SOR_mapping_template.xlsx"))
+    eq("so is the template", tpl.fmt, cls.LEVEL)
+    check("and its support sheets are counted separately",
+          tpl.support_sheets >= 1, tpl.line())
+
+    if os.path.exists(FIELD_MAPPING):
+        fm = cls.classify(FIELD_MAPPING)
+        eq("the field mapping workbook is the mapping format", fm.fmt, cls.MAPPING)
+        check("its header is found on row 10, not in the first six",
+              all(v.header_row == 10 for v in fm.per_sheet), 
+              [v.header_row for v in fm.per_sheet])
+        check("and it asks for a specification to trim", fm.needs_specification)
+
+    # Neither format. This is the case that used to pass silently.
+    nothing = tmp("plain.xlsx")
+    build({"Sheet1": [["a", "b"], [1, 2]]}, nothing)
+    un = cls.classify(nothing)
+    eq("a workbook that is neither format is not recognised", un.fmt, cls.UNKNOWN)
+    check("and says why", "no Level columns" in un.line(), un.line())
+
+    # Fail soft rather than raise: these files are often open in Excel.
+    gone = cls.classify(os.path.join(ROOT, "no-such-file.xlsx"))
+    check("a missing file is reported, not raised", not gone.readable)
+    check("and the message says it cannot be read yet",
+          "Cannot read" in gone.line(), gone.line())
+
+    # The peek must stay bounded. An ordinary open of an 8.7 MB workbook takes
+    # about 76 seconds, which at a file field looks like a hang.
+    for label, path in (("credit card", CREDIT_CARD), ("mapping", FIELD_MAPPING)):
+        if not os.path.exists(path):
+            continue
+        c = cls.classify(path)
+        check("classifying the %s workbook stays under %.0fs (%.2fs)"
+              % (label, cls.PEEK_BUDGET, c.elapsed),
+              c.elapsed < cls.PEEK_BUDGET, c.elapsed)
+    sampled = cls.peek(CREDIT_CARD)
+    check("the peek reads at most PEEK_SHEETS sheets",
+          len(sampled) <= cls.PEEK_SHEETS, len(sampled))
+    check("and at most PEEK_ROWS rows of each",
+          all(len(g) <= cls.PEEK_ROWS for _t, g in sampled))
+
+
+# --------------------------------------------------------------------------- #
+# W18 the field mapping format
+# --------------------------------------------------------------------------- #
+
+
+def w19():
+    group("W19 — reading the field mapping format")
+    if not os.path.exists(FIELD_MAPPING):
+        check("the field mapping sample is present", False, FIELD_MAPPING)
+        return
+    import polymorphize_mapping as mapfmt
+
+    results = mapfmt.read_workbook(FIELD_MAPPING)
+    eq("every sheet reads", sorted({r.status for r in results}), ["ok"])
+    eq("twenty-two operation sheets", len(results), 22)
+
+    card = next(r for r in results if r.sheet == "Card Create")
+    eq("the banner is read from the rows above the header",
+       card.banner.get("service_domain"), "Issued Device Administration")
+    eq("including the method", card.banner.get("method"), "POST")
+    eq("and the SOR name, which the Level format has no cell for",
+       card.banner.get("sor_name"), "Thales")
+    eq("the SOR endpoint drops its method prefix",
+       card.endpoints, ["/v2/issuers/{issuerId}/cards"])
+
+    # The dotted path is the hierarchy.
+    root = card.request.root
+    eq("the top-level path segment names the schema", root.name,
+       "CardCreateRequest")
+    party = next(c for c in root.children if c.name == "PartyIdentifier")
+    eq("a two-segment path nests under its parent", party.json_type, "object")
+    check("and a three-segment path nests under that",
+          "partyIdentification" in [g.name for g in party.children],
+          [g.name for g in party.children])
+    eq("a length in the Schema column is read",
+       next(g.max_length for g in party.children
+            if g.name == "partyIdentification"), 64)
+    eq("Mandatory in the Usage column is read",
+       next(g.usage for g in party.children
+            if g.name == "partyIdentification"), wbk.USAGE_REQUIRED)
+    arr = next(c for c in root.children if c.name == "AccountList")
+    eq("an array is typed from the Schema column", arr.json_type, "array")
+
+    # Header rows are recognised and skipped, which is this format's version
+    # of the rule that only body sections are read.
+    check("header and parameter rows are skipped", card.ignored_rows > 0,
+          card.ignored_rows)
+    check("and the skipped sections are named",
+          any("Header" in lab for lab, _r in card.ignored_sections),
+          card.ignored_sections)
+
+    # N/A and an empty cell both mean unmapped.
+    mapped = [c for c in root.children if c.sor]
+    check("only rows naming an SOR field are mapped", 0 < len(mapped) < len(root.children),
+          (len(mapped), len(root.children)))
+
+    # A group declared with no members publishes nothing and says so.
+    details = next(r for r in results if r.sheet == "Token_Details")
+    check("a group declared with no members is reported as A006",
+          any(f.code == "A006" for f in details.findings),
+          [f.code for f in details.findings])
+
+    # The whole point: the tree is the same shape the Level reader produces, so
+    # the generator needs no knowledge of which format was read.
+    spec = gen.generate_sheet(card)
+    eq("the sheet generates", spec.status, "ok")
+    eq("with no empty schema", gen.empty_schemas(spec.document), [])
+    eq("and one path", len(spec.document["paths"]), 1)
+    check("at the proposed reusable endpoint",
+          spec.path.startswith("/issued-device-administration"), spec.path)
+
+
+# --------------------------------------------------------------------------- #
+# W18 the Apigee error set
+# --------------------------------------------------------------------------- #
+
+
+def w20():
+    group("W20 — the Apigee error set")
+    import polymorphize_errors as errs
+
+    eq("twelve errors are defined", len(errs.APIGEE_ERRORS), 12)
+    eq("and they are the codes the API COE specification carries",
+       errs.error_codes(),
+       ["400", "401", "403", "404", "405", "409", "422", "429",
+        "500", "502", "503", "504"])
+
+    r = read_one(one_sheet_workbook(tmp("a.xlsx")))
+    spec = gen.generate_sheet(r)
+    d = spec.document
+    op = d["paths"][spec.path][spec.method]
+
+    for name, code, _reason in errs.APIGEE_ERRORS:
+        eq("%s is attached as %s" % (name, code),
+           op["responses"][code],
+           {"$ref": "#/components/responses/%s" % name})
+    eq("the twelve are shared components, not inlined",
+       sorted(d["components"]["responses"]),
+       sorted(n for n, _c, _r in errs.APIGEE_ERRORS))
+    check("each carries the Apigee disclaimer verbatim",
+          all(errs.DISCLAIMER in v["description"]
+              for v in d["components"]["responses"].values()))
+    eq("the error schema is published once",
+       errs.ERROR_SCHEMA_NAME in d["components"]["schemas"], True)
+
+    # errors is an array in the schema, so it must be an array in the example.
+    schema = d["components"]["schemas"][errs.ERROR_SCHEMA_NAME]
+    eq("errors is declared an array", schema["properties"]["errors"]["type"],
+       "array")
+    check("and the example provides an array, unlike the source sample",
+          isinstance(schema["example"]["errors"], list), schema["example"])
+    eq("the example carries every declared property",
+       sorted(schema["example"]), sorted(schema["properties"]))
+    eq("and its member carries every declared member property",
+       sorted(schema["example"]["errors"][0]),
+       sorted(schema["properties"]["errors"]["items"]["properties"]))
+
+    # The three headers are a house convention, not an error convention.
+    eq("three standard headers are published",
+       sorted(d["components"]["headers"]), sorted(errs.STANDARD_HEADERS))
+    for code, response in op["responses"].items():
+        if "$ref" in response:
+            continue
+        eq("the %s response carries the standard headers too" % code,
+           sorted(response.get("headers", {})), sorted(errs.STANDARD_HEADERS))
+
+    # Attaching twice must not double anything.
+    before = json.dumps(d, sort_keys=True, default=str)
+    errs.attach(d)
+    eq("attaching the set twice changes nothing",
+       json.dumps(d, sort_keys=True, default=str), before)
+
+
+# --------------------------------------------------------------------------- #
+# W18 class and context in a component name
+# --------------------------------------------------------------------------- #
+
+
+def w21():
+    group("W21 — separating a class from its context")
+    import polymorphize_merge as mrg
+
+    eq("the separator is legal in an OpenAPI component key", mrg.SEP, "__")
+    eq("and the tilde a following process asked for is a value, not a key",
+       mrg.QUALIFIED_SEP, "~")
+    eq("a qualified name joins the two", mrg.qualified("Account", "Retrieve"),
+       "Account__Retrieve")
+    eq("an unqualified name is left alone", mrg.qualified("Account"), "Account")
+    eq("and it splits back", mrg.split_qualified("Account__Retrieve"),
+       ("Account", "Retrieve"))
+    eq("an unqualified name splits to no context",
+       mrg.split_qualified("Account"), ("Account", None))
+
+    stamped = mrg.identify({}, "Account__CardDetailsRetrieve")
+    eq("x-class carries the class", stamped["x-class"], "Account")
+    eq("x-context carries the context", stamped["x-context"],
+       "CardDetailsRetrieve")
+    eq("x-qualified-name carries the tilde form",
+       stamped["x-qualified-name"], "Account~CardDetailsRetrieve")
+    plain = mrg.identify({}, "Account")
+    check("an unqualified schema has no x-context", "x-context" not in plain)
+    eq("and its qualified name is just the class",
+       plain["x-qualified-name"], "Account")
+
+    if not os.path.exists(CREDIT_CARD):
+        return
+    m = _merge(CREDIT_CARD)
+    S = m.document["components"]["schemas"]
+    eq("no component key contains a tilde",
+       [n for n in S if "~" in n], [])
+    bad = [n for n in S if not re.fullmatch(r"[a-zA-Z0-9.\-_]+", n)]
+    eq("every component key is inside the OpenAPI character set", bad, [])
+    check("every schema is identified", all("x-class" in v for v in S.values()),
+          [n for n, v in S.items() if "x-class" not in v][:4])
+    qualified = {n: v for n, v in S.items() if mrg.SEP in n}
+    check("qualified names exist to check", bool(qualified))
+    for n, v in qualified.items():
+        cls, ctx = mrg.split_qualified(n)
+        eq("%s splits to its own class" % n, v["x-class"], cls)
+        eq("%s splits to its own context" % n, v["x-context"], ctx)
+        eq("%s carries the tilde form" % n, v["x-qualified-name"],
+           "%s~%s" % (cls, ctx))
+    bases = {v["allOf"][0]["$ref"].split("/")[-1]
+             for v in S.values() if "allOf" in v}
+    check("every intersection base is <Class>__Base",
+          all(b.endswith(mrg.SEP + "Base") for b in bases), sorted(bases))
+
+
+# --------------------------------------------------------------------------- #
+# W22 the API lifecycle status
+# --------------------------------------------------------------------------- #
+
+
+def w22():
+    group("W22 — the API lifecycle status on every operation")
+    eq("the description is the bold underlined lifecycle line",
+       gen.LIFECYCLE_DESCRIPTION,
+       "**<u>API Lifecycle Status - Design</u>**")
+
+    if not os.path.exists(CREDIT_CARD):
+        check("the reference workbook is present", False, CREDIT_CARD)
+        return
+    m = _merge(CREDIT_CARD)
+    ops = [op for entry in m.document["paths"].values()
+           for method, op in entry.items() if isinstance(op, dict)]
+    check("there are operations to check", bool(ops), len(ops))
+    eq("every operation carries the lifecycle description",
+       {op.get("description") for op in ops},
+       {"**<u>API Lifecycle Status - Design</u>**"})
+    eq("and the status as an extension a machine can read",
+       {op.get("x-api-lifecycle-status") for op in ops}, {"Design"})
+    # The use case is not lost to make room for it.
+    check("the use case survives as the summary",
+          all(op.get("summary") for op in ops))
+    check("and untruncated as x-use-case",
+          any(op.get("x-use-case") for op in ops))
+    longest = max((op.get("x-use-case", "") for op in ops), key=len)
+    check("x-use-case is not the truncated summary", len(longest) > 0,
+          longest[:40])
+
+
+# --------------------------------------------------------------------------- #
+# W23 the field mapping export
+# --------------------------------------------------------------------------- #
+
+
+def _export(workbook, tmp, **kw):
+    """Run and export, returning ``(RunResult, path)``."""
+    import polymorphize_export as expmod
+    out = gen.run(workbook, tmp, write=False, log=lambda *_a: None, **kw)
+    path = os.path.join(tmp, "export.xlsx")
+    expmod.write(out, path)
+    return out, path
+
+
+def w23():
+    group("W23 — the field mapping export")
+    import polymorphize_export as expmod
+    if not os.path.exists(FIELD_MAPPING):
+        check("the field mapping sample is present", False, FIELD_MAPPING)
+        return
+
+    eq("the format's own nine columns come first",
+       list(expmod.FORMAT_COLUMNS[:2]),
+       ["Parameter Type", "Reusable API Field Name"])
+    eq("the header sits on row 10, as in the reference document",
+       expmod.HEADER_ROW, 10)
+    eq("three difference columns are added and no more",
+       len(expmod.DIFF_COLUMNS), 3)
+    eq("the standard request header block is the seven from the reference",
+       len(expmod.REQUEST_HEADERS), 7)
+
+    tmp = tempfile.mkdtemp()
+    _out, path = _export(FIELD_MAPPING, tmp)
+    wb = openpyxl.load_workbook(path, data_only=True)
+    try:
+        check("the provenance sheet is present",
+              expmod.PROVENANCE_SHEET in wb.sheetnames, wb.sheetnames[:3])
+        operations = [n for n in wb.sheetnames if n != expmod.PROVENANCE_SHEET]
+        eq("one sheet per operation, the sheet names preserved",
+           len(operations), 22)
+
+        ws = wb["Token_Search"]
+        eq("the banner is nine rows", ws.cell(row=9, column=1).value,
+           "SOR API Endpoint:")
+        eq("and its first row names the API",
+           ws.cell(row=1, column=1).value, "API Name")
+        headings = [ws.cell(row=expmod.HEADER_ROW, column=i).value
+                    for i in range(1, 13)]
+        eq("the header row starts with Parameter Type", headings[0],
+           "Parameter Type")
+        check("the SOR column heading carries the endpoint",
+              "\n" in (headings[4] or ""), headings[4])
+        eq("the difference columns are the last three",
+           headings[9:12], list(expmod.DIFF_COLUMNS))
+
+        rows = [[c for c in r] for r in
+                ws.iter_rows(min_row=expmod.HEADER_ROW + 1, values_only=True)]
+        statuses = {r[9] for r in rows if r[9]}
+        check("published elements are marked", "Published" in statuses,
+              sorted(x for x in statuses if x))
+        check("and dropped ones say why",
+              any(r[9] == "No SOR field" and r[10] for r in rows))
+        check("a dropped element carries an action for the analyst",
+              any(r[9] == "No SOR field" and r[11] for r in rows))
+        check("the standard header rows are carried",
+              any(r[0] == "Header" and r[1] == "Authorization" for r in rows))
+        check("both body sections are present",
+              {"Request Body", "Response Body"} <=
+              {r[0] for r in rows if r[0]})
+
+        prov = wb[expmod.PROVENANCE_SHEET]
+        text_of = {str(r[0]): str(r[1]) for r in
+                   prov.iter_rows(max_row=12, max_col=2, values_only=True)}
+        eq("the provenance sheet records the round", text_of.get("Round"), "1")
+        eq("and the source workbook",
+           text_of.get("Source workbook"),
+           os.path.basename(FIELD_MAPPING))
+        eq("and the lifecycle status",
+           text_of.get("API lifecycle status"), "Design")
+    finally:
+        wb.close()
+
+    # A Level workbook with several SOR endpoints becomes several sheets.
+    if os.path.exists(CREDIT_CARD):
+        tmp2 = tempfile.mkdtemp()
+        _out2, path2 = _export(CREDIT_CARD, tmp2)
+        wb2 = openpyxl.load_workbook(path2, data_only=True)
+        try:
+            names = [n for n in wb2.sheetnames
+                     if n != expmod.PROVENANCE_SHEET]
+            expected = sum(len(r.layout.sor_cols) for r in _out2.results
+                           if r.status == "ok" and r.layout is not None)
+            eq("one sheet per SOR endpoint, across the whole workbook",
+               len(names), expected)
+            check("the five endpoints of Card Details each get a sheet",
+                  sum(1 for n in names if n.startswith("Card Detail")) == 5,
+                  [n for n in names if n.startswith("Card Detail")])
+            check("and the three of Card Transaction",
+                  sum(1 for n in names if n.startswith("Card Transaction")) == 3,
+                  [n for n in names if n.startswith("Card Transaction")])
+            check("each of those sheets names a different SOR endpoint",
+                  len({wb2[n].cell(row=9, column=2).value
+                       for n in names if n.startswith("Card Detail")}) == 5)
+            check("every sheet name is Excel-legal and short enough",
+                  all(len(n) <= 31 and not set(n) & set("[]:*?/\\")
+                      for n in wb2.sheetnames), wb2.sheetnames)
+            first = wb2[names[0]]
+            check("the header block is supplied where the format had none",
+                  any(r[1] == "x-BDO-Application-Id" for r in
+                      first.iter_rows(min_row=expmod.HEADER_ROW + 1,
+                                      max_col=2, values_only=True)))
+        finally:
+            wb2.close()
+
+
+# --------------------------------------------------------------------------- #
+# W24 the round trip
+# --------------------------------------------------------------------------- #
+
+
+def _tree_signature(result):
+    """Everything about a sheet that decides what the specification says."""
+    out = []
+    for section in (result.request, result.response):
+        if section is None or section.root is None:
+            continue
+
+        def walk(node, path):
+            for child in node.children:
+                here = path + (child.name,)
+                out.append((section.kind, ".".join(here), child.json_type,
+                            child.fmt, child.max_length, child.usage,
+                            tuple(sorted(child.sor_declared.items()))))
+                walk(child, here)
+        walk(section.root, (section.root.name,))
+    return out
+
+
+def w24():
+    group("W24 — the round trip")
+    import polymorphize_export as expmod
+    import polymorphize_classify as cls
+    import polymorphize_mapping as mapfmt
+    if not os.path.exists(FIELD_MAPPING):
+        check("the field mapping sample is present", False, FIELD_MAPPING)
+        return
+
+    tmp = tempfile.mkdtemp()
+    _out, first = _export(FIELD_MAPPING, tmp)
+
+    verdict = cls.classify(first)
+    eq("the export is itself a field mapping document", verdict.fmt,
+       cls.MAPPING)
+
+    before = {r.sheet: r for r in mapfmt.read_workbook(FIELD_MAPPING)
+              if r.status == "ok"}
+    after = {r.sheet: r for r in mapfmt.read_workbook(first)
+             if r.status == "ok"}
+    eq("the same sheets read back", sorted(after), sorted(before))
+    differing = [n for n in before
+                 if _tree_signature(before[n]) != _tree_signature(after[n])]
+    eq("and every tree is identical, mapping and all", differing, [])
+
+    # The specification is the real test: the round trip must not change it.
+    def spec_of(path):
+        run = gen.run(path, tmp, write=False, log=lambda *_a: None)
+        body = gen.dump_document(run.merged.document, "yaml")
+        return re.sub(r"x-generated-at: .*", "", body)
+
+    eq("the specification from the export equals the original",
+       spec_of(first), spec_of(FIELD_MAPPING))
+
+    # Exporting the export must not change it either, or a document would
+    # drift a little on every pass through the loop.
+    out2 = gen.run(first, tmp, write=False, log=lambda *_a: None)
+    second = os.path.join(tmp, "second.xlsx")
+    expmod.write(out2, second)
+
+    def grid(path):
+        wb = openpyxl.load_workbook(path, data_only=True)
+        try:
+            return {n: [tuple("" if c is None else str(c) for c in row)
+                        for row in wb[n].iter_rows(values_only=True)]
+                    for n in wb.sheetnames if n != expmod.PROVENANCE_SHEET}
+        finally:
+            wb.close()
+
+    g1, g2 = grid(first), grid(second)
+    eq("the second export has the same sheets", sorted(g2), sorted(g1))
+    drift = [n for n in g1 if g1[n] != g2.get(n)]
+    eq("and every cell of every sheet is unchanged", drift, [])
+    eq("the round number advances", expmod.previous_round(second), 2)
+
+    # Column creep is the failure this guards against: the difference columns
+    # must be recognised on the way back in, not carried as extra columns.
+    widths = {len(rows[expmod.HEADER_ROW - 1]) for rows in g2.values()}
+    eq("the width is stable across rounds",
+       widths, {len(rows[expmod.HEADER_ROW - 1]) for rows in g1.values()})
+
+
 # --------------------------------------------------------------------------- #
 
 
 def main():
     for fn in (w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15,
-               w16, w17):
+               w16, w17, w18, w19, w20, w21, w22, w23, w24):
         try:
             fn()
         except Exception:                                      # noqa: BLE001
