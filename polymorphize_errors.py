@@ -1,7 +1,7 @@
 """
 polymorphize_errors — the Apigee error set, and the standard headers.
 
-Version 6.6.
+Version 6.7.
 
 Every operation the tool publishes carries the same twelve error responses,
 referenced from ``components/responses`` rather than inlined. The set is not a
@@ -39,7 +39,7 @@ from __future__ import annotations
 
 from collections import OrderedDict
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 #: The disclaimer, quoted from the source specification, wording unchanged.
 DISCLAIMER = (

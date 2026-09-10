@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure what cross-operation specialisation prevents, on any workbook.
 
-Version 6.6.
+Version 6.7.
 
 The README quotes a figure for the reference workbook. This is the script that
 produces it, so the figure is reproducible rather than asserted.
@@ -38,7 +38,7 @@ import polymorphize_classify as cls           # noqa: E402
 import polymorphize_mapping as mapfmt         # noqa: E402
 import polymorphize_workbook as wbk           # noqa: E402
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 
 def key(name):

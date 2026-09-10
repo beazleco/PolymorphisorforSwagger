@@ -1,7 +1,7 @@
 """
 polymorphize_workbook — reader for the Level-indented SOR mapping contract.
 
-Version 6.6.
+Version 6.7.
 
 This module replaces the dotted-path reader used up to v5.3. The authoritative
 workbook format expresses schema nesting through a run of ``Level 1`` ..
@@ -64,7 +64,7 @@ from dataclasses import dataclass, field
 
 import polymorphize_core as core
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 # --------------------------------------------------------------------------- #
 # Contract constants

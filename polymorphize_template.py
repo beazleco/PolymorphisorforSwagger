@@ -1,7 +1,7 @@
 """
 polymorphize_template — writes the SOR mapping workbook template.
 
-Version 6.6.
+Version 6.7.
 
 The template is the contract. It carries the header row the reader looks for,
 the banner labels it recognises, the two section labels it consumes, and
@@ -22,6 +22,20 @@ Example_MultiSor
     Pattern P2, the case that produces the largest reduction.
 Operation_Template
     A minimal valid skeleton to copy for each new endpoint.
+
+Two formats
+===========
+
+``write_template`` writes the Level format. ``write_mapping_template`` writes
+the field mapping document, the dotted-path format the API COE circulates and
+the one this tool exports. Its shape is taken from :mod:`polymorphize_export`
+rather than restated here, so the template and the export cannot part company.
+
+The choice is not a preference. The Level format carries several SOR columns
+on one sheet and can express a runtime variant; the field mapping document
+carries one, so an operation served by several System of Record endpoints
+needs the Level format or one sheet per endpoint. Both entry points that offer
+a template ask which is wanted rather than assuming.
 """
 
 from __future__ import annotations
@@ -33,7 +47,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 import polymorphize_workbook as wbk
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 LEVELS = 6
 
@@ -334,9 +348,13 @@ HOW_TO_USE = [
 
 
 def _write_how_to(ws):
+    _write_how_to_lines(ws, HOW_TO_USE)
+
+
+def _write_how_to_lines(ws, lines):
     ws.column_dimensions["A"].width = 112
     r = 1
-    for line, size, bold in HOW_TO_USE:
+    for line, size, bold in lines:
         c = ws.cell(row=r, column=1, value=line or None)
         c.font = Font(name=FONT, size=size, bold=bold,
                       color="FF1F3864" if bold and size >= 13 else "FF1A1A1A")
@@ -435,6 +453,358 @@ def write_template(path):
     return path
 
 
+# --------------------------------------------------------------------------- #
+# The field mapping template
+# --------------------------------------------------------------------------- #
+#
+# The second input format, for initial entry. Everything about its shape comes
+# from :mod:`polymorphize_export`, which is the one definition of the format in
+# this codebase. A template that stated the format independently would be a
+# second definition, and the two would part company at the first change.
+
+#: Parameter Type values an analyst should be choosing between.
+MAPPING_PTYPES = ["Body", "Header", "Request Parameter", "Request Body",
+                  "Response Header", "Response Body"]
+
+#: Schema values, in the spelling this format uses.
+MAPPING_TYPES = ["object", "array", "string", "string(35)", "string(3)",
+                 "number", "number(18)", "integer", "boolean", "date",
+                 "datetime"]
+
+MAPPING_USAGES = ["Mandatory", "Conditional Mandatory", "Optional"]
+
+MAPPING_SWAGGER = ["Yes", "No"]
+
+#: The worked example. ``(dotted path, usage, schema, sor field, example,
+#: description, remarks)``. ``N/A`` in the SOR column rather than a blank,
+#: deliberately: a blank is an unfinished row and the strict check says so.
+EXAMPLE_REQUEST = [
+    ("AccountBalanceRetrieveRequest", "", "object", "N/A", "",
+     "The request message. The first segment of every path below names it.",
+     ""),
+    ("AccountBalanceRetrieveRequest.AccountReference", "", "object", "N/A", "",
+     "A nested group. Two segments, so it sits inside the message.", ""),
+    ("AccountBalanceRetrieveRequest.AccountReference.accountIdentificationType",
+     "Mandatory", "string(20)", "accountIdType", "IBAN",
+     "Which kind of account identifier follows.", ""),
+    ("AccountBalanceRetrieveRequest.AccountReference.accountIdentification",
+     "Mandatory", "string(34)", "accountId", "GB29NWBK60161331926819",
+     "The account identifier itself.", ""),
+    ("AccountBalanceRetrieveRequest.AccountReference.accountIdentificationMasked",
+     "Optional", "string(34)", "N/A", "",
+     "The System of Record does not supply this, so it is not published. "
+     "That removal is the point of the exercise.", "Not held by this SOR."),
+    ("AccountBalanceRetrieveRequest.balanceTypeCode", "Optional", "string(4)",
+     "balanceType", "AVAL",
+     "Restricts the response to one balance type.", ""),
+]
+
+EXAMPLE_RESPONSE = [
+    ("AccountBalanceRetrieveResponse", "", "object", "N/A", "",
+     "The response message.", ""),
+    ("AccountBalanceRetrieveResponse.AccountReference", "", "object", "N/A", "",
+     "The same group name as the request uses, so the two share one class.",
+     ""),
+    ("AccountBalanceRetrieveResponse.AccountReference.accountIdentificationType",
+     "Mandatory", "string(20)", "accountIdType", "IBAN",
+     "Which kind of account identifier follows.", ""),
+    ("AccountBalanceRetrieveResponse.AccountReference.accountIdentification",
+     "Mandatory", "string(34)", "accountId", "GB29NWBK60161331926819",
+     "The account identifier itself.", ""),
+    ("AccountBalanceRetrieveResponse.BalanceList", "", "array", "N/A", "",
+     "A repeating group. Its members are the paths one segment deeper.", ""),
+    ("AccountBalanceRetrieveResponse.BalanceList.balanceType", "Mandatory",
+     "string(4)", "balances.type", "AVAL", "Which balance this entry holds.",
+     ""),
+    ("AccountBalanceRetrieveResponse.BalanceList.balanceAmount", "Mandatory",
+     "number(18)", "balances.amount", "1234.56", "The amount held.", ""),
+    ("AccountBalanceRetrieveResponse.BalanceList.balanceCurrency", "Mandatory",
+     "string(3)", "balances.currency", "GBP", "ISO 4217 currency code.", ""),
+    ("AccountBalanceRetrieveResponse.BalanceList.asAtDateTime", "Optional",
+     "datetime", "balances.asAt", "2026-01-31T23:59:59Z",
+     "When the balance was struck.", ""),
+]
+
+BLANK_MAPPING_REQUEST = [
+    ("ReplaceMeRequest", "", "object", "N/A", "",
+     "Rename this to your own request message. Every path below starts with "
+     "it.", ""),
+    ("ReplaceMeRequest.exampleIdentifier", "Mandatory", "string(35)",
+     "sorFieldName", "ABC123",
+     "One line saying what this attribute is for.", ""),
+    ("ReplaceMeRequest.ExampleGroup", "", "object", "N/A", "",
+     "A nested group. Delete it if you do not need one.", ""),
+    ("ReplaceMeRequest.ExampleGroup.exampleMember", "Optional", "string(35)",
+     "N/A", "",
+     "N/A means the System of Record does not supply it, so it will not be "
+     "published.", ""),
+]
+
+BLANK_MAPPING_RESPONSE = [
+    ("ReplaceMeResponse", "", "object", "N/A", "",
+     "Rename this to your own response message.", ""),
+    ("ReplaceMeResponse.exampleResult", "Mandatory", "string(35)",
+     "sorResultField", "OK",
+     "One line saying what this attribute is for.", ""),
+]
+
+MAPPING_HOW_TO = [
+    ("The field mapping document", 16, True),
+    ("", 10, False),
+    ("One worksheet describes one endpoint served by one System of Record "
+     "endpoint. Every worksheet of the workbook is merged into a single "
+     "specification, so two sheets cannot claim the same method and path.",
+     10, False),
+    ("", 10, False),
+    ("The banner, rows 1 to 9", 13, True),
+    ("Nine labelled rows, the label in column A and the value in column B. "
+     "Leave the labels alone: they are how the reader finds the values. The "
+     "SOR API Endpoint row is the definitive statement of which System of "
+     "Record endpoint serves this operation. The endpoint written after the "
+     "SOR API Field Name column heading is a label for a reader, and where "
+     "the two differ the banner wins and the difference is reported.",
+     10, False),
+    ("", 10, False),
+    ("The header row, row 10", 13, True),
+    ("Nine columns, in this order: Parameter Type, Reusable API Field Name, "
+     "Usage, Schema, SOR API Field Name, Example, Description, Remarks, "
+     "Required in Swagger. Do not reorder or rename them. You may add columns "
+     "of your own to the right; they are ignored on the way in and carried "
+     "through on the way out.", 10, False),
+    ("", 10, False),
+    ("Parameter Type decides what is read", 13, True),
+    ("A row whose Parameter Type reads Body is part of the schema. A row "
+     "reading Header, Request Parameter or Response Header is skipped, "
+     "exactly as the tool skips header sections in the other format. The "
+     "section rows, Request Body and Response Body, carry the label in the "
+     "Parameter Type column and nothing else, and every Body row belongs to "
+     "the section above it.", 10, False),
+    ("", 10, False),
+    ("A sheet with no Request Body section fails and no specification is "
+     "written for it. The rest of the workbook still generates.", 10, False),
+    ("", 10, False),
+    ("Nesting is the dotted path", 13, True),
+    ("Reusable API Field Name carries the whole path, so "
+     "cardDetails.expiry.month sits three deep. The first segment names the "
+     "message. A row for the container itself is optional: state one where "
+     "you want to describe the group, and the tree comes out the same either "
+     "way. An array is a container whose Schema reads array, and its members "
+     "are the paths one segment deeper.", 10, False),
+    ("", 10, False),
+    ("The SOR column is where the interface shrinks", 13, True),
+    ("Put the System of Record field name in the cell when that endpoint "
+     "supplies the attribute. Write N/A when it does not. An attribute "
+     "marked N/A is removed from the published interface, which is the "
+     "entire point of the exercise, and the field mapping document written "
+     "back out will say so against the row.", 10, False),
+    ("", 10, False),
+    ("Write N/A rather than leaving the cell empty. The two mean the same "
+     "thing to the reader, but N/A is a decision recorded and a blank is a "
+     "decision not yet taken, and the strict check tells them apart.",
+     10, False),
+    ("", 10, False),
+    ("One System of Record endpoint per sheet", 13, True),
+    ("This format has a single SOR API Field Name column, so an operation "
+     "served by several System of Record endpoints needs one sheet per "
+     "endpoint. The other input format, the Level format, carries several "
+     "SOR columns on one sheet and can express a runtime variant; this one "
+     "cannot, and a sheet that looks as though it wants variants is told so "
+     "once.", 10, False),
+    ("", 10, False),
+    ("Usage and Required in Swagger", 13, True),
+    ("Usage decides obligation: Mandatory lands in the required list of the "
+     "generated schema, Conditional Mandatory is documented rather than "
+     "required, and Optional or a blank cell means optional. Required in "
+     "Swagger is advisory and never overrides the mapping.", 10, False),
+    ("", 10, False),
+    ("The method", 13, True),
+    ("State the method in the banner. Left blank it is taken from the BIAN "
+     "action term at the end of the equivalent BIAN endpoint, so a Retrieve "
+     "becomes a GET, and a GET cannot carry a request body. Where an "
+     "operation reads with a body, state POST.", 10, False),
+    ("", 10, False),
+    ("Errors and lifecycle are added for you", 13, True),
+    ("Do not write the standard error responses into the workbook. Every "
+     "generated operation carries the full Apigee set, the shared error "
+     "schema and the standard response headers, and declares its lifecycle "
+     "stage. The standard request headers above each Request Body are "
+     "already in the template.", 10, False),
+    ("", 10, False),
+    ("Before you hand the workbook over", 13, True),
+    ("Run the check. Lenient reports only what would stop an endpoint "
+     "generating. Strict adds the house standard: a use case, a service "
+     "domain, a behaviour qualifier, a description on every attribute, an "
+     "example on every mandatory one, and N/A rather than a blank in the SOR "
+     "column.", 10, False),
+]
+
+
+def _mapping_sheet(wb, title, banner, request_rows, response_rows):
+    """One field mapping operation sheet, in the format the exporter writes."""
+    import polymorphize_export as expmod
+
+    ws = _sheet(wb, title)
+    for r, (label, key_) in enumerate(expmod.BANNER_ROWS, start=1):
+        _put(ws, r, 1, label, bold=True, fill=FILL_BANNER)
+        _put(ws, r, 2, banner.get(key_, ""), fill=FILL_BANNER, wrap=True)
+
+    headings = list(expmod.FORMAT_COLUMNS)
+    headings[expmod.SOR_COLUMN] = "SOR API Field Name\n%s" % banner.get(
+        "sor_endpoint", "")
+    for i, heading in enumerate(headings, start=1):
+        _put(ws, expmod.HEADER_ROW, i, heading, bold=True, fill=FILL_HEADER,
+             wrap=True)
+    ws.row_dimensions[expmod.HEADER_ROW].height = 34
+
+    r = expmod.HEADER_ROW + 1
+
+    def section(label):
+        nonlocal r
+        _put(ws, r, 1, label, bold=True, fill=FILL_SECTION)
+        for i in range(2, len(headings) + 1):
+            _put(ws, r, i, None, fill=FILL_SECTION)
+        r += 1
+
+    def header_block(block):
+        nonlocal r
+        for name, usage, schema, sor, example, desc, remarks, req in block:
+            for i, value in enumerate(("Header", name, usage, schema, sor,
+                                       example, desc, remarks, req), start=1):
+                _put(ws, r, i, value or None, wrap=(i in (7, 8)))
+            r += 1
+
+    def body(rows):
+        nonlocal r
+        for path, usage, schema, sor, example, desc, remarks in rows:
+            cells = ("Body", path, usage, schema, sor, example, desc, remarks,
+                     "")
+            for i, value in enumerate(cells, start=1):
+                fill = FILL_SOR if i == expmod.SOR_COLUMN + 1 else (
+                    FILL_ANALYST if i in (3, 4, 6, 7, 8, 9) else None)
+                _put(ws, r, i, value or None, fill=fill, wrap=(i in (2, 7, 8)))
+            r += 1
+
+    section("Request Parameter")
+    header_block(expmod.REQUEST_HEADERS)
+    r += 1
+    section("Request Body")
+    body(request_rows)
+    r += 1
+    section("Response Header")
+    header_block(expmod.RESPONSE_HEADERS)
+    section("Response Body")
+    body(response_rows)
+
+    for i, heading in enumerate(expmod.FORMAT_COLUMNS, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = \
+            expmod.COLUMN_WIDTH.get(heading, 26)
+    ws.freeze_panes = ws.cell(row=expmod.HEADER_ROW + 1, column=3)
+    _mapping_validations(ws, r)
+    return ws
+
+
+def _mapping_validations(ws, last_row):
+    """Dropdowns on Parameter Type, Usage, Schema and Required in Swagger."""
+    import polymorphize_export as expmod
+
+    spec = [
+        (1, "A", MAPPING_PTYPES, "Parameter Type",
+         "Body for a schema row. Header, Request Parameter and Response "
+         "Header are skipped. Request Body and Response Body open a section."),
+        (3, "B", MAPPING_USAGES, "Usage",
+         "Mandatory lands in the required list. Conditional Mandatory is "
+         "documented but not required. Optional or blank means optional."),
+        (4, "C", MAPPING_TYPES, "Schema",
+         "object for a nested group, array for a repeating group, or a "
+         "scalar with an optional length in brackets."),
+        (9, "D", MAPPING_SWAGGER, "Required in Swagger",
+         "Advisory only. Usage decides obligation."),
+    ]
+    for column, source, values, title, prompt in spec:
+        dv = DataValidation(
+            type="list",
+            formula1="=Vocabulary!$%s$2:$%s$%d" % (source, source,
+                                                   len(values) + 1),
+            allow_blank=True, showDropDown=False)
+        dv.promptTitle = title
+        dv.prompt = prompt
+        dv.errorTitle = "%s not recognised" % title
+        dv.error = prompt
+        ws.add_data_validation(dv)
+        letter = get_column_letter(column)
+        dv.add("%s%d:%s%d" % (letter, expmod.HEADER_ROW + 1, letter,
+                              last_row + 200))
+
+
+def _write_mapping_vocabulary(ws):
+    # The headings are worded so that none of them matches a column role
+    # exactly. A sheet whose header row reads "Parameter Type" is an
+    # operation sheet as far as the classifier is concerned, and a list of
+    # permitted values is not an operation.
+    columns = [("Parameter Type values", MAPPING_PTYPES),
+               ("Usage values", MAPPING_USAGES),
+               ("Schema values", MAPPING_TYPES),
+               ("Required in Swagger values", MAPPING_SWAGGER)]
+    for i, (title, values) in enumerate(columns, start=1):
+        ws.column_dimensions[get_column_letter(i)].width = 24
+        _put(ws, 1, i, title, bold=True, fill=FILL_HEADER)
+        for j, value in enumerate(values, start=2):
+            _put(ws, j, i, value)
+    ws.column_dimensions["E"].width = 74
+    _put(ws, 1, 5, "Notes", bold=True, fill=FILL_HEADER)
+    notes = [
+        "Do not rename or reorder these columns: the dropdowns point at them.",
+        "Body is the only Parameter Type the schema is read from.",
+        "A length in brackets becomes maxLength on a string.",
+        "object is a nested group; array is a repeating group.",
+        "N/A in the SOR column removes the attribute from the interface.",
+        "A blank SOR cell means the same but reads as unfinished, and the "
+        "strict check says so.",
+    ]
+    for j, note in enumerate(notes, start=2):
+        _put(ws, j, 5, note, wrap=True)
+
+
+def write_mapping_template(path):
+    """Write the field mapping format template to ``path``.
+
+    Two worked sheets and a skeleton, in the format the API COE circulates and
+    the format this tool exports. It classifies as a field mapping document,
+    validates clean and generates, which the suite holds.
+    """
+    wb = openpyxl.Workbook()
+    wb.remove(wb.active)
+
+    _write_how_to_lines(_sheet(wb, "How to use"), MAPPING_HOW_TO)
+    _write_mapping_vocabulary(_sheet(wb, "Vocabulary"))
+    _mapping_sheet(
+        wb, "Example_Retrieve",
+        {"api_name": "Deposit Account Balance Retrieve API",
+         "use_case": "Retrieve the balances held against a deposit account.",
+         "service_domain": "Deposit Account",
+         "behaviour_qualifier": "Account Balance",
+         "method": "POST",
+         "bian_endpoint": "/DepositAccount/AccountBalance/Retrieve",
+         "business_endpoint": "/deposit-account/account-balance/retrieve",
+         "sor_name": "Example Core Banking",
+         "sor_endpoint": "POST: /v1/accounts/balances"},
+        EXAMPLE_REQUEST, EXAMPLE_RESPONSE)
+    _mapping_sheet(
+        wb, "Operation_Template",
+        {"api_name": "Replace Me API",
+         "use_case": "Replace this with what your endpoint is for.",
+         "service_domain": "Replace Me",
+         "behaviour_qualifier": "Replace Me",
+         "method": "POST",
+         "bian_endpoint": "/ServiceDomain/BehaviourQualifier/Retrieve",
+         "business_endpoint": "/replace-me/resource/retrieve",
+         "sor_name": "Replace Me",
+         "sor_endpoint": "POST: /v1/replace/me"},
+        BLANK_MAPPING_REQUEST, BLANK_MAPPING_RESPONSE)
+    wb.save(path)
+    return path
+
+
 def main(argv=None):
     import sys
     args = list(argv if argv is not None else sys.argv[1:])
@@ -448,4 +818,6 @@ if __name__ == "__main__":
     raise SystemExit(main())
 
 
-__all__ = ["HEADER", "BANNER", "TYPES", "USAGES", "write_template"]
+__all__ = ["HEADER", "BANNER", "TYPES", "USAGES", "write_template",
+           "MAPPING_PTYPES", "MAPPING_TYPES", "MAPPING_USAGES",
+           "write_mapping_template"]

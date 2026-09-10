@@ -1,7 +1,7 @@
 """
 polymorphize_cli — command line entry points.
 
-Version 6.6.
+Version 6.7.
 
 Two subcommands:
 
@@ -35,7 +35,7 @@ import sys
 import polymorphize_generate as gen
 import polymorphize_validate as val
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 EXIT_OK = 0
 EXIT_UNREADABLE = 2
@@ -240,10 +240,21 @@ def cmd_generate(args):
     return EXIT_OK
 
 
+#: Default file name per template format.
+TEMPLATE_DEFAULT = {"level": "SOR_mapping_template.xlsx",
+                    "mapping": "field_mapping_template.xlsx"}
+
+
 def cmd_template(args):
     import polymorphize_template as tmpl
-    tmpl.write_template(args.path)
-    print("Wrote %s" % args.path)
+    path = args.path or TEMPLATE_DEFAULT[args.format]
+    if args.format == "mapping":
+        tmpl.write_mapping_template(path)
+        label = "field mapping document"
+    else:
+        tmpl.write_template(path)
+        label = "Level format"
+    print("Wrote %s, in the %s." % (path, label))
     return EXIT_OK
 
 
@@ -304,8 +315,18 @@ def build_parser():
                    help="skip the HTML showcase report")
     g.set_defaults(func=cmd_generate)
 
-    t = sub.add_parser("template", help="write the mapping workbook template")
-    t.add_argument("path", nargs="?", default="SOR_mapping_template.xlsx")
+    t = sub.add_parser("template",
+                       help="write a blank workbook template, in either "
+                            "input format")
+    t.add_argument("path", nargs="?", default=None,
+                   help="output file (default: SOR_mapping_template.xlsx for "
+                        "the Level format, field_mapping_template.xlsx for "
+                        "the field mapping document)")
+    t.add_argument("--format", choices=("level", "mapping"), default="level",
+                   help="which input format to write. level is the Level "
+                        "columns format with several SOR columns per sheet; "
+                        "mapping is the field mapping document, dotted paths "
+                        "with one SOR column per sheet (default: level)")
     t.set_defaults(func=cmd_template)
     return p
 

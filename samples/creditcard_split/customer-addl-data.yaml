@@ -4,8 +4,8 @@ info:
   version: 1.0.0
   description: This API will be used to get the customer additional data for specified customer 
     number or card number
-  x-generated-by: SOR Polymorphizer 6.6
-  x-generated-at: '2026-09-10T00:00:08+00:00'
+  x-generated-by: SOR Polymorphizer 6.7
+  x-generated-at: '2026-09-10T00:27:58+00:00'
   x-source-sheet: Customer Addl Data
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card

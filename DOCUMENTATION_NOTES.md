@@ -16,7 +16,8 @@ came in with the Level-format contract in v6.0; items 19 to 25 came with the
 single merged specification in v6.1; items 26 to 32 came with verification
 against the System of Record and the HTML showcase in v6.2; items 33 to 37 came
 with v6.3; item 38 with v6.4; items 39 to 47 with the two-format build in 6.5;
-items 48 to 55 with the field mapping export in 6.6.
+items 48 to 55 with the field mapping export in 6.6, 56 to 58 with the
+hardening in 6.6.1, and 59 to 61 with the field mapping template in 6.7.
 
 The two Word documents (`SOR_Polymorphizer_Technical_Guide.docx`,
 `SOR_Polymorphizer_User_Manual.docx`) and the presentation
@@ -45,8 +46,9 @@ by a `requestVariant` value. See item 10.
 Slides 12 and 13 of the presentation still teach the v5.2 position.
 
 ### 3. Test counts
-39 → 49 → 62 → 93 → 271 → 343 → 486 → 499 → 501 → 736 → **787** across
-three suites (556 + 156 + 75). `tests/run_all.py` runs all three.
+39 → 49 → 62 → 93 → 271 → 343 → 486 → 499 → 501 → 736 → 787 → 800 →
+**832** across three suites (601 + 156 + 75). `tests/run_all.py` runs all
+three.
 
 ### 4. The workbook read is bounded
 Sheets declare enormous dimensions because of stray formatting far below the
@@ -1084,3 +1086,112 @@ response sent to the client.
 6. **A later lifecycle stage.** `Design` is fixed. If a specification ever has
    to be published at Build or Live, the constant becomes an option and the
    question of who is entitled to set it has to be answered first.
+
+---
+
+## 6.6.1, a hardening release
+
+Colin reported that the window produced no spreadsheet and that the log
+carried nothing naming one. The wiring was correct and the engine wrote the
+file on every workbook here, which left one explanation that fits the symptom
+exactly: the write failed and 6.6 reported it in a single line reading
+`WARNING: could not write the field mapping document`, which contains neither
+`xls` nor `xlsx` and reads, in a long log, like nothing having happened.
+
+That is a reporting defect regardless of what raised, and it is the defect
+worth fixing first. A run that promises an artefact and does not produce one
+must say so where the absence will be seen.
+
+### 56. A failure is now stated three times over
+
+`RunResult.export_error` records it, `FIELD_MAPPING_NOT_WRITTEN.md` is written
+into the output folder with the reason and the traceback, the generation
+report carries a `Field mapping document:` line either way, and the window
+turns the banner red and raises a dialog. The specifications are untouched:
+they reach disk before the export runs, and the message says so, because an
+analyst who sees a failure needs to know at once whether the run is wasted.
+
+The report states the outcome even when it is uneventful. An artefact record
+that only appears on failure is one nobody learns to look for.
+
+### 57. Two causes handled rather than reported
+
+**Content Excel refuses.** Carrying a cell verbatim is the point of the
+export, but verbatim has to stop short of what the writer cannot physically
+store. openpyxl refuses a control character outright, and Excel refuses a
+string over 32767 characters. Either would abort a whole workbook over one
+cell. `clean` replaces control characters with a space and truncates an
+over-long cell, saying in the cell that it did.
+
+**A locked target.** An analyst who still has the previous round open in Excel
+is the ordinary case, not the exceptional one, and Windows refuses the
+overwrite. The document is now written beside it under a stamped name and the
+log says which path it got, rather than the round being lost.
+
+### 58. What this does not settle
+
+If Colin's log carries no `FAILED to write` line either, the cause is not an
+exception and the remaining explanations are the checkbox, the split option,
+or an older build. The title bar is the quickest discriminator: it must read
+6.6.1.
+
+Test count 787 to **800** (569 + 156 + 75). `W25` holds the sanitiser, the
+locked target, and the three places a failure has to appear.
+
+---
+
+## New in 6.7
+
+### 59. A template for the field mapping format
+
+The format now has a template for initial entry, `write_mapping_template`,
+alongside the Level format's. Four sheets: How to use, Vocabulary,
+`Example_Retrieve` and `Operation_Template`.
+
+Its shape is taken from `polymorphize_export` rather than restated. A template
+that defined the format independently would be a second definition of it, and
+the two would part company at the first change to either. So `BANNER_ROWS`,
+`FORMAT_COLUMNS`, `HEADER_ROW`, the standard header block and the column
+widths all come from the one module that already owns them.
+
+The worked operation is chosen to teach three things at once rather than to be
+minimal: a nested group named the same way in the request and the response, so
+the two share one class and the analyst sees hoisting happen; an array of
+objects; and an attribute marked `N/A`, which is how an element is kept out of
+the interface and is the point of the whole exercise. The skeleton arrives
+with the seven standard request headers already in place, the four section
+labels laid out, and dropdowns on Parameter Type, Usage, Schema and Required
+in Swagger.
+
+Both templates validate clean at the **strict** level and generate, and the
+suite holds it. A template an analyst has to fix before it passes is not a
+template.
+
+### 60. The choice of format is asked, not assumed
+
+The two formats are not interchangeable. The Level format carries several SOR
+columns on one sheet and can express a runtime variant; the field mapping
+document carries one, so an operation served by several System of Record
+endpoints needs the Level format or one sheet per endpoint. That decides what
+an analyst is able to describe, so both entry points ask: `template --format`
+on the command line, and a dialog stating the difference in the window.
+
+The export instruction does not apply here. It concerned writing a document
+out of a run; a blank template is not a run, and withholding it from the
+command line would serve nothing.
+
+### 61. A list of values is not an operation
+
+The Vocabulary sheet first carried a column headed `Parameter Type`, which is
+exactly the string the classifier looks for, so the template classified as
+three operation sheets rather than two and the reader raised `F002` against a
+sheet that was never an operation. The headings now read `Parameter Type
+values` and so on. The dropdowns point at the cells beneath, so nothing else
+changed, and the test asserts the heading rather than only the outcome, since
+the outcome would pass again if the heading drifted back.
+
+Worth remembering when writing any support sheet: the classifier matches the
+heading exactly, so a sheet that merely mentions a column role is safe and a
+sheet that reproduces one is not.
+
+Test count 800 to **832** (601 + 156 + 75). `W26` holds the template.

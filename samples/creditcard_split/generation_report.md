@@ -8,6 +8,8 @@ Generated 11 of 12 endpoints. **1 failed.**
 
 Output: **one specification per sheet**, for debugging. Polymorphism across operations is not applied in this mode, because each sheet has its own schema namespace.
 
+Field mapping document: not written for a split run. It states which specification it matches and a split run produces several.
+
 ## Failed endpoints
 
 No specification was written for these sheets. Each one needs a correction in the workbook.

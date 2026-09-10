@@ -8,6 +8,8 @@ Generated 11 of 12 endpoints. **1 failed.**
 
 Output: **one specification** for the whole workbook.
 
+Field mapping document: `openapi_field_mapping.xlsx`
+
 ## Failed endpoints
 
 No specification was written for these sheets. Each one needs a correction in the workbook.

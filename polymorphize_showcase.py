@@ -1,7 +1,7 @@
 """
 polymorphize_showcase — the HTML report that shows what was eliminated.
 
-Version 6.6.
+Version 6.7.
 
 This is the validation instrument. It exists so a business analyst can open one
 file and answer, for every class in the generated specification and every
@@ -48,7 +48,7 @@ import polymorphize_sor as sormod
 import polymorphize_workbook as wbk
 from polymorphize_workbook import VARIANT_PROPERTY, cell_ref, text
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 PUBLISHED = "published"
 NO_FIELD = "no-field"

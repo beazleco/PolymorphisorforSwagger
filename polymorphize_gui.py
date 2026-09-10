@@ -1,7 +1,7 @@
 """
 polymorphize_gui — the desktop front end.
 
-Version 6.6.
+Version 6.7.
 
 One window, three tabs, and one rule: a failed endpoint is impossible to
 miss. Every failure appears three times over, in the banner across the top of
@@ -23,7 +23,7 @@ import polymorphize_generate as gen
 import polymorphize_template as tmpl
 import polymorphize_validate as val
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 # --------------------------------------------------------------------------- #
 # Drag and drop
@@ -394,7 +394,7 @@ class App(ttk.Frame):
         self.b_generate = ttk.Button(btns, text="Generate specifications",
                                      style="Primary.TButton", command=self._generate)
         self.b_generate.pack(side="left", padx=(10, 0))
-        ttk.Button(btns, text="Write a blank template",
+        ttk.Button(btns, text="Write a blank template…",
                    command=self._template).pack(side="right")
 
         ttk.Label(parent, text="Sheets", style="H2.TLabel").grid(
@@ -667,23 +667,93 @@ class App(ttk.Frame):
             icon="warning", default="no")
 
     def _template(self):
+        """Write a blank template, in whichever input format is wanted."""
+        fmt = self._ask_template_format()
+        if fmt is None:
+            return
+        mapping = fmt == "mapping"
+        default = ("field_mapping_template.xlsx" if mapping
+                   else "SOR_mapping_template.xlsx")
         path = filedialog.asksaveasfilename(
-            title="Write a blank mapping template",
+            title="Write a blank template",
             defaultextension=".xlsx",
-            initialfile="SOR_mapping_template.xlsx",
+            initialfile=default,
             filetypes=[("Excel workbook", "*.xlsx")])
         if not path:
             return
         try:
-            tmpl.write_template(path)
+            if mapping:
+                tmpl.write_mapping_template(path)
+            else:
+                tmpl.write_template(path)
         except Exception as exc:                               # noqa: BLE001
             messagebox.showerror("Could not write the template", str(exc))
             return
         self._say("Wrote %s" % path)
         messagebox.showinfo(
             "Template written",
-            "Wrote %s\n\nIt holds two worked examples and a blank operation "
-            "sheet. Copy the blank sheet once per endpoint." % path)
+            "Wrote %s\n\n%s\n\nThe How to use sheet states the contract, "
+            "and the Vocabulary sheet holds the lists behind the dropdowns."
+            % (path,
+               "It holds a worked operation and a blank one to copy, one "
+               "sheet per endpoint and per SOR endpoint." if mapping else
+               "It holds two worked examples and a blank operation sheet. "
+               "Copy the blank sheet once per endpoint."))
+
+    def _ask_template_format(self):
+        """Which of the two input formats to write. ``None`` to cancel.
+
+        Asked rather than assumed. The two formats are not interchangeable:
+        the Level format can express a runtime variant and the field mapping
+        document cannot, so the choice decides what the analyst is able to
+        describe, and it is not a preference to be guessed at.
+        """
+        win = tk.Toplevel(self.master)
+        win.title("Which format?")
+        win.transient(self.master)
+        win.resizable(False, False)
+        win.configure(bg=BG)
+        choice = tk.StringVar(value="level")
+        answer = {}
+
+        frame = ttk.Frame(win, padding=18)
+        frame.pack(fill="both", expand=True)
+        ttk.Label(frame, text="Which input format?",
+                  style="H2.TLabel").pack(anchor="w")
+        ttk.Radiobutton(frame, variable=choice, value="level",
+                        text="Level format").pack(anchor="w", pady=(10, 0))
+        ttk.Label(frame, style="Muted.TLabel", font=("Segoe UI", 9),
+                  wraplength=460, justify="left",
+                  text="Nesting in Level 1 to Level N columns, and one column "
+                       "per SOR endpoint on a sheet. The only format that can "
+                       "express a runtime variant, so an operation served by "
+                       "several SOR endpoints needs this one.").pack(
+                           anchor="w", padx=(22, 0))
+        ttk.Radiobutton(frame, variable=choice, value="mapping",
+                        text="Field mapping document").pack(anchor="w",
+                                                            pady=(12, 0))
+        ttk.Label(frame, style="Muted.TLabel", font=("Segoe UI", 9),
+                  wraplength=460, justify="left",
+                  text="Nesting as a dotted path in one column, banner in "
+                       "rows 1 to 9, one SOR endpoint per sheet. The format "
+                       "the API COE circulates, and the one this tool writes "
+                       "back out.").pack(anchor="w", padx=(22, 0))
+
+        row = ttk.Frame(frame)
+        row.pack(fill="x", pady=(18, 0))
+
+        def take():
+            answer["fmt"] = choice.get()
+            win.destroy()
+
+        ttk.Button(row, text="Cancel", command=win.destroy).pack(side="right")
+        ttk.Button(row, text="Write it", style="Primary.TButton",
+                   command=take).pack(side="right", padx=(0, 8))
+        win.bind("<Return>", lambda _e: take())
+        win.bind("<Escape>", lambda _e: win.destroy())
+        win.grab_set()
+        self.master.wait_window(win)
+        return answer.get("fmt")
 
     # ------------------------------------------------------------- display
 
@@ -745,15 +815,22 @@ class App(ttk.Frame):
                     "groups hoisted, %d specialised across operations.%s%s"
                     % (m["operations"], m["schemas"], m["hoisted_groups"],
                        m["split_groups"],
-                       ("  Showcase report and field mapping document written."
-                        if out.showcase_path and out.export_path
-                        else "  Showcase report written." if out.showcase_path
-                        else "  Field mapping document written."
-                        if out.export_path else ""),
+                       _artefact_note(out),
                        "  %d endpoint(s) FAILED and are not in it."
                        % len(out.failed) if out.failed else ""))
                 if out.failed:
                     self.banner.configure(style="Fail.TLabel")
+            if out.export_error:
+                # The run promised a spreadsheet and did not produce one. That
+                # belongs in front of the user, not in the log.
+                self.banner.configure(style="Fail.TLabel")
+                messagebox.showwarning(
+                    "The field mapping document was not written",
+                    "The specifications were written and are complete. The "
+                    "spreadsheet was not.\n\n%s\n\nIf it was open in Excel, "
+                    "close it and generate again. Otherwise send "
+                    "FIELD_MAPPING_NOT_WRITTEN.md from the output folder to "
+                    "the maintainer." % out.export_error)
 
     def _on_sheet_select(self, _event=None):
         sel = self.tree.selection()
@@ -804,6 +881,25 @@ class App(ttk.Frame):
                 self.detail.insert("end", "%s\n" % label, "label")
             self.detail.insert("end", "%s\n\n" % body)
         self.detail.configure(state="disabled")
+
+
+def _artefact_note(out):
+    """What else the run wrote, for the banner. Absence is stated, not left."""
+    if getattr(out, "export_error", ""):
+        return ("  The field mapping document was NOT written: %s"
+                % out.export_error)
+    written = []
+    if out.showcase_path:
+        written.append("showcase report")
+    if out.export_path:
+        written.append("field mapping document")
+    note = ""
+    if written:
+        note = "  Wrote the %s." % " and the ".join(written)
+    if not out.export_path and out.split:
+        note += ("  No field mapping document: it states which specification "
+                 "it matches and a split run produces several.")
+    return note
 
 
 def make_root():

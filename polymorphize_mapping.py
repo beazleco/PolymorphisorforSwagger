@@ -1,7 +1,7 @@
 """
 polymorphize_mapping — the dotted-path field mapping document.
 
-Version 6.6.
+Version 6.7.
 
 The second supported input format, evidenced by
 ``apicoeissueddeviceadministrationfieldmappingv1.0.7.xlsx``. It is the document
@@ -79,7 +79,7 @@ from polymorphize_workbook import (
     SorColumn, cell_ref, col_letter, key, text, text_lines,
 )
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 #: Rows searched for the header. The reference document puts it on row 10; the
 #: allowance covers a sheet that carries a title row above its banner.

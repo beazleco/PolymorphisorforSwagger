@@ -6,8 +6,8 @@ info:
     Administration. Only attributes mapped to a System of Record field are published; shared groups 
     that differ between operations are specialised with allOf, and operations served by several SOR 
     endpoints carry a requestVariant discriminator.
-  x-generated-by: SOR Polymorphizer 6.6
-  x-generated-at: '2026-09-09T23:59:49+00:00'
+  x-generated-by: SOR Polymorphizer 6.7
+  x-generated-at: '2026-09-10T00:27:58+00:00'
   x-source-sheets:
   - Token_Search
   - Token_Get Credentials

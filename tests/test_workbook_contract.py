@@ -33,6 +33,8 @@ W21  class and context in schema names
 W22  the API lifecycle status on every operation
 W23  the field mapping export: shape, difference columns, provenance
 W24  the round trip: export, re-import, and export again
+W25  the export cannot fail quietly
+W26  the field mapping template
 """
 
 from __future__ import annotations
@@ -1906,11 +1908,188 @@ def w24():
 
 
 # --------------------------------------------------------------------------- #
+# W25 the export cannot fail quietly
+# --------------------------------------------------------------------------- #
+
+
+def w25():
+    group("W25 — the export cannot fail quietly")
+    import polymorphize_export as expmod
+    if not os.path.exists(FIELD_MAPPING):
+        check("the field mapping sample is present", False, FIELD_MAPPING)
+        return
+
+    # Content Excel refuses must not cost the whole document.
+    eq("a control character is replaced rather than refused",
+       expmod.clean("ok\x0bthen"), "ok then")
+    eq("text is otherwise untouched", expmod.clean("String (10)"),
+       "String (10)")
+    eq("a number passes through", expmod.clean(7), 7)
+    eq("and a blank stays blank", expmod.clean(None), None)
+    long_one = expmod.clean("x" * (expmod.CELL_LIMIT + 500))
+    eq("an over-long cell is cut to the limit", len(long_one),
+       expmod.CELL_LIMIT)
+    check("and says it was cut", long_one.endswith("]"), long_one[-60:])
+
+    tmp = tempfile.mkdtemp()
+    out = gen.run(FIELD_MAPPING, tmp, write=False, log=lambda *_a: None)
+    # A row carrying a character openpyxl refuses, injected after the read so
+    # it reaches the writer exactly as a real workbook's cell would.
+    result = next(r for r in out.results if r.status == "ok")
+    section = result.request
+    victim = section.root.children[0]
+    victim.description = "note\x0bcontinued"
+    path = os.path.join(tmp, "dirty.xlsx")
+    written = expmod.write(out, path)
+    check("the workbook is still written", os.path.exists(written), written)
+
+    # A target that cannot be overwritten is written beside, not lost.
+    locked = os.path.join(tmp, "locked.xlsx")
+    real_save = expmod.Workbook.save
+
+    def refuse(self, target):
+        if os.path.basename(target) == "locked.xlsx":
+            raise PermissionError("open in Excel")
+        return real_save(self, target)
+
+    expmod.Workbook.save = refuse
+    try:
+        alt = expmod.write(out, locked)
+    finally:
+        expmod.Workbook.save = real_save
+    check("a locked target does not lose the document", os.path.exists(alt),
+          alt)
+    check("and the caller is told which path it got", alt != locked, alt)
+
+    # A genuine failure is recorded on disk and on the run, never swallowed.
+    import polymorphize_export
+    broken_dir = tempfile.mkdtemp()
+    original = polymorphize_export.write
+
+    def explode(*_a, **_k):
+        raise RuntimeError("deliberate")
+
+    polymorphize_export.write = explode
+    try:
+        run = gen.run(FIELD_MAPPING, broken_dir, export=True,
+                      log=lambda *_a: None)
+    finally:
+        polymorphize_export.write = original
+    check("the specification is still written",
+          os.path.exists(os.path.join(broken_dir, "openapi.yaml")))
+    check("the run records why the document is missing",
+          "RuntimeError" in run.export_error, run.export_error)
+    note = os.path.join(broken_dir, "FIELD_MAPPING_NOT_WRITTEN.md")
+    check("and the reason is on disk beside the output",
+          os.path.exists(note))
+    report = open(os.path.join(broken_dir, "generation_report.md"),
+                  encoding="utf-8").read()
+    check("the generation report says it was not written",
+          "not written" in report, report[:200])
+
+
+# --------------------------------------------------------------------------- #
+# W26 the field mapping template
+# --------------------------------------------------------------------------- #
+
+
+def w26():
+    group("W26 — the field mapping template")
+    import polymorphize_classify as cls
+    import polymorphize_export as expmod
+
+    path = tmpl.write_mapping_template(tmp("field_mapping_template.xlsx"))
+    wb = openpyxl.load_workbook(path)
+    try:
+        titles = wb.sheetnames
+        for expected in ("How to use", "Vocabulary", "Example_Retrieve",
+                         "Operation_Template"):
+            check("the template has a %r sheet" % expected,
+                  expected in titles, titles)
+
+        ws = wb["Operation_Template"]
+        eq("the banner is nine rows", ws.cell(row=9, column=1).value,
+           "SOR API Endpoint:")
+        eq("the header is row 10",
+           ws.cell(row=expmod.HEADER_ROW, column=1).value, "Parameter Type")
+        eq("the columns are the format's own, in order",
+           [ws.cell(row=expmod.HEADER_ROW, column=i).value
+            for i in (2, 3, 4, 6, 7, 8, 9)],
+           ["Reusable API Field Name", "Usage", "Schema", "Example",
+            "Description", "Remarks", "Required in Swagger"])
+        check("the SOR column heading carries the endpoint",
+              "\n" in (ws.cell(row=expmod.HEADER_ROW,
+                               column=5).value or ""))
+        labels = {ws.cell(row=r, column=1).value
+                  for r in range(expmod.HEADER_ROW + 1, 60)}
+        for expected in ("Request Parameter", "Request Body",
+                         "Response Header", "Response Body"):
+            check("the %r section is laid out for the analyst" % expected,
+                  expected in labels, sorted(x for x in labels if x))
+        check("the standard header block is already in place",
+              any(ws.cell(row=r, column=2).value == "x-BDO-Application-Id"
+                  for r in range(expmod.HEADER_ROW + 1, 60)))
+        check("dropdowns are attached",
+              len(ws.data_validations.dataValidation) >= 4,
+              len(ws.data_validations.dataValidation))
+
+        # A list of permitted values is not an operation. The Vocabulary
+        # headings are worded so the classifier cannot mistake it for one.
+        vocab = wb["Vocabulary"]
+        eq("the vocabulary heading does not read as a column role",
+           vocab.cell(row=1, column=1).value, "Parameter Type values")
+    finally:
+        wb.close()
+
+    verdict = cls.classify(path)
+    eq("the template is a field mapping document", verdict.fmt, cls.MAPPING)
+    eq("with two operation sheets and two support sheets",
+       (verdict.operation_sheets, verdict.support_sheets), (2, 2))
+
+    for strict in (False, True):
+        reps = val.validate_workbook(path, strict=strict)
+        summary = val.summarise(reps)
+        eq("it validates clean, strict=%s: no errors" % strict,
+           summary["errors"], 0)
+        eq("it validates clean, strict=%s: no warnings" % strict,
+           summary["warnings"], 0)
+        eq("two operation sheets, strict=%s" % strict,
+           summary["operations"], 2)
+
+    out_dir = tmp("fm_tmpl_out")
+    out = gen.run(path, out_dir, log=lambda *_a: None)
+    eq("both sheets generate", len(out.failed), 0)
+    eq("and both are pattern P1, the only one this format has",
+       sorted(s.pattern for s in out.ok), ["P1", "P1"])
+    eq("the merge is clean", [f.code for f in out.merged.findings], [])
+    eq("no empty schema reaches the output",
+       gen.empty_schemas(out.merged.document), [])
+
+    S = out.merged.document["components"]["schemas"]
+    check("the worked example shares a class between request and response",
+          "AccountReference" in S, sorted(S))
+    check("and shows an array of objects", "BalanceListItem" in S, sorted(S))
+    check("the shared class is referenced rather than repeated",
+          out.merged.stats["hoisted_groups"] >= 2,
+          out.merged.stats)
+
+    # The template is written in the format the exporter writes, so a run
+    # from it must round trip like any other field mapping document.
+    exported = os.path.join(out_dir, "export.xlsx")
+    run = gen.run(path, out_dir, write=False, log=lambda *_a: None)
+    expmod.write(run, exported)
+    eq("the export of the template is still a field mapping document",
+       cls.classify(exported).fmt, cls.MAPPING)
+    again = val.summarise(val.validate_workbook(exported))
+    eq("and it validates clean in its turn", again["errors"], 0)
+
+
+# --------------------------------------------------------------------------- #
 
 
 def main():
     for fn in (w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15,
-               w16, w17, w18, w19, w20, w21, w22, w23, w24):
+               w16, w17, w18, w19, w20, w21, w22, w23, w24, w25, w26):
         try:
             fn()
         except Exception:                                      # noqa: BLE001

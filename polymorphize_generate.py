@@ -1,7 +1,7 @@
 """
 polymorphize_generate — one OpenAPI specification per worksheet.
 
-Version 6.6.
+Version 6.7.
 
 The workbook is authoritative. Each operation sheet describes one endpoint, so
 one workbook yields one specification per sheet rather than one specification
@@ -58,7 +58,7 @@ from polymorphize_workbook import (
     Finding, SECTION_REQUEST, VARIANT_PROPERTY, cell_ref, key, text,
 )
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 OPENAPI_VERSION = "3.0.3"
 
@@ -767,6 +767,8 @@ class RunResult:
     results: list = field(default_factory=list)
     #: The field mapping document, when one was written.
     export_path: str = ""
+    #: Why it was not, when it was asked for and failed.
+    export_error: str = ""
 
     @property
     def sor_verified(self):
@@ -952,11 +954,42 @@ def run(workbook, out_dir, *, strict=False, version="1.0.0", fmt="yaml",
             target = os.path.join(out_dir, expmod.default_filename(out, merged_name))
             out.export_path = expmod.write(out, target, spec_path=spec_path)
             log("  wrote  %s" % os.path.basename(out.export_path))
+            if os.path.abspath(out.export_path) != os.path.abspath(target):
+                log("  NOTE   %s could not be overwritten, most likely because "
+                    "it is open. The document was written beside it as %s."
+                    % (os.path.basename(target),
+                       os.path.basename(out.export_path)))
         except Exception as exc:                               # noqa: BLE001
-            # The specification is already on disk. Failing to write the
-            # documentation must not discard a good run.
-            log("  WARNING: could not write the field mapping document: %s: %s"
-                % (type(exc).__name__, exc))
+            # The specification is already on disk, so a failure here must not
+            # discard a good run. It must also not disappear into one line of
+            # a long log: the run claimed an artefact and did not produce it,
+            # so the reason is recorded on disk beside the output and the
+            # caller is told, loudly enough to reach the banner.
+            import traceback
+            out.export_error = "%s: %s" % (type(exc).__name__, exc)
+            log("  FAILED to write the field mapping document. %s"
+                % out.export_error)
+            try:
+                note = os.path.join(out_dir, "FIELD_MAPPING_NOT_WRITTEN.md")
+                core._write(note, "\n".join([
+                    "# The field mapping document was not written",
+                    "",
+                    "The specifications in this folder are unaffected and are "
+                    "complete. Only the spreadsheet failed.",
+                    "",
+                    "**Reason:** `%s`" % out.export_error,
+                    "",
+                    "If the file was open in Excel, close it and run again. "
+                    "Otherwise send this file to the maintainer.",
+                    "",
+                    "```",
+                    traceback.format_exc().rstrip(),
+                    "```",
+                    "",
+                ]))
+                log("         the reason is in %s" % os.path.basename(note))
+            except Exception:                                  # noqa: BLE001
+                pass
 
     if write:
         core._write(os.path.join(out_dir, "generation_report.md"), build_report(out))
@@ -1018,6 +1051,24 @@ def build_report(out):
     else:
         L.append("Output: **one specification** for the whole workbook.")
     L.append("")
+    # The report is the record of what the run produced, so it states the
+    # field mapping document's fate whichever way it went. A run that was
+    # asked for an artefact and did not produce it should say so somewhere
+    # more durable than a scrolling log.
+    if out.export_error:
+        L.append("Field mapping document: **not written**. `%s`. The "
+                 "specifications above are unaffected. See "
+                 "`FIELD_MAPPING_NOT_WRITTEN.md`." % out.export_error)
+        L.append("")
+    elif out.export_path:
+        L.append("Field mapping document: `%s`"
+                 % os.path.basename(out.export_path))
+        L.append("")
+    elif out.split:
+        L.append("Field mapping document: not written for a split run. It "
+                 "states which specification it matches and a split run "
+                 "produces several.")
+        L.append("")
 
     if out.merged is not None and out.merged.errors:
         L.append("## The merge failed")

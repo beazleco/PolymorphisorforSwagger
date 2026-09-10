@@ -1,7 +1,7 @@
 """
 polymorphize_merge — one specification for the whole workbook.
 
-Version 6.6.
+Version 6.7.
 
 Why one document
 ================
@@ -78,7 +78,7 @@ import polymorphize_generate as gen
 import polymorphize_workbook as wbk
 from polymorphize_workbook import Finding, VARIANT_PROPERTY, cell_ref, key, text
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 OPENAPI_VERSION = gen.OPENAPI_VERSION
 

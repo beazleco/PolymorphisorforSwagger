@@ -3,8 +3,8 @@ info:
   title: Credit Card Account Statement_Retrieve
   version: 1.0.0
   description: Use this API to retrieve card statement details
-  x-generated-by: SOR Polymorphizer 6.6
-  x-generated-at: '2026-09-10T00:00:07+00:00'
+  x-generated-by: SOR Polymorphizer 6.7
+  x-generated-at: '2026-09-10T00:27:57+00:00'
   x-source-sheet: Account Statement_Retrieve
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card

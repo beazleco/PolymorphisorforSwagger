@@ -2,7 +2,7 @@
 """
 polymorphize_export — the field mapping document, written back out.
 
-Version 6.6.
+Version 6.7.
 
 The tool reads a mapping workbook and writes a specification. This module
 writes the third artefact: a field mapping document in the API COE's own
@@ -76,6 +76,22 @@ Not on the command line
 
 By instruction. The export is available in the desktop window and in the batch
 runner. ``polymorphize_cli`` says so rather than failing silently.
+
+Failing loudly
+==============
+
+The specification is already on disk by the time this module runs, so a
+failure here must not discard a good run. It must also not vanish into one
+line of a long log, which is what 6.6 did: a run that promised a spreadsheet
+and produced none said so once, in a warning that did not contain the word
+xlsx, and was easy to read as nothing having happened at all.
+
+Since 6.6.1 a failure sets ``RunResult.export_error``, writes
+``FIELD_MAPPING_NOT_WRITTEN.md`` beside the output with the traceback, is
+stated in the generation report, and reaches the window as a red banner and a
+dialog. Two causes are handled rather than reported: content Excel refuses,
+which ``clean`` repairs, and a target that cannot be overwritten because the
+analyst still has the previous round open, which is written beside instead.
 """
 
 from __future__ import annotations
@@ -92,7 +108,7 @@ from openpyxl.utils import get_column_letter
 import polymorphize_showcase as show
 from polymorphize_workbook import USAGE_CONDITIONAL, USAGE_REQUIRED, text
 
-__version__ = "6.6"
+__version__ = "6.7"
 
 # --------------------------------------------------------------------------- #
 # The format
@@ -616,6 +632,40 @@ def _endpoint_suffix(endpoint, index, total):
 # --------------------------------------------------------------------------- #
 
 
+#: Excel refuses a string longer than this in a cell.
+CELL_LIMIT = 32767
+
+_ILLEGAL_CHARS = re.compile(r"[\000-\010\013\014\016-\037]")
+
+
+def clean(value):
+    """A value Excel will accept, or the nearest thing to it.
+
+    Carrying a cell verbatim is the point of the export, but verbatim has to
+    stop short of content the writer cannot physically store. openpyxl refuses
+    a control character outright and Excel refuses a string over 32767
+    characters, and either one would abort the whole workbook over a single
+    cell. Both are repaired here rather than allowed to lose the document.
+    """
+    if value is None or isinstance(value, (int, float, bool)):
+        return value
+    if not isinstance(value, str):
+        try:
+            import datetime as _d
+            if isinstance(value, (_d.date, _d.time, _d.datetime, _d.timedelta)):
+                return value
+        except Exception:                                      # noqa: BLE001
+            pass
+        value = str(value)
+    if _ILLEGAL_CHARS.search(value):
+        value = _ILLEGAL_CHARS.sub(" ", value)
+    if len(value) > CELL_LIMIT:
+        tail = " [truncated by the exporter: the cell held %d characters]" \
+            % len(value)
+        value = value[:CELL_LIMIT - len(tail)] + tail
+    return value
+
+
 def _style(cell, *, bold=False, colour=None, fill=None, wrap=True, size=10):
     cell.font = Font(name=FONT, size=size, bold=bold, color=colour)
     cell.alignment = Alignment(vertical="top", wrap_text=wrap)
@@ -631,13 +681,13 @@ def _write_sheet(wb, plan):
     headings[SOR_COLUMN] = plan.sor_header
 
     for r, (label, key_) in enumerate(BANNER_ROWS, start=1):
-        c = ws.cell(row=r, column=1, value=label)
+        c = ws.cell(row=r, column=1, value=clean(label))
         _style(c, bold=True, fill=FILL_BANNER, wrap=False)
-        v = ws.cell(row=r, column=2, value=text(plan.banner.get(key_, "")))
+        v = ws.cell(row=r, column=2, value=clean(text(plan.banner.get(key_, ""))))
         _style(v, fill=FILL_BANNER)
 
     for i, heading in enumerate(headings, start=1):
-        c = ws.cell(row=HEADER_ROW, column=i, value=heading)
+        c = ws.cell(row=HEADER_ROW, column=i, value=clean(heading))
         _style(c, bold=True, colour="FFFFFFFF", fill=FILL_HEADER)
     ws.row_dimensions[HEADER_ROW].height = 34
 
@@ -650,12 +700,12 @@ def _write_sheet(wb, plan):
         if entry["status"] in DROPPED:
             fill = FILL_DROPPED
         for i, value in enumerate(cells, start=1):
-            c = ws.cell(row=r, column=i, value=value if value != "" else None)
+            c = ws.cell(row=r, column=i, value=clean(value) if value != "" else None)
             _style(c, bold=(entry["kind"] == "section"), fill=fill)
         for j, value in enumerate((entry["status"], entry["why"],
                                    entry["action"])):
             col = n_format + n_extra + j + 1
-            c = ws.cell(row=r, column=col, value=value or None)
+            c = ws.cell(row=r, column=col, value=clean(value) or None)
             _style(c, fill=(FILL_ACTION if j == 2 and value else FILL_DIFF))
         r += 1
 
@@ -714,9 +764,9 @@ def _write_provenance(wb, out, plans, skipped, spec_path, round_no):
 
     def line(label, value, *, bold=False):
         nonlocal r
-        a = ws.cell(row=r, column=1, value=label)
+        a = ws.cell(row=r, column=1, value=clean(label))
         _style(a, bold=True, fill=FILL_BANNER, wrap=False)
-        b = ws.cell(row=r, column=2, value=value)
+        b = ws.cell(row=r, column=2, value=clean(value))
         _style(b, bold=bold)
         r += 1
 
@@ -726,7 +776,7 @@ def _write_provenance(wb, out, plans, skipped, spec_path, round_no):
 
     def heading(txt):
         nonlocal r
-        c = ws.cell(row=r, column=1, value=txt)
+        c = ws.cell(row=r, column=1, value=clean(txt))
         _style(c, bold=True, colour="FFFFFFFF", fill=FILL_HEADER, wrap=False)
         for i in range(2, 7):
             _style(ws.cell(row=r, column=i), fill=FILL_HEADER)
@@ -764,7 +814,7 @@ def _write_provenance(wb, out, plans, skipped, spec_path, round_no):
         "workbook describes. If the specification has been regenerated since, "
         "the fingerprints will differ and this workbook is out of date.",
     ):
-        c = ws.cell(row=r, column=1, value=txt)
+        c = ws.cell(row=r, column=1, value=clean(txt))
         _style(c)
         ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=6)
         ws.row_dimensions[r].height = 30
@@ -776,11 +826,11 @@ def _write_provenance(wb, out, plans, skipped, spec_path, round_no):
               (show.PUBLISHED, show.VARIANT_ONLY, show.NOT_IN_SOR,
                show.NO_FIELD, show.LOST)]
     for i, title in enumerate(["Sheet"] + labels, start=1):
-        c = ws.cell(row=r, column=i, value=title)
+        c = ws.cell(row=r, column=i, value=clean(title))
         _style(c, bold=True, fill=FILL_SECTION)
     r += 1
     for plan in plans:
-        _style(ws.cell(row=r, column=1, value=plan.title))
+        _style(ws.cell(row=r, column=1, value=clean(plan.title)))
         for i, label in enumerate(labels, start=2):
             _style(ws.cell(row=r, column=i,
                            value=plan.counts.get(label, 0) or None))
@@ -790,8 +840,8 @@ def _write_provenance(wb, out, plans, skipped, spec_path, round_no):
     if skipped:
         heading("Not exported")
         for sheet, why in skipped:
-            _style(ws.cell(row=r, column=1, value=sheet))
-            c = ws.cell(row=r, column=2, value=why)
+            _style(ws.cell(row=r, column=1, value=clean(sheet)))
+            c = ws.cell(row=r, column=2, value=clean(why))
             _style(c)
             ws.merge_cells(start_row=r, start_column=2, end_row=r,
                            end_column=6)
@@ -810,7 +860,7 @@ def _write_provenance(wb, out, plans, skipped, spec_path, round_no):
             "The Schema and Usage wording is the tool's spelling, not the "
             "analyst's, because there was no original cell to copy.",
         ):
-            c = ws.cell(row=r, column=1, value=txt)
+            c = ws.cell(row=r, column=1, value=clean(txt))
             _style(c)
             ws.merge_cells(start_row=r, start_column=1, end_row=r,
                            end_column=6)
@@ -907,10 +957,26 @@ def _failed_sheet(wb, result, spec, taken):
 
 
 def write(out, path, *, spec_path=""):
-    """Write the field mapping document and return its path."""
+    """Write the field mapping document and return the path written.
+
+    A locked target does not lose the document. An analyst who still has the
+    previous round open in Excel is the ordinary case, not an exceptional one,
+    and Windows refuses the overwrite: the workbook is written beside it under
+    a stamped name instead, and the caller is told which path it got.
+    """
     wb = build(out, spec_path=spec_path)
-    wb.save(path)
-    return path
+    try:
+        wb.save(path)
+        return path
+    except PermissionError:
+        # Only this one. A path that does not exist, or a full disk, is a
+        # real failure and must surface rather than be retried under another
+        # name in the same impossible place.
+        stem, ext = os.path.splitext(path)
+        stamp = _dt.datetime.now().strftime("%Y%m%d_%H%M%S")
+        alternative = "%s_%s%s" % (stem, stamp, ext)
+        wb.save(alternative)                  # a second failure is a real one
+        return alternative
 
 
 __all__ = ["BANNER_ROWS", "FORMAT_COLUMNS", "DIFF_COLUMNS", "HEADER_ROW",

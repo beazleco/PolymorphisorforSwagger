@@ -8,6 +8,8 @@ Generated 22 of 22 endpoints. **0 failed.**
 
 Output: **one specification** for the whole workbook.
 
+Field mapping document: `issued-device_field_mapping.xlsx`
+
 ## Endpoints generated
 
 | Sheet | Pattern | SOR endpoints | Method | Path |

@@ -1,4 +1,4 @@
-# SOR Polymorphizer 6.6
+# SOR Polymorphizer 6.7
 
 Turns a System of Record mapping workbook into **one** OpenAPI 3.0.3
 specification, publishing only the attributes the SOR actually supports and
@@ -28,8 +28,9 @@ analyst can correct the rows it flags and feed it straight back in.
 ## Quick start
 
 ```bash
-# Write a template to work from
-python polymorphize_cli.py template SOR_mapping_template.xlsx
+# Write a template to work from, in either input format
+python polymorphize_cli.py template                      # the Level format
+python polymorphize_cli.py template --format mapping     # a field mapping document
 
 # Check a workbook without writing anything
 python polymorphize_cli.py check my_workbook.xlsx
@@ -107,6 +108,34 @@ merged into a single specification.
   shrinks.
 
 A sheet with no `Level` columns is a support sheet and is skipped silently.
+
+## Starting a workbook
+
+Both input formats have a template, and the window and the command line both
+ask which is wanted rather than assuming:
+
+```bash
+python polymorphize_cli.py template --format mapping my_new_document.xlsx
+```
+
+Each holds a How to use sheet stating the contract in prose, a Vocabulary
+sheet holding the lists behind the dropdowns, at least one worked operation,
+and a skeleton to copy once per endpoint. Both validate clean at the strict
+level and generate, which the suite holds, so a workbook built from one starts
+from a known good state rather than from a blank sheet.
+
+| Template | Sheets | Choose it when |
+|---|---|---|
+| `--format level` | Two worked operations and a skeleton | An operation is served by several SOR endpoints, or you want a runtime variant. Only this format can express one |
+| `--format mapping` | One worked operation and a skeleton | You are working in the format the API COE circulates, or you intend to iterate on an exported document |
+
+The field mapping template arrives with the standard header block already in
+place above each Request Body, the banner labels the reader recognises, and
+dropdowns on Parameter Type, Usage, Schema and Required in Swagger. Its worked
+operation is chosen to teach three things at once: a nested group named the
+same way in the request and the response, so the two share one class; an array
+of objects; and an attribute marked `N/A`, which is how an element is kept out
+of the published interface.
 
 ## The field mapping contract
 
@@ -342,6 +371,32 @@ have no source in the Level format, the header block comes from the constant
 rather than the workbook, and the Schema and Usage wording is the tool's
 spelling.
 
+### If it is not there
+
+The run says so in three places rather than one, so a missing document cannot
+be mistaken for a run that was never asked for it.
+
+| Where | What you see |
+|---|---|
+| The log | `wrote  openapi_field_mapping.xlsx`, or a line beginning `FAILED to write the field mapping document` |
+| `generation_report.md` | A `Field mapping document:` line naming the file, or saying it was not written and why |
+| The window | The banner names what was written, and a failure raises a dialog |
+
+A failure also writes `FIELD_MAPPING_NOT_WRITTEN.md` into the output folder,
+carrying the reason and the traceback. The specifications are unaffected: they
+are on disk before this runs.
+
+Two causes are handled rather than reported. Content Excel refuses, meaning a
+control character or a cell over 32767 characters, is repaired on the way out,
+because losing a whole document over one cell is not a trade worth making. And
+a target that cannot be overwritten, normally because the previous round is
+still open in Excel, is written beside it under a stamped name, with the log
+saying which path it got.
+
+If nothing at all appears, check three things: the title bar reads 6.6.1, the
+Documentation checkbox is ticked, and Output is not set to one specification
+per sheet.
+
 ### The standard header block
 
 The Level format carries no header rows. The reference field mapping document
@@ -452,7 +507,8 @@ how to fix it.
 
 | File | What it is |
 |---|---|
-| `samples/SOR_mapping_template.xlsx` | The template. Validates clean, generates cleanly |
+| `samples/SOR_mapping_template.xlsx` | The Level format template. Validates clean, generates cleanly |
+| `samples/field_mapping_template.xlsx` | The field mapping template. The same, in the other format |
 | `samples/creditcard_v2.0.0.xlsx` | The reference workbook, 12 endpoints, one with a real defect |
 | `samples/creditcard_out/` | The merged specification, the report and the failure explanation |
 | `samples/creditcard_split/` | The same workbook with `--split`, one file per sheet |
