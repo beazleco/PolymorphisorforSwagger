@@ -3,8 +3,8 @@ info:
   title: Credit Card Card issuedDevice_Update
   version: 1.0.0
   description: This API will be used to update details for an issued device
-  x-generated-by: SOR Polymorphizer 6.7
-  x-generated-at: '2026-09-10T00:27:57+00:00'
+  x-generated-by: SOR Polymorphizer 6.8
+  x-generated-at: '2026-09-11T05:20:33+00:00'
   x-source-sheet: Card issuedDevice_Update
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card
@@ -12,7 +12,7 @@ paths:
   /CreditCard/IssuedDevice/Update:
     put:
       operationId: cardIssuedDeviceUpdate
-      summary: This API will be used to update details for an issued device
+      summary: Card issuedDevice Update API
       tags:
       - Credit Card
       responses:
@@ -59,7 +59,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceInstanceUpdateRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to update details
+        for an issued device"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to update details for an issued device
       x-bian-behaviour-qualifier: Issued Device

@@ -3,8 +3,8 @@ info:
   title: Credit Card Transaction Adjustment_Initiate
   version: 1.0.0
   description: Use this API to post cardholder account adjustment
-  x-generated-by: SOR Polymorphizer 6.7
-  x-generated-at: '2026-09-10T00:27:57+00:00'
+  x-generated-by: SOR Polymorphizer 6.8
+  x-generated-at: '2026-09-11T05:20:33+00:00'
   x-source-sheet: Transaction Adjustment_Initiate
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card
@@ -12,7 +12,7 @@ paths:
   /credit-card/card-transaction/adjustment/initiate:
     post:
       operationId: transactionAdjustmentInitiate
-      summary: Use this API to post cardholder account adjustment
+      summary: Transaction Adjustment Initiate API
       tags:
       - Credit Card
       responses:
@@ -59,7 +59,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardTransactionAdjustmentRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nUse this API to post cardholder account
+        adjustment"
       x-api-lifecycle-status: Design
       x-use-case: Use this API to post cardholder account adjustment
       x-bian-behaviour-qualifier: Card Transaction

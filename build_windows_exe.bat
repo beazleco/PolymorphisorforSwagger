@@ -2,7 +2,7 @@
 REM ==========================================================================
 REM  Build a standalone Windows .exe for the SOR Polymorphizer GUI.
 REM
-REM  Version 6.7.  Keep the VERSION line below in step with __version__ in
+REM  Version 6.8.  Keep the VERSION line below in step with __version__ in
 REM  polymorphize_gui.py: it is what the closing message tells the user to
 REM  check in the title bar, and a stale number there sends people hunting a
 REM  build problem that does not exist.
@@ -13,7 +13,7 @@ REM  Always rebuilds from the freshest source and clears every cache, so an
 REM  old build can never leave the fields pre-filled.
 REM ==========================================================================
 setlocal
-set VERSION=6.7
+set VERSION=6.8
 cd /d "%~dp0"
 echo SOR Polymorphizer %VERSION% build
 echo Working folder: %CD%

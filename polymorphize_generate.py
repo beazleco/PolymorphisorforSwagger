@@ -1,7 +1,7 @@
 """
 polymorphize_generate — one OpenAPI specification per worksheet.
 
-Version 6.7.
+Version 6.8.
 
 The workbook is authoritative. Each operation sheet describes one endpoint, so
 one workbook yields one specification per sheet rather than one specification
@@ -58,7 +58,7 @@ from polymorphize_workbook import (
     Finding, SECTION_REQUEST, VARIANT_PROPERTY, cell_ref, key, text,
 )
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 OPENAPI_VERSION = "3.0.3"
 
@@ -72,10 +72,25 @@ SEP = "__"
 #: this tool produced.
 LIFECYCLE_STATUS = "Design"
 
-#: The operation description, exactly as it should render. Markdown for the
-#: emphasis, raw HTML for the underline, which CommonMark permits and which
-#: Swagger UI and Redoc both render.
+#: The lifecycle line, exactly as it should render. Markdown for the emphasis,
+#: raw HTML for the underline, which CommonMark permits and which Swagger UI
+#: and Redoc both render.
 LIFECYCLE_DESCRIPTION = "**<u>API Lifecycle Status - %s</u>**" % LIFECYCLE_STATUS
+
+
+def operation_description(use_case=""):
+    """The operation description: the lifecycle line, then the use case.
+
+    Separated by a blank line, which is what makes them two paragraphs in
+    markdown rather than one run-on line. A single newline would render as a
+    space in every viewer that follows CommonMark, so the blank line is load
+    bearing and not formatting.
+    """
+    use_case = text(use_case).strip()
+    if not use_case:
+        return LIFECYCLE_DESCRIPTION
+    return "%s\n\n%s" % (LIFECYCLE_DESCRIPTION, use_case)
+
 
 #: Sheet-name suffix to HTTP method.
 METHOD_BY_SUFFIX = {
@@ -584,7 +599,12 @@ def generate_sheet(result, *, title=None, version="1.0.0"):
 
     operation = {
         "operationId": (pascal(result.sheet)[:1].lower() + pascal(result.sheet)[1:]),
-        "summary": text(banner.get("use_case", ""))[:120] or result.sheet,
+        # The API Name from the banner, or derived from the sheet name where
+        # the format has no cell for one. The same rule the exported
+        # spreadsheet follows, so the two name an operation alike.
+        "summary": (text(banner.get("api_name", ""))
+                    or wbk.derive_api_name(result.sheet)
+                    or result.sheet),
         "tags": [text(banner.get("service_domain", "")) or "Operations"],
         "responses": {},
     }
@@ -606,12 +626,13 @@ def generate_sheet(result, *, title=None, version="1.0.0"):
                            "Response Body section of the mapping workbook "
                            "carries no attribute mapped to an SOR field.",
         }
-    # The description is the lifecycle statement and nothing else, so that it
-    # renders as one line in every viewer. The use case is not lost: it is the
-    # summary, and x-use-case carries it untruncated.
-    operation["description"] = LIFECYCLE_DESCRIPTION
+    # The lifecycle statement first, then the use case as a second paragraph.
+    # The summary is the API name, so the two do not repeat each other.
+    operation["description"] = operation_description(banner.get("use_case", ""))
     operation["x-api-lifecycle-status"] = LIFECYCLE_STATUS
     if banner.get("use_case"):
+        # Kept as well as placed in the description: a reader that wants the
+        # use case alone should not have to strip markdown off the front.
         operation["x-use-case"] = text(banner["use_case"])
     if banner.get("behaviour_qualifier"):
         operation["x-bian-behaviour-qualifier"] = banner["behaviour_qualifier"]

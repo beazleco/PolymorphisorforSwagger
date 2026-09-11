@@ -1,7 +1,7 @@
 """
 polymorphize_template — writes the SOR mapping workbook template.
 
-Version 6.7.
+Version 6.8.
 
 The template is the contract. It carries the header row the reader looks for,
 the banner labels it recognises, the two section labels it consumes, and
@@ -47,7 +47,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 
 import polymorphize_workbook as wbk
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 LEVELS = 6
 

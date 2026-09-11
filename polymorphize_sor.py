@@ -1,7 +1,7 @@
 """
 polymorphize_sor — verification against the System of Record specification.
 
-Version 6.7.
+Version 6.8.
 
 The question this module answers
 ===============================
@@ -54,7 +54,7 @@ import polymorphize_core as core
 import polymorphize_workbook as wbk
 from polymorphize_workbook import Finding, cell_ref, col_letter, key, text
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 #: Methods whose request is carried by parameters rather than a body.
 PARAMETER_METHODS = {"get", "delete", "head", "options"}

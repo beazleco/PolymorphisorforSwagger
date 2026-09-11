@@ -17,7 +17,8 @@ single merged specification in v6.1; items 26 to 32 came with verification
 against the System of Record and the HTML showcase in v6.2; items 33 to 37 came
 with v6.3; item 38 with v6.4; items 39 to 47 with the two-format build in 6.5;
 items 48 to 55 with the field mapping export in 6.6, 56 to 58 with the
-hardening in 6.6.1, and 59 to 61 with the field mapping template in 6.7.
+hardening in 6.6.1, 59 to 61 with the field mapping template in 6.7, and 62 to 63 with the
+summary and description change in 6.8.
 
 The two Word documents (`SOR_Polymorphizer_Technical_Guide.docx`,
 `SOR_Polymorphizer_User_Manual.docx`) and the presentation
@@ -47,8 +48,8 @@ Slides 12 and 13 of the presentation still teach the v5.2 position.
 
 ### 3. Test counts
 39 → 49 → 62 → 93 → 271 → 343 → 486 → 499 → 501 → 736 → 787 → 800 →
-**832** across three suites (601 + 156 + 75). `tests/run_all.py` runs all
-three.
+832 → **851** across three suites (620 + 156 + 75). `tests/run_all.py` runs
+all three.
 
 ### 4. The workbook read is bounded
 Sheets declare enormous dimensions because of stray formatting far below the
@@ -1195,3 +1196,47 @@ heading exactly, so a sheet that merely mentions a column role is safe and a
 sheet that reproduces one is not.
 
 Test count 800 to **832** (601 + 156 + 75). `W26` holds the template.
+
+---
+
+## New in 6.8
+
+### 62. The summary is the API name, and the description carries the use case
+
+Set by Colin. Two changes to how an operation describes itself, and they go
+together: the summary stops repeating what the description says.
+
+**Summary.** The API Name from the banner. Until now the summary was the use
+case truncated to 120 characters, which made the summary and the description
+two views of the same sentence, one of them cut off mid-word.
+
+**Description.** The lifecycle line as before, then a blank line, then the use
+case. The blank line is the whole of the mechanism: markdown treats a single
+newline as a space, so without it the two would render as one run-on line in
+Swagger UI and Redoc. `operation_description` owns that and a test asserts the
+blank line specifically, not merely that both strings appear.
+
+`x-use-case` is kept even though the description now carries the same text. A
+consumer that wants the use case on its own should not have to strip markdown
+off the front of a field to get at it.
+
+### 63. One rule for what an operation is called
+
+The field mapping format has an API Name row. The Level format has no cell for
+one, so the name is derived from the sheet name: `Card Transaction_Retrieve`
+becomes `Card Transaction Retrieve API`, and a name already ending in API is
+left alone.
+
+The derivation moved to `polymorphize_workbook.derive_api_name`, where both
+the generator and the exporter reach it. It had been living in the exporter,
+which was fine while only the spreadsheet used it and would have been a defect
+the moment the swagger derived its own: the two would have named the same
+operation differently and nobody would have noticed until someone compared
+them side by side.
+
+The banner's own API Name always wins over the derived one, so a workbook that
+states a name gets the name it states.
+
+Test count 832 to **851** (620 + 156 + 75). `W22` covers both changes, and
+asserts that no summary equals its own use case, which is the regression that
+would mean the old behaviour had crept back.

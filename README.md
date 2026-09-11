@@ -1,4 +1,4 @@
-# SOR Polymorphizer 6.7
+# SOR Polymorphizer 6.8
 
 Turns a System of Record mapping workbook into **one** OpenAPI 3.0.3
 specification, publishing only the attributes the SOR actually supports and
@@ -410,21 +410,33 @@ headers appear once with a length and a Usage and once with neither, and three
 rows carry `CVV`, `auxiliaryPan` and `auxiliaryExpiry` in the Required in
 Swagger column, which is paste drift from the neighbouring column.
 
-## The API lifecycle stage
-
-Every operation declares the stage it has reached:
+## How an operation describes itself
 
 ```yaml
-description: '**<u>API Lifecycle Status - Design</u>**'
+summary: Available Funds Retrieve API
+description: |-
+  **<u>API Lifecycle Status - Design</u>**
+
+  Use this API to retrieve card available funds details
 x-api-lifecycle-status: Design
 x-use-case: Use this API to retrieve card available funds details
 ```
 
-The description is the statement and nothing else, so it renders as one line
-in Swagger UI and Redoc. The use case is not displaced: it remains the
-operation summary and `x-use-case` carries it untruncated. `Design` is fixed
-rather than an option, because the tool generates a design and an operation
-that has reached a later stage is no longer something it produced.
+**The summary is the API name.** It comes from the API Name row of the field
+mapping banner. The Level format has no cell for one, so it is derived from
+the sheet name, and the generated specification and the exported spreadsheet
+derive it the same way so that the two never name an operation differently.
+
+**The description is the lifecycle stage, then the use case**, separated by a
+blank line so they render as two paragraphs. A single newline would come out
+as a space in any viewer that follows CommonMark, so the blank line is load
+bearing rather than formatting.
+
+`Design` is fixed rather than an option, because the tool generates a design
+and an operation that has reached a later stage is no longer something it
+produced. `x-api-lifecycle-status` carries the value for anything that has to
+read it rather than display it, and `x-use-case` carries the use case alone,
+so a reader wanting it need not strip markdown off the front.
 
 ## The error set
 

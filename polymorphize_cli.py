@@ -1,7 +1,7 @@
 """
 polymorphize_cli — command line entry points.
 
-Version 6.7.
+Version 6.8.
 
 Two subcommands:
 
@@ -35,7 +35,7 @@ import sys
 import polymorphize_generate as gen
 import polymorphize_validate as val
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 EXIT_OK = 0
 EXIT_UNREADABLE = 2

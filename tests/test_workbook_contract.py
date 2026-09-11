@@ -1680,10 +1680,27 @@ def w21():
 
 
 def w22():
-    group("W22 — the API lifecycle status on every operation")
-    eq("the description is the bold underlined lifecycle line",
+    group("W22 — the summary, and the lifecycle status above the use case")
+    eq("the lifecycle line is bold and underlined",
        gen.LIFECYCLE_DESCRIPTION,
        "**<u>API Lifecycle Status - Design</u>**")
+    eq("with no use case it stands alone",
+       gen.operation_description(""), gen.LIFECYCLE_DESCRIPTION)
+    eq("with one, a blank line separates them",
+       gen.operation_description("Retrieve a balance."),
+       "**<u>API Lifecycle Status - Design</u>**\n\nRetrieve a balance.")
+    check("a single newline would not do: markdown needs the blank line",
+          "\n\n" in gen.operation_description("x"))
+    eq("surrounding whitespace on the use case is dropped",
+       gen.operation_description("  Retrieve a balance.  "),
+       gen.operation_description("Retrieve a balance."))
+
+    # The name an operation is known by, shared with the exported spreadsheet.
+    eq("a sheet name becomes an API name",
+       wbk.derive_api_name("Card Transaction_Retrieve"),
+       "Card Transaction Retrieve API")
+    eq("and one that already says API is left alone",
+       wbk.derive_api_name("Token Search API"), "Token Search API")
 
     if not os.path.exists(CREDIT_CARD):
         check("the reference workbook is present", False, CREDIT_CARD)
@@ -1692,19 +1709,39 @@ def w22():
     ops = [op for entry in m.document["paths"].values()
            for method, op in entry.items() if isinstance(op, dict)]
     check("there are operations to check", bool(ops), len(ops))
-    eq("every operation carries the lifecycle description",
-       {op.get("description") for op in ops},
+
+    eq("every description opens with the lifecycle line",
+       {op.get("description", "").split("\n")[0] for op in ops},
        {"**<u>API Lifecycle Status - Design</u>**"})
     eq("and the status as an extension a machine can read",
        {op.get("x-api-lifecycle-status") for op in ops}, {"Design"})
-    # The use case is not lost to make room for it.
-    check("the use case survives as the summary",
-          all(op.get("summary") for op in ops))
-    check("and untruncated as x-use-case",
-          any(op.get("x-use-case") for op in ops))
-    longest = max((op.get("x-use-case", "") for op in ops), key=len)
-    check("x-use-case is not the truncated summary", len(longest) > 0,
-          longest[:40])
+    check("every description carries the use case beneath it",
+          all("\n\n" in op.get("description", "") for op in ops),
+          [op.get("operationId") for op in ops
+           if "\n\n" not in op.get("description", "")][:3])
+    for op in ops:
+        if op.get("x-use-case"):
+            eq("%s ends its description with its own use case"
+               % op.get("operationId"),
+               op["description"].split("\n\n", 1)[1], op["x-use-case"])
+
+    # The summary is the API name, so it no longer repeats the use case.
+    check("every operation has a summary", all(op.get("summary") for op in ops))
+    eq("the summary is the API name, not the use case",
+       sorted({op["summary"] for op in ops})[:3],
+       ["Account Statement Retrieve API", "Available Funds Retrieve API",
+        "Card Cancel API"])
+    check("no summary repeats the use case",
+          not any(op.get("summary") == op.get("x-use-case") for op in ops))
+
+    # Where the format carries an API Name of its own, that is what is used.
+    if os.path.exists(FIELD_MAPPING):
+        run = gen.run(FIELD_MAPPING, tmp("summary_out"), write=False,
+                      log=lambda *_a: None)
+        spec = next(s for s in run.ok if s.sheet == "Token_Search")
+        op = spec.document["paths"][spec.path][spec.method]
+        eq("the banner's own API Name wins over the derived one",
+           op["summary"], "Token Search API")
 
 
 # --------------------------------------------------------------------------- #

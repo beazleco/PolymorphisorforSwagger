@@ -6,8 +6,8 @@ info:
     Administration. Only attributes mapped to a System of Record field are published; shared groups 
     that differ between operations are specialised with allOf, and operations served by several SOR 
     endpoints carry a requestVariant discriminator.
-  x-generated-by: SOR Polymorphizer 6.7
-  x-generated-at: '2026-09-10T00:27:58+00:00'
+  x-generated-by: SOR Polymorphizer 6.8
+  x-generated-at: '2026-09-11T05:20:34+00:00'
   x-source-sheets:
   - Token_Search
   - Token_Get Credentials
@@ -39,8 +39,7 @@ paths:
   /issued-device-administration/token-assignment/search:
     post:
       operationId: tokenSearch
-      summary: This request is used by the issuer backend to search for digital cards in D1 using 
-        digital PAN as lookup and retrieve ca
+      summary: Token Search API
       tags:
       - Issued Device Administration
       responses:
@@ -87,7 +86,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenCardDetailsRetrieveRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by the issuer backend
+        to search for digital cards in D1 using digital PAN as lookup and retrieve card & end user related
+        details"
       x-api-lifecycle-status: Design
       x-use-case: This request is used by the issuer backend to search for digital cards in D1 using
         digital PAN as lookup and retrieve card & end user related details
@@ -97,8 +98,7 @@ paths:
   /issued-device-administration/token-assignment/credentials/retrieve:
     post:
       operationId: tokenGetCredentials
-      summary: This request is used by D1 to provide details about the token credentials of a 
-        digital card (PAN, expiry date) given the
+      summary: Token Get Credentials API
       tags:
       - Issued Device Administration
       responses:
@@ -145,7 +145,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenCredentialsRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by D1 to provide
+        details about the token credentials of a digital card (PAN, expiry date) given the card identifier."
       x-api-lifecycle-status: Design
       x-use-case: This request is used by D1 to provide details about the token credentials of a 
         digital card (PAN, expiry date) given the card identifier.
@@ -155,8 +156,7 @@ paths:
   /issued-device-administration/token-assignment/token-details/retrieve:
     post:
       operationId: tokenDetails
-      summary: This request provides detailed information about the digital card given its card 
-        identifier
+      summary: Token Details API
       tags:
       - Issued Device Administration
       responses:
@@ -203,7 +203,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenDetailsRetrieveRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request provides detailed information
+        about the digital card given its card identifier"
       x-api-lifecycle-status: Design
       x-use-case: This request provides detailed information about the digital card given its card 
         identifier
@@ -213,8 +214,7 @@ paths:
   /issued-device-administration/token-assignment/resume:
     post:
       operationId: tokenResume
-      summary: The API will be used by the issuer backend to request activation of a new digital 
-        card or reactivate a suspended digital
+      summary: Token Resume API
       tags:
       - Issued Device Administration
       responses:
@@ -261,7 +261,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenResumeRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the issuer backend
+        to request activation of a new digital card or reactivate a suspended digital card."
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the issuer backend to request activation of a new digital 
         card or reactivate a suspended digital card.
@@ -271,8 +272,7 @@ paths:
   /issued-device-administration/token-assignment/delete:
     post:
       operationId: tokenDelete
-      summary: The API will be used by the issuer backend to request the deletion of the digital 
-        card
+      summary: Token Delete API
       tags:
       - Issued Device Administration
       responses:
@@ -319,7 +319,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenDeleteRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the issuer backend
+        to request the deletion of the digital card"
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the issuer backend to request the deletion of the digital 
         card
@@ -329,8 +330,7 @@ paths:
   /issued-device-administration/token-assignment/suspend:
     post:
       operationId: tokenSuspend
-      summary: The API will be used by the issuer backend to request the suspension of the digital 
-        card if the digital card is active
+      summary: Token Suspend API
       tags:
       - Issued Device Administration
       responses:
@@ -377,7 +377,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenSuspendRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the issuer backend
+        to request the suspension of the digital card if the digital card is active"
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the issuer backend to request the suspension of the 
         digital card if the digital card is active
@@ -387,8 +388,7 @@ paths:
   /issued-device-administration/token-assignment/get-operation:
     post:
       operationId: tokenGetOperation
-      summary: The API will be used to retrieve information related to an operation for a digital 
-        card
+      summary: Token Get Operation API
       tags:
       - Issued Device Administration
       responses:
@@ -435,7 +435,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenGetServicingEventRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used to retrieve information
+        related to an operation for a digital card"
       x-api-lifecycle-status: Design
       x-use-case: The API will be used to retrieve information related to an operation for a digital
         card
@@ -445,7 +446,7 @@ paths:
   /issued-device-administration/token-assignment/get-all-operations:
     post:
       operationId: tokenGetAllOperations
-      summary: The API will be used to retrieve all the operations related to a digital card
+      summary: Token Get All Operations API
       tags:
       - Issued Device Administration
       responses:
@@ -492,7 +493,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenGetAllServicingEventRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used to retrieve all the
+        operations related to a digital card"
       x-api-lifecycle-status: Design
       x-use-case: The API will be used to retrieve all the operations related to a digital card
       x-bian-behaviour-qualifier: Token Assignment
@@ -501,7 +503,7 @@ paths:
   /issued-device-administration/device-assignment/black-list/delete:
     post:
       operationId: ciamBlackListDelete
-      summary: This API will be used to removes a device from the blacklist.
+      summary: Blacklist Device Delete API
       tags:
       - Issued Device Administration
       responses:
@@ -545,7 +547,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceBlackListDeleteRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to removes a device
+        from the blacklist."
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to removes a device from the blacklist.
       x-bian-behaviour-qualifier: Device Assignment
@@ -554,7 +557,7 @@ paths:
   /issued-device-administration/device-assignment/black-list/add:
     post:
       operationId: ciamBlackListAdd
-      summary: This API will be used to Adds a device to the blacklist
+      summary: Blacklist Device Add API
       tags:
       - Issued Device Administration
       responses:
@@ -598,7 +601,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceBlackListAddRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to Adds a device
+        to the blacklist"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to Adds a device to the blacklist
       x-bian-behaviour-qualifier: Device Assignment
@@ -607,8 +611,7 @@ paths:
   /issued-device-administration/card-device-assignment/renew:
     post:
       operationId: cardRenew
-      summary: The API will be used to renew the card where a new card is provided to end-user. The 
-        new card has new expiry date, but c
+      summary: Card Renew API
       tags:
       - Issued Device Administration
       responses:
@@ -655,7 +658,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardRenewRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used to renew the card
+        where a new card is provided to end-user. The new card has new expiry date, but cardId and PAN
+        are remaining the same."
       x-api-lifecycle-status: Design
       x-use-case: The API will be used to renew the card where a new card is provided to end-user. 
         The new card has new expiry date, but cardId and PAN are remaining the same.
@@ -665,7 +670,7 @@ paths:
   /issued-device-administration/card-device-assignment/register-card:
     post:
       operationId: cardRegister
-      summary: This request is used to register a card with corresponding card credentials.
+      summary: Card Register API
       tags:
       - Issued Device Administration
       responses:
@@ -709,7 +714,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardRegisterRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used to register a card
+        with corresponding card credentials."
       x-api-lifecycle-status: Design
       x-use-case: This request is used to register a card with corresponding card credentials.
       x-bian-behaviour-qualifier: Card Device Assignment
@@ -718,8 +724,7 @@ paths:
   /issued-device-administration/card-device-assignment/create:
     post:
       operationId: cardCreate
-      summary: The API will be used by the bank backend to request the creation of a card(Virtual or
-        Physical) with the processor.
+      summary: Card Create API
       tags:
       - Issued Device Administration
       responses:
@@ -766,7 +771,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardCreateRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the bank backend
+        to request the creation of a card(Virtual or Physical) with the processor."
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the bank backend to request the creation of a card(Virtual
         or Physical) with the processor.
@@ -776,7 +782,7 @@ paths:
   /issued-device-administration/card-device-assignment/suspend:
     post:
       operationId: cardSuspend
-      summary: The API will be used by the bank backend to request the suspension of a card.
+      summary: Card suspend API
       tags:
       - Issued Device Administration
       responses:
@@ -823,7 +829,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardSuspendRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the bank backend
+        to request the suspension of a card."
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the bank backend to request the suspension of a card.
       x-bian-behaviour-qualifier: Card Device Assignment
@@ -832,8 +839,7 @@ paths:
   /issued-device-administration/card-device-assignment/replace:
     post:
       operationId: cardReplace
-      summary: 'End user can request the bank a replacement of an existing card because the card has been
-        lost or damaged. The replaced '
+      summary: Card Replace API
       tags:
       - Issued Device Administration
       responses:
@@ -880,7 +886,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardReplaceRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nEnd user can request the bank a replacement
+        of an existing card because the card has been lost or damaged. The replaced card is blocked until
+        the new card is activated."
       x-api-lifecycle-status: Design
       x-use-case: End user can request the bank a replacement of an existing card because the card 
         has been lost or damaged. The replaced card is blocked until the new card is activated.
@@ -890,8 +898,7 @@ paths:
   /issued-device-administration/card-device-assignment/resume:
     post:
       operationId: cardResume
-      summary: The API will be used by the bank backend to request the reactivation of a card that 
-        has been suspended
+      summary: Card Resume API
       tags:
       - Issued Device Administration
       responses:
@@ -938,7 +945,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardResumeRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the bank backend
+        to request the reactivation of a card that has been suspended"
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the bank backend to request the reactivation of a card 
         that has been suspended
@@ -948,7 +956,7 @@ paths:
   /issued-device-administration/card-device-assignment/get-card-credentials:
     post:
       operationId: getCardCredentials
-      summary: This request is used by the bank backend to retrieve the card credentials
+      summary: Get Card Credentials API
       tags:
       - Issued Device Administration
       responses:
@@ -995,7 +1003,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GetCardCredentialsRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by the bank backend
+        to retrieve the card credentials"
       x-api-lifecycle-status: Design
       x-use-case: This request is used by the bank backend to retrieve the card credentials
       x-bian-behaviour-qualifier: Card Device Assignment
@@ -1004,7 +1013,7 @@ paths:
   /issued-device-administration/card-device-assignment/verify-card-credentials:
     post:
       operationId: verifyCardCredentials
-      summary: This request is used by the bank backend to verify the card credentials.
+      summary: Verify Card Credentials API
       tags:
       - Issued Device Administration
       responses:
@@ -1051,7 +1060,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/VerifyCardCredentialsRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by the bank backend
+        to verify the card credentials."
       x-api-lifecycle-status: Design
       x-use-case: This request is used by the bank backend to verify the card credentials.
       x-bian-behaviour-qualifier: Card Device Assignment
@@ -1060,7 +1070,7 @@ paths:
   /issued-device-administration/card-device-assignment/delete:
     post:
       operationId: cardDelete
-      summary: The API will be used by the bank backend to request the deletion of a card
+      summary: Card Delete API
       tags:
       - Issued Device Administration
       responses:
@@ -1107,7 +1117,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardDeleteRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThe API will be used by the bank backend
+        to request the deletion of a card"
       x-api-lifecycle-status: Design
       x-use-case: The API will be used by the bank backend to request the deletion of a card
       x-bian-behaviour-qualifier: Card Device Assignment
@@ -1116,7 +1127,7 @@ paths:
   /issued-device-administration/card-device-assignment/get-card-details:
     post:
       operationId: getCardDetails
-      summary: This request is used by the bank backend to request card details.
+      summary: Get Card Details API
       tags:
       - Issued Device Administration
       responses:
@@ -1163,7 +1174,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GetCardDetailsRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by the bank backend
+        to request card details."
       x-api-lifecycle-status: Design
       x-use-case: This request is used by the bank backend to request card details.
       x-bian-behaviour-qualifier: Card Device Assignment
@@ -1172,8 +1184,7 @@ paths:
   /issued-device-administration/card-device-assignment/get-operation:
     post:
       operationId: getOperation
-      summary: This request is used by the issuer backend to retrieve the information related to an 
-        operation on a card.
+      summary: Get Operation API
       tags:
       - Issued Device Administration
       responses:
@@ -1220,7 +1231,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardGetServicingEventRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by the issuer backend
+        to retrieve the information related to an operation on a card."
       x-api-lifecycle-status: Design
       x-use-case: This request is used by the issuer backend to retrieve the information related to 
         an operation on a card.
@@ -1230,8 +1242,7 @@ paths:
   /issued-device-administration/card-device-assignment/get-all-operations:
     post:
       operationId: getAllOperations
-      summary: This request is used by the issuer backend to retrieve all operations related to a 
-        card.
+      summary: Get All Operations API
       tags:
       - Issued Device Administration
       responses:
@@ -1278,7 +1289,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardGetAllServicingEventRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis request is used by the issuer backend
+        to retrieve all operations related to a card."
       x-api-lifecycle-status: Design
       x-use-case: This request is used by the issuer backend to retrieve all operations related to a
         card.

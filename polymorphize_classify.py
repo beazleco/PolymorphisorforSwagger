@@ -1,7 +1,7 @@
 """
 polymorphize_classify — which input format is this workbook?
 
-Version 6.7.
+Version 6.8.
 
 Two input formats are in use and they are told apart by structure rather than
 by style, so the test is cheap and unambiguous.
@@ -56,7 +56,7 @@ import re
 import time
 from dataclasses import dataclass, field
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 #: Rows of each sampled sheet the peek reads. The Level banner ends by row 6
 #: and the mapping header sits on row 10, so 14 covers both with room for a

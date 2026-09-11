@@ -6,8 +6,8 @@ info:
     attributes mapped to a System of Record field are published; shared groups that differ between 
     operations are specialised with allOf, and operations served by several SOR endpoints carry a 
     requestVariant discriminator.
-  x-generated-by: SOR Polymorphizer 6.7
-  x-generated-at: '2026-09-10T00:27:56+00:00'
+  x-generated-by: SOR Polymorphizer 6.8
+  x-generated-at: '2026-09-11T05:20:31+00:00'
   x-source-sheets:
   - Available Funds_Retrieve
   - Transaction Adjustment_Initiate
@@ -28,7 +28,7 @@ paths:
   /credit-card/financial-status-tracking/retrieve:
     post:
       operationId: availableFundsRetrieve
-      summary: Use this API to retrieve card available funds details
+      summary: Available Funds Retrieve API
       tags:
       - Credit Card
       responses:
@@ -75,7 +75,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/FinancialStatusTrackingRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nUse this API to retrieve card available
+        funds details"
       x-api-lifecycle-status: Design
       x-use-case: Use this API to retrieve card available funds details
       x-bian-behaviour-qualifier: Financial Status Tracking
@@ -83,7 +84,7 @@ paths:
   /credit-card/card-transaction/adjustment/initiate:
     post:
       operationId: transactionAdjustmentInitiate
-      summary: Use this API to post cardholder account adjustment
+      summary: Transaction Adjustment Initiate API
       tags:
       - Credit Card
       responses:
@@ -130,7 +131,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardTransactionAdjustmentRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nUse this API to post cardholder account
+        adjustment"
       x-api-lifecycle-status: Design
       x-use-case: Use this API to post cardholder account adjustment
       x-bian-behaviour-qualifier: Card Transaction
@@ -138,7 +140,7 @@ paths:
   /credit-card/mobile-recency/retrieve:
     post:
       operationId: recencyCheckRetrieve
-      summary: Use this API to perform recency check
+      summary: Recency Check Retrieve API
       tags:
       - Credit Card
       responses:
@@ -185,7 +187,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/MobileRecencyRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nUse this API to perform recency check"
       x-api-lifecycle-status: Design
       x-use-case: Use this API to perform recency check
       x-bian-behaviour-qualifier: Mobile Recency
@@ -193,7 +195,7 @@ paths:
   /credit-card/billing/retrieve:
     post:
       operationId: accountStatementRetrieve
-      summary: Use this API to retrieve card statement details
+      summary: Account Statement Retrieve API
       tags:
       - Credit Card
       responses:
@@ -240,7 +242,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/BillingRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nUse this API to retrieve card statement
+        details"
       x-api-lifecycle-status: Design
       x-use-case: Use this API to retrieve card statement details
       x-bian-behaviour-qualifier: Billing
@@ -248,7 +251,7 @@ paths:
   /CreditCard/CardTransaction/Retrieve:
     post:
       operationId: cardTransactionRetrieve
-      summary: This API will be used to retrieve details about a card account transaction
+      summary: Card Transaction Retrieve API
       tags:
       - Credit Card
       responses:
@@ -295,7 +298,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardTransactionRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to retrieve details
+        about a card account transaction"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to retrieve details about a card account transaction
       x-bian-behaviour-qualifier: Card Transaction
@@ -304,7 +308,7 @@ paths:
   /CreditCard/Account/Retrieve:
     post:
       operationId: cardDetailsRetrieve
-      summary: This API will be used to retrieve details about a card account
+      summary: Card Details Retrieve API
       tags:
       - Credit Card
       responses:
@@ -351,7 +355,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreditCardAccountRetrieveRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to retrieve details
+        about a card account"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to retrieve details about a card account
       x-bian-behaviour-qualifier: Account
@@ -361,7 +366,7 @@ paths:
   /CreditCard/IssuedDevice/Initiate:
     post:
       operationId: cardIssuedDeviceInitiate
-      summary: This API will be used to initiate/enable a type of device for the card account
+      summary: Card issuedDevice Initiate API
       tags:
       - Credit Card
       responses:
@@ -408,7 +413,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceInstanceInitiateRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to initiate/enable
+        a type of device for the card account"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to initiate/enable a type of device for the card account
       x-bian-behaviour-qualifier: Issued Device
@@ -417,7 +423,7 @@ paths:
   /CreditCard/IssuedDevice/Update:
     put:
       operationId: cardIssuedDeviceUpdate
-      summary: This API will be used to update details for an issued device
+      summary: Card issuedDevice Update API
       tags:
       - Credit Card
       responses:
@@ -464,7 +470,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceInstanceUpdateRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to update details
+        for an issued device"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to update details for an issued device
       x-bian-behaviour-qualifier: Issued Device
@@ -473,7 +480,7 @@ paths:
   /credit-card/issued-device/control:
     put:
       operationId: cardCancel
-      summary: This API will be used to cancel a card with specified reason or cancellation code
+      summary: Card Cancel API
       tags:
       - Credit Card
       responses:
@@ -520,7 +527,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreditCardCancelRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to cancel a card
+        with specified reason or cancellation code"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to cancel a card with specified reason or cancellation code
       x-bian-behaviour-qualifier: Issued Device
@@ -529,8 +537,7 @@ paths:
   /credit-card/customer/additional-data/retrieve:
     post:
       operationId: customerAddlData
-      summary: This API will be used to get the customer additional data for specified customer 
-        number or card number
+      summary: Customer Addl Data API
       tags:
       - Credit Card
       responses:
@@ -577,7 +584,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CardCustomerAdditionalDataRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to get the customer
+        additional data for specified customer number or card number"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to get the customer additional data for specified customer 
         number or card number
@@ -587,8 +595,7 @@ paths:
   /credit-card/issued-device/card-rsa-encrypted/retrieve:
     post:
       operationId: cardRSAEncrypted
-      summary: This API will be used to get the card number encrypted, the expiry date, and 
-        optionally the CVV2. Encryption is made via
+      summary: Card RSAEncrypted API
       tags:
       - Credit Card
       responses:
@@ -632,7 +639,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/IssuedDeviceCardEncryptedRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to get the card
+        number encrypted, the expiry date, and optionally the CVV2. Encryption is made via a Public RSA
+        key base64 encoded in format X.509."
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to get the card number encrypted, the expiry date, and 
         optionally the CVV2. Encryption is made via a Public RSA key base64 encoded in format X.509.

@@ -3,8 +3,8 @@ info:
   title: Credit Card Card Cancel
   version: 1.0.0
   description: This API will be used to cancel a card with specified reason or cancellation code
-  x-generated-by: SOR Polymorphizer 6.7
-  x-generated-at: '2026-09-10T00:27:57+00:00'
+  x-generated-by: SOR Polymorphizer 6.8
+  x-generated-at: '2026-09-11T05:20:33+00:00'
   x-source-sheet: Card Cancel
   x-polymorphism-pattern: P1
   x-bian-service-domain: Credit Card
@@ -12,7 +12,7 @@ paths:
   /credit-card/issued-device/control:
     put:
       operationId: cardCancel
-      summary: This API will be used to cancel a card with specified reason or cancellation code
+      summary: Card Cancel API
       tags:
       - Credit Card
       responses:
@@ -59,7 +59,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreditCardCancelRequest'
-      description: '**<u>API Lifecycle Status - Design</u>**'
+      description: "**<u>API Lifecycle Status - Design</u>**\n\nThis API will be used to cancel a card
+        with specified reason or cancellation code"
       x-api-lifecycle-status: Design
       x-use-case: This API will be used to cancel a card with specified reason or cancellation code
       x-bian-behaviour-qualifier: Issued Device

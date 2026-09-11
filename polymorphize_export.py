@@ -2,7 +2,7 @@
 """
 polymorphize_export — the field mapping document, written back out.
 
-Version 6.7.
+Version 6.8.
 
 The tool reads a mapping workbook and writes a specification. This module
 writes the third artefact: a field mapping document in the API COE's own
@@ -106,9 +106,11 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 
 import polymorphize_showcase as show
-from polymorphize_workbook import USAGE_CONDITIONAL, USAGE_REQUIRED, text
+from polymorphize_workbook import (
+    USAGE_CONDITIONAL, USAGE_REQUIRED, derive_api_name, text,
+)
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 # --------------------------------------------------------------------------- #
 # The format
@@ -448,7 +450,7 @@ def plan_sheet(view, endpoint, *, title, verified, ordinal=0, total=1):
         # The Level format has no API Name row. Derived from the sheet name
         # rather than left blank, and recorded as derived on the provenance
         # sheet so nobody mistakes it for the analyst's own wording.
-        banner["api_name"] = _derive_api_name(result.sheet)
+        banner["api_name"] = derive_api_name(result.sheet)
     plan = SheetPlan(title, banner, endpoint,
                      _sor_heading(result, layout, banner, endpoint))
     plan.extra_headings = _extra_columns(result)
@@ -529,15 +531,6 @@ def _endpoint_label(result, banner, endpoint, ordinal=0, total=1):
     if total > 1 and endpoint:
         return endpoint if endpoint.startswith("/") else "/" + endpoint
     return stated or endpoint or ""
-
-
-def _derive_api_name(sheet):
-    """``Card Transaction_Retrieve`` -> ``Card Transaction Retrieve API``."""
-    words = re.sub(r"[_\-]+", " ", text(sheet)).strip()
-    words = re.sub(r"\s{2,}", " ", words)
-    if not words:
-        return ""
-    return words if words.lower().endswith("api") else "%s API" % words
 
 
 def _sor_heading(result, layout, banner, endpoint):

@@ -1,7 +1,7 @@
 """
 polymorphize_workbook — reader for the Level-indented SOR mapping contract.
 
-Version 6.7.
+Version 6.8.
 
 This module replaces the dotted-path reader used up to v5.3. The authoritative
 workbook format expresses schema nesting through a run of ``Level 1`` ..
@@ -64,7 +64,7 @@ from dataclasses import dataclass, field
 
 import polymorphize_core as core
 
-__version__ = "6.7"
+__version__ = "6.8"
 
 # --------------------------------------------------------------------------- #
 # Contract constants
@@ -213,6 +213,27 @@ NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_\-]*$")
 
 #: The request property whose value selects the SOR endpoint.
 VARIANT_PROPERTY = "requestVariant"
+
+
+# --------------------------------------------------------------------------- #
+# Naming
+# --------------------------------------------------------------------------- #
+
+
+def derive_api_name(sheet):
+    """``Card Transaction_Retrieve`` -> ``Card Transaction Retrieve API``.
+
+    The field mapping format carries an API Name in its banner. The Level
+    format has no cell for one, so it is derived from the sheet name, and it
+    is derived here rather than in either caller because the generated
+    specification and the exported spreadsheet must agree about what an
+    operation is called.
+    """
+    words = re.sub(r"[_\-]+", " ", text(sheet)).strip()
+    words = re.sub(r"\s{2,}", " ", words)
+    if not words:
+        return ""
+    return words if words.lower().endswith("api") else "%s API" % words
 
 # --------------------------------------------------------------------------- #
 # Findings
